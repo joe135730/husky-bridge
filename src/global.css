@@ -1,0 +1,71 @@
+/* Global container styles */
+.container {
+  width: 100%;
+  min-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Flex container styles */
+.flex-container {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+/* Text styles to prevent wrapping */
+.nowrap-text {
+  white-space: nowrap;
+}
+
+/* Responsive container for components */
+.component-container {
+  width: 100%;
+  padding: 1rem 2rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Responsive spacing utilities */
+.gap-lg {
+  gap: 2rem;
+}
+
+.gap-md {
+  gap: 1.5rem;
+}
+
+.gap-sm {
+  gap: 1rem;
+}
+
+/* Media query for mobile screens */
+@media screen and (max-width: 768px) {
+  .component-container {
+    padding: 1rem;
+  }
+
+  .gap-lg {
+    gap: 1.5rem;
+  }
+
+  .gap-md {
+    gap: 1rem;
+  }
+
+  .gap-sm {
+    gap: 0.5rem;
+  }
+} 
