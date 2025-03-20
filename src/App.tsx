@@ -1,16 +1,19 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { Route, Routes, BrowserRouter } from "react-router-dom";
+import LandingPage from './LandingPage';
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-   <div>
-      test
-   </div>
-  )
+    <BrowserRouter>
+      <div>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          {/* Optional secondary route */}
+          <Route path="/LandingPage" element={<LandingPage />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
+  );
 }
 
-export default App
