@@ -1,0 +1,160 @@
+.introduction {
+    background-color: black;
+    color: white;
+    /* min-height: calc(100vh - 300px); Subtract navbar height */
+    display: flex;
+    align-items: center;
+    padding: 5.5rem 4rem;
+}
+
+.intro-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8rem;
+    width: 100%;
+}
+
+.intro-text {
+    flex: 1;
+    max-width: 650px;
+    /* padding-left: 2rem; */
+}
+
+.intro-title {
+    font-size: 3.2rem;
+    font-weight: bold;
+    line-height: 1.2;
+    margin: 0 0 2rem 0;
+    letter-spacing: 0.5px;
+}
+
+.intro-description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #999;
+    margin: 0 0 3rem 0;
+}
+
+.intro-buttons {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.seek-help-btn {
+    background-color: #ff0000;
+    color: white;
+    text-decoration: none;
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    font-size: 1.1rem;
+}
+
+.seek-help-btn:hover {
+    background-color: #cc0000;
+}
+
+.make-offer-btn {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.make-offer-btn::after {
+    content: "→";
+    transition: transform 0.2s ease;
+}
+
+.make-offer-btn:hover::after {
+    transform: translateX(5px);
+}
+
+.intro-image {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    /* padding-right: 2rem; */
+}
+
+.husky-logo {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+}
+
+/* Media query for tablets */
+@media screen and (max-width: 1024px) {
+    .introduction {
+        padding: 6rem 2rem;
+    }
+
+    .intro-content {
+        gap: 4rem;
+    }
+
+    .intro-text {
+        padding-left: 0;
+    }
+
+    .intro-title {
+        font-size: 3.5rem;
+    }
+
+    .intro-image {
+        padding-right: 0;
+    }
+
+    .husky-logo {
+        max-width: 400px;
+    }
+}
+
+/* Media query for mobile screens */
+@media screen and (max-width: 768px) {
+    .introduction {
+        padding: 5rem 1rem;
+        margin-top: 60px;
+    }
+
+    .intro-content {
+        flex-direction: column-reverse;
+        text-align: center;
+        gap: 2rem;
+    }
+
+    .intro-text {
+        padding-left: 0;
+    }
+
+    .intro-title {
+        font-size: 2.5rem;
+    }
+
+    .intro-description {
+        font-size: 1.1rem;
+    }
+
+    .intro-buttons {
+        justify-content: center;
+        gap: 1.5rem;
+    }
+
+    .intro-image {
+        padding-right: 0;
+        justify-content: center;
+    }
+
+    .husky-logo {
+        max-width: 300px;
+    }
+} 

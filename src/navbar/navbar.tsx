@@ -32,21 +32,21 @@ export default function Navbar() {
         <Nav.Item>
           <Nav.Link
             as={Link}
-            to="/SeekHelp"
-            id="seek-help-page"
-            active={pathname.includes("SeekHelp")}
+            to="/Request"
+            id="request-page"
+            active={pathname.includes("Request")}
           >
-            Seek Help
+            View All Request
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link
             as={Link}
-            to="/OfferHelp"
-            id="offer-help-page"
-            active={pathname.includes("OfferHelp")}
+            to="/Help"
+            id="help-page"
+            active={pathname.includes("Help")}
           >
-            Offer Help
+            View All Help
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
