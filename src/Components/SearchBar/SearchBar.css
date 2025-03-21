@@ -1,0 +1,148 @@
+.search-section {
+    padding: 4rem 0;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: white;
+}
+
+.search-container {
+    margin: 0 auto;
+    /* padding: 0 2rem; */
+    max-width: 1200px;
+    width: 100%;
+}
+
+.search-input-container {
+    display: flex;
+    gap: 1rem;
+    background-color: #f5f5f5;
+    padding: 1rem;
+    border-radius: 8px;
+    align-items: center;
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.8rem;
+    border: none;
+    /* background: transparent; */
+    border-radius: 8px;
+    background-color: #D9D9D9;
+    font-size: 1.1rem;
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #666;
+}
+
+.category-dropdown {
+    background-color: white;
+    padding: 0.8rem 1rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.dropdown-arrow {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.search-button {
+    background-color: black;
+    color: white;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.search-results {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.result-item {
+    background-color: #D9D9D9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.result-content h3 {
+    margin: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.result-content h3:hover {
+    text-decoration: underline;
+}
+
+.result-meta {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.date-separator {
+    margin: 0 0.5rem;
+}
+
+.go-button {
+    background-color: #808080;
+    color: white;
+    padding: 0.5rem 2rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.results-count {
+    margin-top: 1rem;
+    color: #666;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.show-more {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+}
+
+@media screen and (max-width: 768px) {
+    .search-container {
+        padding: 0 1rem;
+    }
+
+    .search-input-container {
+        flex-direction: column;
+    }
+
+    .search-button {
+        width: 100%;
+    }
+
+    .result-item {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .go-button {
+        width: 100%;
+    }
+} 
