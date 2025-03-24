@@ -1,9 +1,29 @@
 import { useState } from "react";
 import "./SearchBar.css";
 
+interface Category {
+  id: string;
+  name: string;
+  checked: boolean;
+}
+
 export default function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<number>(1);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([
+    { id: "general", name: "General", checked: false },
+    { id: "borrow-lend", name: "Borrow/Lend", checked: false },
+    { id: "housing", name: "Housing", checked: false },
+    { id: "tutoring", name: "Tutoring", checked: false },
+  ]);
+
+  const handleCategoryChange = (categoryId: string) => {
+    setCategories(categories.map(cat => 
+      cat.id === categoryId ? { ...cat, checked: !cat.checked } : cat
+    ));
+  };
+
+  const selectedCount = categories.filter(cat => cat.checked).length;
 
   return (
     <div className="search-container">
@@ -15,9 +35,28 @@ export default function SearchBar() {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="search-input"
         />
-        <div className="category-dropdown">
-          <span>{selectedCategories} category selected</span>
-          <span className="dropdown-arrow">▼</span>
+        <div className="category-dropdown-container">
+          <div 
+            className="category-dropdown"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          >
+            <span>{selectedCount === 0 ? "Select categories" : `${selectedCount} ${selectedCount === 1 ? 'category' : 'categories'} selected`}</span>
+            <span className="dropdown-arrow">▼</span>
+          </div>
+          {isDropdownOpen && (
+            <div className="dropdown-menu">
+              {categories.map(category => (
+                <label key={category.id} className="dropdown-item">
+                  <input
+                    type="checkbox"
+                    checked={category.checked}
+                    onChange={() => handleCategoryChange(category.id)}
+                  />
+                  <span>{category.name}</span>
+                </label>
+              ))}
+            </div>
+          )}
         </div>
         <button className="search-button">Search</button>
       </div>
