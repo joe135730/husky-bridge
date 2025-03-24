@@ -1,5 +1,6 @@
 import Nav from "react-bootstrap/Nav";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation } from "react-router-dom";
+import SearchBar from "../Components/Search/SearchBar";
 import "./navbar.css";
 
 export default function Navbar() {
@@ -7,29 +8,24 @@ export default function Navbar() {
 
   return (
     <Nav variant="pills" id="wd-toc" className="navbar-container">
-      <div className="navbar-brand">
-        <Nav.Link
-          as={Link}
-          to="/"
-          id="brand"
-          active={pathname === "/"}
-        >
-          HuskyBridge
-        </Nav.Link>
-      </div>
-      
-      <div className="nav-items-right">
-        <Nav.Item>
+      <div className="navbar-left">
+        <div className="navbar-brand">
           <Nav.Link
             as={Link}
             to="/"
-            id="home-page"
+            id="brand"
             active={pathname === "/"}
           >
-            Home
+            HuskyBridge
           </Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
+        </div>
+        <div className="navbar-search">
+          <SearchBar />
+        </div>
+      </div>
+      
+      <div className="nav-items-right">
+        <Nav.Item className="nav-link-item">
           <Nav.Link
             as={Link}
             to="/Request"
@@ -39,7 +35,7 @@ export default function Navbar() {
             View All Request
           </Nav.Link>
         </Nav.Item>
-        <Nav.Item>
+        <Nav.Item className="nav-link-item">
           <Nav.Link
             as={Link}
             to="/Help"

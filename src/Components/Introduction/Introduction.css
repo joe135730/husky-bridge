@@ -95,7 +95,7 @@
 /* Media query for tablets */
 @media screen and (max-width: 1024px) {
     .introduction {
-        padding: 6rem 2rem;
+        padding: 7rem 2rem 6rem;
     }
 
     .intro-content {
@@ -122,8 +122,8 @@
 /* Media query for mobile screens */
 @media screen and (max-width: 768px) {
     .introduction {
-        padding: 5rem 1rem;
-        margin-top: 60px;
+        padding: 0rem 1rem 5rem;
+        margin-top: 0;
     }
 
     .intro-content {

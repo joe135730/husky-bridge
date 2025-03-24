@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import neulogo from "../assets/neuLogo.png"
+import neulogo from "../../assets/neuLogo.png"
 import "./Login.css";
 
 export default function Login() {

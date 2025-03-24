@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./SearchBar.css";
 
 interface Category {
@@ -8,6 +9,7 @@ interface Category {
 }
 
 export default function SearchBar() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([
@@ -23,6 +25,18 @@ export default function SearchBar() {
     ));
   };
 
+  const handleSearch = () => {
+    const selectedCategories = categories.filter(cat => cat.checked).map(cat => cat.id);
+    // Navigate to search page with query parameters
+    navigate(`/search?q=${encodeURIComponent(searchQuery)}&categories=${selectedCategories.join(',')}`);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   const selectedCount = categories.filter(cat => cat.checked).length;
 
   return (
@@ -33,6 +47,7 @@ export default function SearchBar() {
           placeholder="Search For......"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyPress={handleKeyPress}
           className="search-input"
         />
         <div className="category-dropdown-container">
@@ -58,7 +73,7 @@ export default function SearchBar() {
             </div>
           )}
         </div>
-        <button className="search-button">Search</button>
+        <button className="search-button" onClick={handleSearch}>Search</button>
       </div>
     </div>
   );
