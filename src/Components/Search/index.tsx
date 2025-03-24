@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './SearchBar.css';
+import SearchBar from './SearchBar';
+import './Search.css';
 
 interface SearchResult {
     title: string;
@@ -9,10 +10,8 @@ interface SearchResult {
     id: string; // Added for navigation purposes
 }
 
-export default function SearchBar() {
+export default function Search() {
     const navigate = useNavigate();
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCategories, setSelectedCategories] = useState<number>(1);
 
     // Mock data for demonstration
     const mockResults: SearchResult[] = [
@@ -48,22 +47,7 @@ export default function SearchBar() {
 
     return (
         <div className="search-section">
-            <div className="search-container">
-                <div className="search-input-container">
-                    <input
-                        type="text"
-                        placeholder="Search For......"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="search-input"
-                    />
-                    <div className="category-dropdown">
-                        <span>{selectedCategories} category selected</span>
-                        <span className="dropdown-arrow">▼</span>
-                    </div>
-                    <button className="search-button">Search</button>
-                </div>
-            </div>
+            <SearchBar />
 
             <div className="search-results">
                 {mockResults.map((result) => (

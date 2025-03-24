@@ -1,6 +1,6 @@
 import Introduction from '../Components/Introduction';
 import Categories from '../Components/Categories';
-import SearchBar from '../Components/SearchBar';
+import Search from '../Components/Search';
 import './LandingPage.css';
 
 export default function LandingPage() {
@@ -10,7 +10,7 @@ export default function LandingPage() {
             <hr />
             <Categories />
             <hr />
-            <SearchBar />
+            <Search />
         </div>
     );
 }
