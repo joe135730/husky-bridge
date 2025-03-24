@@ -1,14 +1,14 @@
 .search-container {
     width: 100%;
     max-width: 1500px;
-    padding: 0 2rem;
+    /* padding: 0 2rem; */
 }
 
 .search-input-container {
     display: flex;
     gap: 1rem;
     background-color: white;
-    padding: 0.75rem;
+    /* padding: 0.75rem; */
     border-radius: 12px;
     align-items: center;
     width: 100%;
