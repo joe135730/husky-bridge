@@ -4,6 +4,8 @@ import Login from './Account/Login';
 import Signup from './Account/Signup';
 import Navbar from './navbar/navbar';
 import Footer from './Footer';
+import MyTeam from "./MyTeam";
+
 import './App.css'
 
 function AppContent() {
@@ -18,6 +20,7 @@ function AppContent() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/my-team" element={<MyTeam />} />
         </Routes>
       </div>
         <hr />
