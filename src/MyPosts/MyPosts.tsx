@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import Navbar from '../navbar/navbar';
-import Footer from '../Footer';
-import './myPosts.css';
+import './MyPosts.css';
 
 export default function MyPosts() {
   const [sort, setSort] = useState('latest');
@@ -23,7 +21,6 @@ export default function MyPosts() {
 
   return (
     <>
-      <Navbar />
       <div className="my-posts-container">
         <div className="my-posts-header">
           <h2>My Posts</h2>
@@ -100,7 +97,6 @@ export default function MyPosts() {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 }
