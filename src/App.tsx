@@ -7,7 +7,7 @@ import Footer from './Footer';
 import MyTeam from "./MyTeam";
 import Profile from "./Profile/Profile"; 
 import EditProfile from "./Profile/EditProfile"; 
-
+import MyPosts from "./MyPosts/MyPosts";
 
 import './App.css'
 
@@ -26,9 +26,7 @@ function AppContent() {
           <Route path="/my-team" element={<MyTeam />} />
           <Route path="/my-profile" element={<Profile />} />
           <Route path="/edit-profile" element={<EditProfile />} />
- 
-
-
+          <Route path="/all-my-posts" element={<MyPosts />} />
         </Routes>
       </div>
         <hr />
