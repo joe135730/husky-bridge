@@ -5,6 +5,9 @@ import Signup from './Account/Signup';
 import Navbar from './navbar/navbar';
 import Footer from './Footer';
 import MyTeam from "./MyTeam";
+import Profile from "./Profile/profile"; 
+import EditProfile from "./Profile/EditProfile"; 
+
 
 import './App.css'
 
@@ -21,6 +24,11 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/my-team" element={<MyTeam />} />
+          <Route path="/my-profile" element={<Profile />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
+ 
+
+
         </Routes>
       </div>
         <hr />
