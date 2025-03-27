@@ -5,7 +5,7 @@ import Signup from './Account/Signup';
 import Navbar from './navbar/navbar';
 import Footer from './Footer';
 import MyTeam from "./MyTeam";
-import Profile from "./Profile/profile"; 
+import Profile from "./Profile/Profile"; 
 import EditProfile from "./Profile/EditProfile"; 
 
 
