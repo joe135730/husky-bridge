@@ -1,0 +1,162 @@
+.post-detail-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: calc(100vh - 200px);
+  margin-bottom: 2rem;
+}
+
+.post-detail-container h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.post-meta {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+.detail-section {
+  background-color: #f8f9fa;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.detail-section h2 {
+  font-size: 1.2rem;
+  color: #495057;
+  margin-bottom: 1.5rem;
+}
+
+.info-group {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #495057;
+}
+
+.info-value {
+  color: #333;
+}
+
+.info-value.description {
+  grid-column: 1 / -1;
+  margin-top: 0.5rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.back-btn,
+.message-btn,
+.accept-btn,
+.report-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.back-btn {
+  background-color: #f8f9fa;
+  color: #333;
+  border: 1px solid #dee2e6;
+}
+
+.back-btn:hover {
+  background-color: #e9ecef;
+}
+
+.message-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.message-btn:hover {
+  background-color: #357abd;
+}
+
+.accept-btn {
+  background-color: #000;
+  color: white;
+  flex: 2;
+}
+
+.accept-btn:hover {
+  background-color: #333;
+}
+
+.accept-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.report-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.report-btn:hover {
+  background-color: #c82333;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.status-badge.pending {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .post-detail-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .info-group {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .info-value.description {
+    margin-top: 0;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .back-btn,
+  .message-btn,
+  .accept-btn,
+  .report-btn {
+    width: 100%;
+  }
+} 

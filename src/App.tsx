@@ -8,6 +8,9 @@ import MyTeam from "./MyTeam";
 import Profile from "./Profile/Profile"; 
 import EditProfile from "./Profile/EditProfile"; 
 import MyPosts from "./MyPosts/MyPosts";
+import CreatePost from "./CreatePost/CreatePost";
+import PostDetail from "./PostDetail/PostDetail";
+import Chat from "./Chat/Chat";
 
 import './App.css'
 
@@ -27,6 +30,9 @@ function AppContent() {
           <Route path="/my-profile" element={<Profile />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/all-my-posts" element={<MyPosts />} />
+          <Route path="/create-post" element={<CreatePost />} />
+          <Route path="/post/:id" element={<PostDetail />} />
+          <Route path="/messages" element={<Chat />} />
         </Routes>
       </div>
         <hr />
