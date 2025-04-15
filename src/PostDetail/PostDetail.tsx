@@ -82,16 +82,15 @@ export default function PostDetail() {
         <button className="back-btn" onClick={handleBack}>
           Back to all Post
         </button>
+
         <button className="message-btn" onClick={handleMessage}>
           Message
         </button>
-        <button 
-          className="accept-btn" 
-          onClick={handleAccept}
-          disabled={!isPending}
-        >
+
+        <button className="accept-btn" onClick={handleAccept} disabled={!isPending}>
           Accept Offer / Accept Request
         </button>
+        
         <button className="report-btn" onClick={handleReport}>
           Report Post
         </button>

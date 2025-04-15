@@ -104,6 +104,26 @@
     background-color: #cc0000;
 }
 
+.add-post-button {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.75rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.add-post-button:hover {
+    background-color: #cc0000;
+    transform: scale(1.05);
+}
+
 /* Media query for larger screens with potential overlap */
 @media screen and (max-width: 1400px) {
     .navbar-container {

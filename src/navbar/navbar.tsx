@@ -2,9 +2,11 @@ import Nav from "react-bootstrap/Nav";
 import { Link, useLocation } from "react-router-dom";
 import SearchBar from "../Components/Search/SearchBar";
 import "./navbar.css";
+import { useState } from "react";
 
 export default function Navbar() {
   const { pathname } = useLocation();
+  const[loggedin, setLoggedin] = useState(false);
 
   return (
     <Nav variant="pills" id="wd-toc" className="navbar-container">
@@ -46,11 +48,19 @@ export default function Navbar() {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link as={Link} to="/login" id="login-page">
-            <button className="login-button">
-              Login
+          {loggedin? (
+          <Nav.Link as = {Link} to="/create-post" id="create-post-page">
+            <button className="add-post-button">
+              Add a Post +
             </button>
           </Nav.Link>
+          ):(
+            <Nav.Link as={Link} to="/login" id="login-page">
+              <button className="login-button">
+                Login
+              </button>
+            </Nav.Link>
+          )}
         </Nav.Item>
       </div>
     </Nav>
