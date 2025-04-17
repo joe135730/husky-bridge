@@ -2,27 +2,40 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar/navbar';
 import Footer from "../Footer/index";
+import * as client from '../Posts/client';
+import { Post } from '../Posts/client';
 import './CreatePost.css';
 
 export default function CreatePost() {
   const navigate = useNavigate();
-  const [postType, setPostType] = useState('request');
+  const [postType, setPostType] = useState<Post['postType']>('request');
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('general');
+  const [category, setCategory] = useState<Post['category']>('general');
   const [location, setLocation] = useState('');
   const [availability, setAvailability] = useState('');
   const [description, setDescription] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      postType,
-      title,
-      category,
-      location,
-      availability,
-      description
-    });
+    setError('');
+
+    try {
+      const newPost = {
+        title,
+        postType,
+        category,
+        location,
+        availability: new Date(availability),
+        description
+      };
+
+      await client.createPost(newPost);
+      navigate('/my-posts');
+    } catch (error: any) {
+      console.error("Error creating post:", error);
+      setError(error.response?.data?.message || 'Error creating post. Please try again.');
+    }
   };
 
   return (
@@ -31,6 +44,8 @@ export default function CreatePost() {
     <div className="create-post-container">
       <h1>Create a New Post</h1>
       
+      {error && <div className="error-message">{error}</div>}
+      
       <form onSubmit={handleSubmit}>
         <section className="form-section">
           <h2>Post Type</h2>
@@ -38,14 +53,14 @@ export default function CreatePost() {
             <label>
               <input type="radio" name="postType"
                 value="request" checked={postType === 'request'}
-                onChange={(e) => setPostType(e.target.value)}
+                onChange={(e) => setPostType(e.target.value as Post['postType'])}
               />
               Request
             </label>
             <label>
               <input type="radio" name="postType"
                 value="offer" checked={postType === 'offer'}
-                onChange={(e) => setPostType(e.target.value)}
+                onChange={(e) => setPostType(e.target.value as Post['postType'])}
               />
               Offer
             </label>
@@ -72,7 +87,7 @@ export default function CreatePost() {
                 <input type="radio" name="category"
                   value="general"
                   checked={category === 'general'}
-                  onChange={(e) => setCategory(e.target.value)}
+                  onChange={(e) => setCategory(e.target.value as Post['category'])}
                 />
                 General
               </label>
@@ -80,7 +95,7 @@ export default function CreatePost() {
                 <input type="radio" name="category"
                   value="housing"
                   checked={category === 'housing'}
-                  onChange={(e) => setCategory(e.target.value)}
+                  onChange={(e) => setCategory(e.target.value as Post['category'])}
                 />
                 Housing
               </label>
@@ -88,7 +103,7 @@ export default function CreatePost() {
                 <input type="radio" name="category"
                   value="tutoring"
                   checked={category === 'tutoring'}
-                  onChange={(e) => setCategory(e.target.value)}
+                  onChange={(e) => setCategory(e.target.value as Post['category'])}
                 />
                 Tutoring
               </label>
@@ -96,7 +111,7 @@ export default function CreatePost() {
                 <input type="radio" name="category"
                   value="lend-borrow"
                   checked={category === 'lend-borrow'}
-                  onChange={(e) => setCategory(e.target.value)}
+                  onChange={(e) => setCategory(e.target.value as Post['category'])}
                 />
                 Lend/Borrow
               </label>
@@ -118,6 +133,7 @@ export default function CreatePost() {
             <input type="date" id="availability"
               value={availability}
               onChange={(e) => setAvailability(e.target.value)}
+              min={new Date().toISOString().split('T')[0]}
               required
             />
           </div>
@@ -134,7 +150,7 @@ export default function CreatePost() {
         </section>
 
         <div className="button-group">
-          <button type="button" className="cancel-btn" onClick={() => navigate('/Account/profile')}>Cancel</button>
+          <button type="button" className="cancel-btn" onClick={() => navigate('/my-posts')}>Cancel</button>
           <button type="submit" className="submit-btn">Post Now</button>
         </div>
       </form>

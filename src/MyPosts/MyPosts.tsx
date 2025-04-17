@@ -1,23 +1,107 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import * as client from '../Posts/client';
+import { Post, PostFilters } from '../Posts/client';
 import './MyPosts.css';
 
-export default function MyPosts() {
-  const [sort, setSort] = useState('latest');
-  const [filters, setFilters] = useState({});
+interface FilterState {
+  postType?: {
+    'My Requests': boolean;
+    'My Offer': boolean;
+  };
+  category?: {
+    'General': boolean;
+    'Tutoring': boolean;
+    'Housing': boolean;
+    'Borrow/Lend': boolean;
+  };
+  location?: {
+    'Snell Library': boolean;
+    'Curry Student Center': boolean;
+    'International Village': boolean;
+    'East Village': boolean;
+  };
+  dateRange?: {
+    'All': boolean;
+    'Last Hour': boolean;
+    'Last 24 Hours': boolean;
+    'Last 7 Days': boolean;
+    'Last 30 Days': boolean;
+  };
+}
 
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSort(e.target.value);
+export default function MyPosts() {
+  const navigate = useNavigate();
+  const [sort, setSort] = useState<'latest' | 'oldest'>('latest');
+  const [filterState, setFilterState] = useState<FilterState>({});
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadPosts();
+  }, [sort]);
+
+  const loadPosts = async () => {
+    try {
+      setLoading(true);
+      // Convert filter state to API filters
+      const apiFilters: PostFilters = {
+        sort,
+        postType: filterState.postType?.['My Requests'] ? 'request' : 
+                 filterState.postType?.['My Offer'] ? 'offer' : undefined,
+        category: filterState.category?.['General'] ? 'general' :
+                 filterState.category?.['Housing'] ? 'housing' :
+                 filterState.category?.['Tutoring'] ? 'tutoring' :
+                 filterState.category?.['Borrow/Lend'] ? 'lend-borrow' : undefined,
+        location: Object.entries(filterState.location || {}).find(([_, value]) => value)?.[0],
+        dateRange: filterState.dateRange?.['Last Hour'] ? 1 :
+                  filterState.dateRange?.['Last 24 Hours'] ? 24 :
+                  filterState.dateRange?.['Last 7 Days'] ? 168 :
+                  filterState.dateRange?.['Last 30 Days'] ? 720 : undefined
+      };
+      
+      const data = await client.findMyPosts();
+      setPosts(data);
+    } catch (error: any) {
+      console.error("Error loading posts:", error);
+      setError(error.response?.data?.message || 'Error loading posts');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCheckboxChange = (category: string, value: string) => {
-    setFilters(prev => ({
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSort(e.target.value as 'latest' | 'oldest');
+  };
+
+  const handleCheckboxChange = (category: keyof FilterState, value: string) => {
+    setFilterState(prev => ({
       ...prev,
       [category]: {
         ...(prev[category] || {}),
-        [value]: !prev[category]?.[value]
+        [value]: !(prev[category] as Record<string, boolean>)?.[value]
       }
     }));
   };
+
+  const handleComplete = async (postId: string) => {
+    try {
+      await client.markPostAsCompleted(postId);
+      loadPosts(); // Reload posts to get updated data
+    } catch (error: any) {
+      console.error("Error completing post:", error);
+      setError(error.response?.data?.message || 'Error completing post');
+    }
+  };
+
+  const handleViewDetails = (postId: string) => {
+    navigate(`/posts/${postId}`);
+  };
+
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
 
   return (
     <>
@@ -36,64 +120,59 @@ export default function MyPosts() {
           </div>
         </div>
 
+        {error && <div className="error-message">{error}</div>}
+
         <div className="posts-content">
           <div className="filters-sidebar">
             <div className="filter-section">
               <h4>General</h4>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('General', 'My Requests')} /> My Requests</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('General', 'My Offer')} /> My Offer</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('postType', 'My Requests')} /> My Requests</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('postType', 'My Offer')} /> My Offer</label>
             </div>
             <div className="filter-section">
               <h4>Category</h4>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('Category', 'General')} /> General</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('Category', 'Tutoring')} /> Tutoring</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('Category', 'Housing')} /> Housing</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('Category', 'Borrow/Lend')} /> Borrow/Lend</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('category', 'General')} /> General</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('category', 'Tutoring')} /> Tutoring</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('category', 'Housing')} /> Housing</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('category', 'Borrow/Lend')} /> Borrow/Lend</label>
             </div>
             <div className="filter-section">
               <h4>Location</h4>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('Location', 'Snell Library')} /> Snell Library</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('Location', 'Curry Student Center')} /> Curry Student Center</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('Location', 'International Village')} /> International Village</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('Location', 'East Village')} /> East Village</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('location', 'Snell Library')} /> Snell Library</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('location', 'Curry Student Center')} /> Curry Student Center</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('location', 'International Village')} /> International Village</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('location', 'East Village')} /> East Village</label>
             </div>
             <div className="filter-section">
               <h4>Date Posted</h4>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('Date Posted', 'All')} /> All</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('Date Posted', 'Last Hour')} /> Last Hour</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('Date Posted', 'Last 24 Hours')} /> Last 24 Hours</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('Date Posted', 'Last 7 Days')} /> Last 7 Days</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('Date Posted', 'Last 30 Days')} /> Last 30 Days</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('dateRange', 'All')} /> All</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('dateRange', 'Last Hour')} /> Last Hour</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('dateRange', 'Last 24 Hours')} /> Last 24 Hours</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('dateRange', 'Last 7 Days')} /> Last 7 Days</label>
+              <label><input type="checkbox" onChange={() => handleCheckboxChange('dateRange', 'Last 30 Days')} /> Last 30 Days</label>
             </div>
           </div>
 
           <div className="posts-list">
-            <div className="post-item">
-              <h3>Need a TI-84 Calculator for Finals? (Active – Borrow/Lend)</h3>
-              <p>📍 Snell Library | 📅 Posted on March 12, 2025</p>
-              <button className="details-btn">View Details</button>
-              <button className="complete-btn">Mark as Completed</button>
-            </div>
+            {posts.map(post => (
+              <div key={post._id} className={`post-item ${post.isCompleted ? 'completed' : ''}`}>
+                <h3>{post.title} ({post.status} – {post.category})</h3>
+                <p>📍 {post.location} | 📅 Posted on {new Date(post.createdAt).toLocaleDateString()}</p>
+                <button className="details-btn" onClick={() => handleViewDetails(post._id!)}>View Details</button>
+                {!post.isCompleted ? (
+                  <button className="complete-btn" onClick={() => handleComplete(post._id!)}>Mark as Completed</button>
+                ) : (
+                  <button className="completed-btn" disabled>Completed</button>
+                )}
+              </div>
+            ))}
 
-            <div className="post-item">
-              <h3>Looking for a Roommate Near Campus! (Active – Housing)</h3>
-              <p>📍 Fenway, Boston | 📅 Posted on March 10, 2025</p>
-              <button className="details-btn">View Details</button>
-              <button className="complete-btn">Mark as Completed</button>
-            </div>
-
-            <div className="post-item completed">
-              <h3>Physics 2 Textbook Available to Borrow (Completed – Borrow/Lend)</h3>
-              <p>📅 Borrowed by Alex J. on Feb 28, 2025</p>
-              <button className="details-btn">View Details</button>
-              <button className="completed-btn" disabled>Completed</button>
-            </div>
-
-            <div className="pagination">
-              <button className="page-btn active">1</button>
-              <button className="page-btn">2</button>
-              <button className="next-btn">Next ❯</button>
-            </div>
+            {posts.length === 0 && (
+              <div className="no-posts">
+                <p>No posts found. Create your first post!</p>
+                <button onClick={() => navigate('/create-post')} className="create-post-btn">Create Post</button>
+              </div>
+            )}
           </div>
         </div>
       </div>

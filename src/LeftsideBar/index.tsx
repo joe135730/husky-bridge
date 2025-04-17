@@ -43,7 +43,7 @@ const LeftSideBar = ({ onClose }: { onClose: () => void }) => {
           </Link>
         </li>
         <li>
-          <Link to="/all-my-posts" onClick={onClose}>
+          <Link to="/my-posts" onClick={onClose}>
             <FontAwesomeIcon icon={faClipboard} /> My Post
           </Link>
         </li>

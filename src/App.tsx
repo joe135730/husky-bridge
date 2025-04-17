@@ -45,7 +45,7 @@ function AppContent() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/Account/*" element={<AccountRoutes />} />
           <Route path="/my-team" element={<MyTeam />} />
-          <Route path="/all-my-posts" element={<MyPosts />} />
+          <Route path="/my-posts" element={<MyPosts />} />
           <Route path="/create-post" element={<CreatePost />} />
           <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/messages" element={<Chat />} />
