@@ -32,3 +32,14 @@
 .save-btn:hover {
     background-color: #333;
 }
+
+.profile-form input.error {
+    border-color: #ff0000;
+}
+
+.error-message {
+    color: #ff0000;
+    font-size: 0.875rem;
+    margin-top: 4px;
+    display: block;
+}
