@@ -1,35 +1,51 @@
-/* src/Components/LeftSideBar/LeftSideBar.css */
+/* src/LeftsideBar/LeftSideBar.css */
 .left-sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 250px;
-    height: 100%;
-    background-color: black;
-    color: white;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-  }
-  
-  .left-sidebar ul {
-    list-style: none;
-    padding: 0;
-    font-family: 'Times New Roman', sans-serif; /* Set font to Calibri */
-    font-size: 25px; /* Adjust font size as needed */
-  }
-  
-  .left-sidebar li {
-    margin: 15px 0;
-  }
-  
-  .close-button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px; /* Increase size of close button */
-    cursor: pointer;
-    position: absolute; /* Position it absolutely */
-    top: 20px; /* Distance from the top */
-    right: 20px; /* Distance from the right */
-  }
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 250px;
+  height: 100%;
+  background-color: black;
+  color: white;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.left-sidebar ul {
+  list-style: none;
+  padding: 0;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 25px;
+}
+
+.left-sidebar li {
+  margin: 15px 0;
+}
+
+.left-sidebar a {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.left-sidebar a:hover {
+  color: red;
+}
+
+.left-sidebar svg {
+  margin-right: 10px; /* Space between icon and text */
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
