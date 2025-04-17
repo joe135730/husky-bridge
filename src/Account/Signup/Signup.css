@@ -26,86 +26,110 @@
 .signup-container {
     background: white;
     border-radius: 10px;
-    padding: 2rem;
+    padding: 2.5rem 2rem !important;
     width: 100%;
-    max-width: 400px;
+    max-width: 450px !important;
     margin: 2rem auto;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
 }
 
 .signup-container h1 {
     margin: 0 0 0.5rem 0;
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-weight: bold;
 }
 
 .signup-subtitle {
     color: #666;
     margin-bottom: 2rem;
+    font-size: 1.1rem;
 }
 
-.form-group {
+.form-control {
+    padding: 1rem !important;
+    font-size: 1.1rem !important;
+    border-radius: 8px !important;
+    border: 1px solid #ddd !important;
+    margin-bottom: 1rem !important;
+}
+
+.form-control::placeholder {
+    color: #666 !important;
+}
+
+.form-control:focus {
+    box-shadow: none !important;
+    border-color: #0d6efd !important;
+}
+
+.password-requirements {
+    color: #666;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+    line-height: 1.2;
     margin-bottom: 1rem;
-}
-
-.form-input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    box-sizing: border-box;
 }
 
 .role-selection {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
     margin: 1.5rem 0;
 }
 
 .role-option {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem;
+    padding: 1rem !important;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 8px !important;
     cursor: pointer;
+    background: white !important;
+}
+
+.role-option:hover {
+    background-color: #f8f9fa !important;
 }
 
 .role-option input[type="radio"] {
-    width: 18px;
-    height: 18px;
-    margin: 0;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px !important;
     cursor: pointer;
 }
 
-.role-option span {
-    font-size: 1rem;
+.role-option label {
+    font-size: 1.1rem;
     color: #333;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
 }
 
 .signup-submit-btn {
-    width: 100%;
-    padding: 0.75rem;
-    background: black;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-bottom: 1rem;
+    display: block !important;
+    width: 100% !important;
+    background: black !important;
+    color: white !important;
+    border: none !important;
+    padding: 1rem !important;
+    font-size: 1.1rem !important;
+    margin: 1.5rem 0 0.5rem !important;
+    border-radius: 50px !important;
+    text-align: center !important;
+    transition: background-color 0.2s ease !important;
 }
 
 .signup-submit-btn:hover {
-    background: #333;
+    background: #333 !important;
 }
 
 .login-prompt {
     text-align: center;
-    margin-bottom: 1rem;
+    margin: 0.5rem 0;
     color: #666;
+    font-size: 1rem;
 }
 
 .login-link {
@@ -115,17 +139,39 @@
 }
 
 .back-home-btn {
-    display: block;
+    display: inline-block;
     width: 100%;
-    padding: 0.75rem;
-    background: #666;
+    padding: 1rem;
+    background: #808080;
     color: white;
     text-align: center;
     text-decoration: none;
-    border-radius: 5px;
-    margin-bottom: 1rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+    margin-top: 0.5rem;
 }
 
 .back-home-btn:hover {
-    background: #555;
-} 
+    background: #666;
+    color: white;
+    text-decoration: none;
+}
+
+.form-input.error {
+    border-color: #ff4d4f;
+}
+
+.error-message {
+    color: #ff4d4f;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Add a form container to control width */
+.signup-form {
+    max-width: 100%;
+    margin: 0 auto;
+}
