@@ -23,12 +23,14 @@
     gap: 2rem;
     flex: 1;
     max-width: 900px;
-    min-width: 0; /* Allow shrinking below min-content */
+    min-width: 0;
+    /* Allow shrinking below min-content */
 }
 
 .navbar-brand {
     white-space: nowrap;
-    flex-shrink: 0; /* Prevent brand from shrinking */
+    flex-shrink: 0;
+    /* Prevent brand from shrinking */
 }
 
 .navbar-brand .nav-link {
@@ -42,7 +44,8 @@
 
 .navbar-search {
     flex: 1;
-    min-width: 200px; /* Minimum width for usability */
+    min-width: 200px;
+    /* Minimum width for usability */
     max-width: 600px;
     width: 100%;
 }
@@ -183,4 +186,24 @@
         width: auto;
         margin: 0;
     }
-} 
+}
+
+.sidebar-toggle {
+    background-color: black;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    /* Space between button and title */
+}
+
+.strip {
+    display: block;
+    width: 25px;
+    /* Width of the strips */
+    height: 3px;
+    /* Height of the strips */
+    background-color: white;
+    /* Color of the strips */
+    margin: 4px 0;
+    /* Space between strips */
+}
