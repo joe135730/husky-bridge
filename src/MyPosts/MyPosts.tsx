@@ -96,7 +96,7 @@ export default function MyPosts() {
   };
 
   const handleViewDetails = (postId: string) => {
-    navigate(`/posts/${postId}`);
+    navigate(`/post/${postId}`);
   };
 
   if (loading) {
