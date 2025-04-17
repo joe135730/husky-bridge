@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './EditProfile.css';
 
 export default function EditProfile() {
+    const navigate = useNavigate();
     const [fullName, setFullName] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -64,7 +66,7 @@ export default function EditProfile() {
                         </select>
 
                         <div className="form-actions">
-                            <button className="cancel-btn" onClick={() => navigate('/profile')}>Cancel</button>
+                            <button className="cancel-btn" onClick={() => navigate('/Account/profile')}>Cancel</button>
                             <button className="save-btn" onClick={handleSubmit}>Save Changes</button>
                         </div>
                     </div>

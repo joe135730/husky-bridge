@@ -33,7 +33,7 @@ const LeftSideBar = ({ onClose }: { onClose: () => void }) => {
           </Link>
         </li>
         <li>
-          <Link to="/my-profile" onClick={onClose}>
+          <Link to="/Account/profile" onClick={onClose}>
             <FontAwesomeIcon icon={faUser} /> Profile
           </Link>
         </li>

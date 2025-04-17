@@ -19,7 +19,8 @@ import './App.css'
 function AppContent() {
   const location = useLocation();
   const dispatch = useDispatch();
-  const isAuthPage = location.pathname.startsWith('/Account/');
+  const isAuthPage = location.pathname.startsWith('/Account/') && 
+                    !location.pathname.includes('/Account/profile');
 
   useEffect(() => {
     const checkLoggedIn = async () => {
@@ -48,7 +49,6 @@ function AppContent() {
           <Route path="/create-post" element={<CreatePost />} />
           <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/messages" element={<Chat />} />
-          <Route path="/my-profile" element={<Profile />} />
         </Routes>
       </div>
         <hr />
