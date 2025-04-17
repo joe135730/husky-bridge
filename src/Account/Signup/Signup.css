@@ -26,12 +26,74 @@
 .signup-container {
     background: white;
     border-radius: 10px;
-    padding: 2.5rem 2rem !important;
+    padding: 2.5rem 2rem;
     width: 100%;
     max-width: 450px !important;
     margin: 2rem auto;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
+}
+
+.signup-container h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+button[type="submit"]:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 .signup-container h1 {
@@ -64,12 +126,17 @@
 }
 
 .password-requirements {
-    color: #666;
+    color: #333;
     font-size: 0.75rem;
     margin-top: 0.25rem;
     display: block;
     line-height: 1.2;
     margin-bottom: 1rem;
+    transition: color 0.2s ease;
+}
+
+.password-requirements.invalid {
+    color: #dc3545;
 }
 
 .role-selection {
@@ -163,15 +230,72 @@
     border-color: #ff4d4f;
 }
 
-.error-message {
-    color: #ff4d4f;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-    display: block;
-}
-
 /* Add a form container to control width */
 .signup-form {
     max-width: 100%;
     margin: 0 auto;
+}
+
+.password-field-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.info-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #666;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    z-index: 2;
+}
+
+.password-field {
+    width: 100%;
+    padding-right: 40px !important;
+}
+
+.password-tooltip {
+    position: absolute;
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    width: 50%;
+    z-index: 1000;
+    right: 0;
+    top: 0;
+    transform: translateY(-100%);
+    color: #333;
+    border: 1px solid #ddd;
+    display: none;
+    margin-top: -5px;
+}
+
+.password-tooltip.show {
+    display: block;
+}
+
+/* Remove the hover and focus triggers */
+.password-field:focus + .password-tooltip,
+.password-field:hover + .password-tooltip {
+    display: none;
+}
+
+.form-input.error {
+    border-color: #dc3545;
 }

@@ -3,14 +3,16 @@ import { useState } from "react";
 import neulogo from "../../assets/neuLogo.png"
 import "./Signup.css";
 import { Button, Form } from "react-bootstrap";
+import { useNavigate } from 'react-router-dom';
+import { signup, User } from '../client';
 
 export default function Signup() {
-    const [formData, setFormData] = useState({
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState<User>({
         firstName: '',
         lastName: '',
         email: '',
         password: '',
-        role: 'undergrad'
     });
 
     const [errors, setErrors] = useState({
@@ -27,6 +29,8 @@ export default function Signup() {
         password: false
     });
 
+    const [showPasswordTooltip, setShowPasswordTooltip] = useState(false);
+
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -37,6 +41,11 @@ export default function Signup() {
         return passwordRegex.test(password);
     };
 
+    const handleInfoClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setShowPasswordTooltip(!showPasswordTooltip);
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -44,11 +53,21 @@ export default function Signup() {
             [name]: value
         }));
 
-        // Clear error when user starts typing
-        setErrors(prev => ({
-            ...prev,
-            [name]: ''
-        }));
+        // For password field, check validation
+        if (name === 'password') {
+            if (validatePassword(value)) {
+                setErrors(prev => ({
+                    ...prev,
+                    password: ''
+                }));
+            }
+        } else {
+            // Clear error for other fields
+            setErrors(prev => ({
+                ...prev,
+                [name]: ''
+            }));
+        }
     };
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -78,7 +97,7 @@ export default function Signup() {
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
         // Validate all fields
@@ -99,8 +118,15 @@ export default function Signup() {
 
         // Check if there are any errors
         if (Object.values(newErrors).every(error => !error)) {
-            // Proceed with form submission
-            console.log('Form submitted:', formData);
+            try {
+                await signup(formData);
+                navigate('/Account/login');
+            } catch (err: any) {
+                setErrors(prev => ({
+                    ...prev,
+                    email: err.response?.data?.message || 'Signup failed. Please try again.'
+                }));
+            }
         }
     };
 
@@ -151,19 +177,28 @@ export default function Signup() {
                         {touched.email && errors.email && <span className="error-message">{errors.email}</span>}
                     </div>
                     <div className="form-group">
-                        <input 
-                            type="password" 
-                            name="password"
-                            placeholder="Create Password"
-                            className={`form-input ${touched.password && errors.password ? 'error' : ''}`}
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                        />
-                        <span className="password-requirements">
-                            Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*()_-+={};"|\,.&lt;&gt;/?)
-                        </span>
+                        <div className="password-field-container">
+                            <input 
+                                type="password" 
+                                name="password"
+                                placeholder="Create Password"
+                                className={`form-input password-field ${touched.password && errors.password ? 'error' : ''}`}
+                                value={formData.password}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                            />
+                            <button 
+                                className="info-button"
+                                onClick={handleInfoClick}
+                                type="button"
+                            >
+                                ℹ️
+                            </button>
+                        </div>
                         {touched.password && errors.password && <span className="error-message">{errors.password}</span>}
+                        <div className={`password-tooltip ${showPasswordTooltip ? 'show' : ''}`}>
+                            Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*()_-+={};"|\,.&lt;&gt;/?)
+                        </div>
                     </div>
                     <div className="form-group role-selection">
                         <label className="role-option">

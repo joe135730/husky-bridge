@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Navbar from '../navbar/navbar';
+import Navbar from '../../navbar/navbar';
 import './Profile.css';
 import { useNavigate } from 'react-router-dom';
 
