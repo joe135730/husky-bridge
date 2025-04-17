@@ -12,6 +12,7 @@ import MyPosts from "./MyPosts/MyPosts";
 import CreatePost from "./CreatePost/CreatePost";
 import PostDetail from "./PostDetail/PostDetail";
 import Chat from "./Chat/Chat";
+import Profile from "./Account/Profile/Profile";
 
 import './App.css'
 
@@ -47,6 +48,7 @@ function AppContent() {
           <Route path="/create-post" element={<CreatePost />} />
           <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/messages" element={<Chat />} />
+          <Route path="/my-profile" element={<Profile />} />
         </Routes>
       </div>
         <hr />
