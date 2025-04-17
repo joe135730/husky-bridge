@@ -1,22 +1,41 @@
 import { Route, Routes, BrowserRouter, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import * as accountClient from "./Account/client";
+import { setCurrentUser } from "./store/account-reducer.ts";
 import LandingPage from './LandingPage';
-import Login from './Account/Login';
-import Signup from './Account/Signup';
+import AccountRoutes from './Account';
 import Navbar from './navbar/navbar';
 import Footer from './Footer';
 import MyTeam from "./MyTeam";
-import Profile from "./Profile/Profile"; 
-import EditProfile from "./Profile/EditProfile"; 
 import MyPosts from "./MyPosts/MyPosts";
 import CreatePost from "./CreatePost/CreatePost";
 import PostDetail from "./PostDetail/PostDetail";
 import Chat from "./Chat/Chat";
+import Profile from "./Account/Profile/Profile";
 
 import './App.css'
 
 function AppContent() {
   const location = useLocation();
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
+  const dispatch = useDispatch();
+  const isAuthPage = location.pathname.startsWith('/Account/') && 
+                    !location.pathname.includes('/Account/profile');
+
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      try {
+        // Call the profile endpoint to check if user is logged in
+        const currentUser = await accountClient.profile();
+        if (currentUser) {
+          dispatch(setCurrentUser(currentUser));
+        }
+      } catch (error) {
+        console.log("Not logged in");
+      }
+    };
+    checkLoggedIn();
+  }, [dispatch]);
 
   return (
     <div className="app-container">
@@ -24,11 +43,8 @@ function AppContent() {
       <div className={isAuthPage ? "page-content" : "content-container page-content"}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/Account/*" element={<AccountRoutes />} />
           <Route path="/my-team" element={<MyTeam />} />
-          <Route path="/my-profile" element={<Profile />} />
-          <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/all-my-posts" element={<MyPosts />} />
           <Route path="/create-post" element={<CreatePost />} />
           <Route path="/post/:id" element={<PostDetail />} />
@@ -37,7 +53,6 @@ function AppContent() {
       </div>
         <hr />
         <Footer />
-
     </div>
   );
 }

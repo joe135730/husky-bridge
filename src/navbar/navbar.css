@@ -103,8 +103,23 @@
     transition: background-color 0.2s ease;
 }
 
-.login-button:hover {
+.add-a-post-button:hover {
     background-color: #cc0000;
+}
+
+.add-a-post-button {
+    background-color: #c30000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+    background-color: #a00000;
 }
 
 /* Media query for larger screens with potential overlap */

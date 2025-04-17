@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar/navbar';
 import Footer from "../Footer/index";
 import './CreatePost.css';
 
 export default function CreatePost() {
+  const navigate = useNavigate();
   const [postType, setPostType] = useState('request');
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('general');
@@ -132,7 +134,7 @@ export default function CreatePost() {
         </section>
 
         <div className="button-group">
-          <button type="button" className="cancel-btn">Cancel</button>
+          <button type="button" className="cancel-btn" onClick={() => navigate('/Account/profile')}>Cancel</button>
           <button type="submit" className="submit-btn">Post Now</button>
         </div>
       </form>

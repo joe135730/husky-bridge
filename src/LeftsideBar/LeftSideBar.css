@@ -49,3 +49,21 @@
   top: 20px;
   right: 20px;
 }
+
+.logout-link {
+  background: none;
+  border: none;
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+  cursor: pointer;
+  font-size: inherit;
+}
+
+.logout-link:hover {
+  color: red;
+}
