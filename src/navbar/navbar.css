@@ -103,11 +103,11 @@
     transition: background-color 0.2s ease;
 }
 
-.login-button:hover {
+.add-a-post-button:hover {
     background-color: #cc0000;
 }
 
-.logout-button {
+.add-a-post-button {
     background-color: #c30000;
     color: white;
     border: none;

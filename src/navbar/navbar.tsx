@@ -76,19 +76,9 @@ export default function Navbar() {
         
         {currentUser ? (
           <>
-            <Nav.Item className="nav-link-item">
-              <Nav.Link
-                as={Link}
-                to="/Account/profile"
-                id="profile-page"
-                active={pathname.includes("profile")}
-              >
-                {currentUser.firstName || "Profile"}
-              </Nav.Link>
-            </Nav.Item>
             <Nav.Item>
-              <button className="logout-button" onClick={handleSignout}>
-                Logout
+              <button className="add-a-post-button">
+                Add a Post +
               </button>
             </Nav.Item>
           </>
