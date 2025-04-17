@@ -77,7 +77,7 @@ export default function Navbar() {
         {currentUser ? (
           <>
             <Nav.Item>
-              <button className="add-a-post-button">
+              <button className="add-a-post-button" onClick={() => navigate('/create-post')}>
                 Add a Post +
               </button>
             </Nav.Item>
