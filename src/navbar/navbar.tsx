@@ -57,7 +57,7 @@ export default function Navbar() {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link as={Link} to="/login" id="login-page">
+          <Nav.Link as={Link} to="/Account/login" id="login-page">
             <button className="login-button">
               Login
             </button>

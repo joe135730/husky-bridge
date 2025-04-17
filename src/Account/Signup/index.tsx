@@ -189,7 +189,7 @@ export default function Signup() {
                         Create an account
                     </Button>
                     <div className="login-prompt">
-                        Already a member? <Link to="/login" className="login-link">Login</Link>
+                        Already a member? <Link to="/Account/login" className="login-link">Login</Link>
                     </div>
                     <Link to="/" className="back-home-btn">Back to Home</Link>
                 </Form>

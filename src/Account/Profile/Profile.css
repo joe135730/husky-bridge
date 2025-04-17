@@ -1,0 +1,83 @@
+.profile-container {
+    padding: 5rem 2rem;
+    background-color: #f5f6f8;
+    min-height: calc(100vh - 80px);
+}
+
+.profile-header h2 {
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    max-width: 800px;
+    margin: auto;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.profile-avatar {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+}
+
+.profile-details {
+    flex: 1;
+    margin-left: 1.5rem;
+}
+
+.profile-details h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.profile-details p {
+    color: #777;
+    margin-top: 0.25rem;
+}
+
+.edit-btn {
+    padding: 0.5rem 1rem;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.profile-form label {
+    color: #555;
+    font-weight: 500;
+}
+
+.profile-form input,
+.profile-form select {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    color: #333;
+}
+
+.profile-form input:focus,
+.profile-form select:focus {
+    outline: none;
+    border-color: #aaa;
+}

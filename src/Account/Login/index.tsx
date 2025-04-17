@@ -32,7 +32,7 @@ export default function Login() {
                     </div>
                     <button type="submit" className="login-submit-btn">Log in</button>
                     <div className="signup-prompt">
-                        Don't have an account? <Link to="/signup" className="signup-link">Sign up</Link>
+                        Don't have an account? <Link to="/Account/signup" className="signup-link">Sign up</Link>
                     </div>
                     <Link to="/" className="back-home-btn">Back to Home</Link>
                 </form>
