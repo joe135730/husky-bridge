@@ -65,27 +65,19 @@ export default function Chat() {
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-<<<<<<< Updated upstream
+        console.log("Trying to get the contact list...");
         const res = await fetch("/api/users", { credentials: "include" });
+        console.log("API response status:", res.status);
         const data = await res.json();
-        const contactList: Contact[] = data.map((user: any) => ({
-          id: user._id,
-          name: user.username || user.email || "Unknown",
-=======
-        console.log("嘗試獲取聯絡人列表...");
-        const res = await fetch("/api/users", { credentials: "include" });
-        console.log("API 回應狀態:", res.status);
-        const data = await res.json();
-        console.log("收到的用戶資料:", data);
-        
-        // 確保資料是陣列格式
+        console.log("Received user information:", data);
+
+        // Make sure the data is in array format
         const userArray = Array.isArray(data) ? data : [];
-        console.log("處理後的用戶陣列:", userArray);
-        
+        console.log("Processed user array:", userArray);
+
         const contactList: Contact[] = userArray.map((user: any) => ({
           id: user._id,
           name: user.firstName || user.username || user.email || "Unknown",
->>>>>>> Stashed changes
           lastMessage: '',
           isOnline: false
         }));
