@@ -62,6 +62,15 @@ export default function Navbar() {
           >
             View All Request
           </Nav.Link>
+          {/* TEMPORARY LINK FOR TESTING - DELETE LATER */}
+          <Nav.Link
+            as={Link}
+            to="/all-posts"
+            id="all-posts-page"
+            active={pathname.includes("all-posts")}
+          >
+            All Posts (Test)
+          </Nav.Link>
         </Nav.Item>
         <Nav.Item className="nav-link-item">
           <Nav.Link

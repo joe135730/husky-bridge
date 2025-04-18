@@ -47,7 +47,7 @@ export const createPost = async (post: Omit<Post, '_id' | 'userId' | 'createdAt'
     return response.data;
 };
 
-// Get all posts
+// TEMPORARY FUNCTION FOR TESTING - DELETE LATER
 export const findAllPosts = async () => {
     const response = await axiosWithCredentials.get(POSTS_API);
     return response.data;

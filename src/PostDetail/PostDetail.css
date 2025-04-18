@@ -130,7 +130,8 @@
 .back-btn,
 .edit-post,
 .manage-requests,
-.message-button {
+.message-button,
+.accept-btn {
   background-color: #2E75B6;
   width: 300px;
   text-align: center;
@@ -139,6 +140,16 @@
 .delete-post,
 .report-post {
   background-color: #E74C3C;
+  width: 300px;
+}
+
+.accept-btn {
+  background-color: #28a745;
+  margin-bottom: 8px;
+}
+
+.accept-btn:hover {
+  background-color: #218838;
 }
 
 .message {
