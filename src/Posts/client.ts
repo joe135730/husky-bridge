@@ -24,37 +24,31 @@ export interface Post {
     status: 'active' | 'pending' | 'completed';
 }
 
-// Create a new post
 export const createPost = async (post: Omit<Post, '_id' | 'userId' | 'isCompleted' | 'createdAt' | 'updatedAt' | 'acceptedBy' | 'status'>) => {
     const response = await axiosWithCredentials.post(POSTS_API, post);
     return response.data;
 };
 
-// Get all posts
 export const findAllPosts = async () => {
     const response = await axiosWithCredentials.get(POSTS_API);
     return response.data;
 };
 
-// Get current user's posts
 export const findMyPosts = async () => {
     const response = await axiosWithCredentials.get(`${POSTS_API}/user`);
     return response.data;
 };
 
-// Get post by ID
 export const findPostById = async (postId: string) => {
     const response = await axiosWithCredentials.get(`${POSTS_API}/${postId}`);
     return response.data;
 };
 
-// Update post
 export const updatePost = async (postId: string, post: Partial<Post>) => {
     const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}`, post);
     return response.data;
 };
 
-// Delete post
 export const deletePost = async (postId: string) => {
     const response = await axiosWithCredentials.delete(`${POSTS_API}/${postId}`);
     return response.data;
@@ -72,18 +66,37 @@ export const acceptPost = async (postId: string) => {
     return response.data;
 };
 
-// Find posts with filters
 export interface PostFilters {
     postType?: 'request' | 'offer';
     category?: 'general' | 'housing' | 'tutoring' | 'lend-borrow';
     location?: string;
     isCompleted?: boolean;
     status?: 'active' | 'pending' | 'completed';
-    dateRange?: number; // number of days to look back
+    dateRange?: number;
     sort?: 'latest' | 'oldest';
 }
 
 export const findPostsWithFilters = async (filters: PostFilters) => {
-    const response = await axiosWithCredentials.get(`${POSTS_API}/filter`, { params: filters });
-    return response.data;
+    try {
+        const params = new URLSearchParams();
+        
+        if (filters.postType) params.append('postType', filters.postType);
+        if (filters.category) params.append('category', filters.category);
+        if (filters.location) params.append('location', filters.location);
+        if (filters.isCompleted !== undefined) params.append('isCompleted', filters.isCompleted.toString());
+        if (filters.status) params.append('status', filters.status);
+        if (filters.dateRange) params.append('dateRange', filters.dateRange.toString());
+        if (filters.sort) params.append('sort', filters.sort);
+
+        const response = await axiosWithCredentials.get(`${POSTS_API}/filter`);
+        
+        if (!response.data) {
+            throw new Error('No data received from server');
+        }
+        
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching filtered posts:', error);
+        throw error;
+    }
 }; 
