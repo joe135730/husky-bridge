@@ -150,7 +150,6 @@ export default function CreatePost() {
         </section>
 
         <div className="button-group">
-          <button type="button" className="cancel-btn" onClick={() => navigate('/my-posts')}>Cancel</button>
           <button type="submit" className="submit-btn">Post Now</button>
         </div>
       </form>
