@@ -100,17 +100,37 @@ export default function Chat() {
         credentials: "include"
       });
       const data = await res.json();
-      setMessages(data.map((msg: any) => ({
+
+      const formattedMessages = data.map((msg: any) => ({
         id: msg._id,
         text: msg.message,
         sender: msg.senderId,
-        timestamp: new Date(msg.timestamp).toLocaleTimeString(),
+        timestamp: new Date(msg.timestamp).toLocaleString([], {
+          dateStyle: "medium",
+          timeStyle: "short"
+        }),
         isSentByMe: msg.senderId === currentUserId
-      })));
+      }));
+
+      setMessages(formattedMessages);
+
+      // 🟡 Set lastMessage in sidebar contact list
+      const lastMsg = formattedMessages.at(-1);
+      if (lastMsg) {
+        setContacts(prev =>
+          prev.map(c =>
+            c.id === contact.id
+              ? { ...c, lastMessage: `${lastMsg.text.slice(0, 30)} · ${lastMsg.timestamp}` }
+              : c
+          )
+        );
+      }
+
     } catch (err) {
       console.error("Error fetching messages:", err);
     }
   };
+
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,7 +182,7 @@ export default function Chat() {
               >
                 <div className="contact-info">
                   <h3>{contact.name}</h3>
-                  <p>{contact.lastMessage}</p>
+                  <p className="last-message-preview">{contact.lastMessage}</p>
                 </div>
               </div>
             ))}
