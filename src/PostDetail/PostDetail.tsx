@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StoreType } from '../store';
 import * as client from '../Posts/client';
-import { Post } from '../Posts/client';
+import type { Post } from '../Posts/client';
 import './PostDetail.css';
+import { findPostById, participateInPost, markPostComplete } from '../Posts/client';
 
 export default function PostDetail() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
-  const { currentUser } = useSelector((state: StoreType) => state.accountReducer);
+  const currentUser = useSelector((state: StoreType) => state.accountReducer.currentUser);
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [hasAccepted, setHasAccepted] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false);
 
   useEffect(() => {
     loadPost();
@@ -24,6 +27,14 @@ export default function PostDetail() {
       setLoading(true);
       const data = await client.findPostById(id);
       setPost(data);
+      
+      // Check if current user has already accepted this post
+      if (currentUser && data.participants.some((p: { userId: string }) => p.userId === currentUser._id)) {
+        setHasAccepted(true);
+      } else if (data.userRelationship === 'participant') {
+        // Also set hasAccepted if user is already a participant
+        setHasAccepted(true);
+      }
     } catch (error: any) {
       console.error("Error loading post:", error);
       setError(error.response?.data?.message || 'Error loading post');
@@ -33,16 +44,17 @@ export default function PostDetail() {
   };
 
   const handleBack = () => {
-    navigate(-1);
+    // If owner, go back to my posts, otherwise go back to all posts
+    if (post?.userRelationship === 'owner') {
+      navigate('/my-posts');
+    } else {
+      navigate('/all-posts');
+    }
   };
 
   const handleMessage = () => {
     // TODO: Implement messaging functionality
     console.log("Message button clicked");
-  };
-
-  const handleManageRequests = () => {
-    navigate(`/my-posts/${post?._id}/pending-offers`);
   };
 
   const handleEdit = () => {
@@ -53,9 +65,72 @@ export default function PostDetail() {
     navigate(`/delete-post/${post?._id}`);
   };
 
+  const handleManageRequests = () => {
+    navigate(`/my-posts/${post?._id}/pending-offers`);
+  };
+
+  const handleAccept = async () => {
+    try {
+      if (!currentUser) {
+        navigate('/Account/login');
+        return;
+      }
+      if (!post?._id) return;
+
+      setError(''); // Clear any previous errors
+      await client.participateInPost(post._id);
+      setHasAccepted(true);
+      await loadPost(); // Reload post to get updated status
+    } catch (error: any) {
+      console.error("Error accepting post:", error);
+      setError(error.response?.data?.message || 'Error accepting post');
+      // If the error is that we're already participating, still set hasAccepted
+      if (error.response?.status === 400 && error.response?.data?.message?.includes('Already participating')) {
+        setHasAccepted(true);
+      }
+    }
+  };
+
   const handleReport = () => {
     // TODO: Implement report functionality
     console.log("Report button clicked");
+  };
+
+  const handleMarkComplete = async () => {
+    try {
+      if (!post?._id) return;
+      setIsCompleting(true);
+      setError(null);
+
+      const updatedPost = await client.markPostComplete(post._id);
+      setPost(updatedPost);
+      
+      // Refresh the post data to get the latest status
+      await loadPost();
+    } catch (err: any) {
+      console.error('Error marking post as complete:', err);
+      setError(err.response?.data?.message || 'Failed to mark post as complete');
+    } finally {
+      setIsCompleting(false);
+    }
+  };
+
+  const showCompleteButton = () => {
+    if (!post || !currentUser) return false;
+    
+    // For owner
+    if (post.userRelationship === 'owner' && post.status === 'In Progress') {
+      return true;
+    }
+    
+    // For participant
+    const isParticipant = post.participants?.some(p => p.userId === currentUser._id);
+    if (isParticipant) {
+      const participant = post.participants.find(p => p.userId === currentUser._id);
+      return participant?.status === 'In Progress';
+    }
+    
+    return false;
   };
 
   if (loading) {
@@ -66,11 +141,42 @@ export default function PostDetail() {
     return <div className="error">Post not found</div>;
   }
 
+  const isOwner = post.userRelationship === 'owner';
+  const isParticipant = post.participants?.some(p => p.userId === currentUser?._id);
+  const showStatusBadge = isOwner || isParticipant;
+
+  // Get the status to display based on user relationship
+  const getDisplayStatus = () => {
+    if (isOwner) {
+      return post.status;
+    }
+    if (isParticipant && currentUser) {
+      const participant = post.participants.find(p => p.userId === currentUser._id);
+      return participant?.status || 'Pending';
+    }
+    return post.status;
+  };
+
+  const displayStatus = getDisplayStatus();
+
   return (
     <div className="post-detail-container">
-      <div className="status-badge">
-        {post.status}
-      </div>
+      {showStatusBadge && (
+        <>
+          {displayStatus === 'In Progress' && (
+            <div className="status-badge in-progress">In Progress</div>
+          )}
+          {displayStatus === 'Complete' && (
+            <div className="status-badge complete">Complete</div>
+          )}
+          {displayStatus === 'Pending' && (
+            <div className="status-badge pending">Pending</div>
+          )}
+          {displayStatus === 'Wait for Complete' && (
+            <div className="status-badge wait-for-complete">Wait for Complete</div>
+          )}
+        </>
+      )}
 
       <h1>{post.title}</h1>
       
@@ -113,17 +219,51 @@ export default function PostDetail() {
 
       <div className="action-buttons">
         <div className="action-buttons-left">
-          {post.userRelationship === 'owner' && post.status === 'Pending' && (
+          {isOwner && (
             <>
-              <button className="edit-post" onClick={handleEdit}>Edit Post</button>
-              <button className="delete-post" onClick={handleDelete}>Delete Post</button>
-              <button className="manage-requests" onClick={handleManageRequests}>Manage Requests</button>
+              {post.status !== 'Wait for Complete' ? (
+                <>
+                  <button className="edit-post" onClick={handleEdit}>Edit Post</button>
+                  <button className="delete-post" onClick={handleDelete}>Delete Post</button>
+                  <button className="manage-requests" onClick={handleManageRequests}>Manage Requests</button>
+                  <button className="back-btn" onClick={handleBack}>Back to My Posts</button>
+                  <button className="message-button" onClick={handleMessage}>Message</button>
+                </>
+              ) : (
+                <>
+                  <button className="back-btn" onClick={handleBack}>Back to My Posts</button>
+                  <button className="delete-post" onClick={handleDelete}>Delete Post</button>
+                  <button className="message-button" onClick={handleMessage}>Message</button>
+                </>
+              )}
             </>
           )}
-          <button className="back-btn" onClick={handleBack}>Back to My Posts</button>
-          <button className="message-button" onClick={handleMessage}>Message</button>
+          {!isOwner && (
+            <>
+              <button className="back-btn" onClick={handleBack}>Back to All Posts</button>
+              <button className="message-button" onClick={handleMessage}>Message</button>
+            </>
+          )}
         </div>
         <div className="action-buttons-right">
+          {!isOwner && !isParticipant && (
+            <button 
+              className={`accept-btn ${hasAccepted ? 'accepted' : ''}`} 
+              onClick={handleAccept}
+              disabled={hasAccepted}
+            >
+              Accept
+            </button>
+          )}
+          {showCompleteButton() && (
+            <button 
+              className="complete-btn"
+              onClick={handleMarkComplete}
+              disabled={isCompleting}
+            >
+              {isCompleting ? 'Marking as Complete...' : 'Mark as Complete'}
+            </button>
+          )}
           <button className="report-post" onClick={handleReport}>Report Post</button>
         </div>
       </div>

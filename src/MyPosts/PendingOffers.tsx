@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import * as client from '../Posts/client';
 import { Participant, Post } from '../Posts/client';
 import './MyPosts.css';
@@ -25,36 +25,46 @@ export default function PendingOffers() {
         client.findPostById(postId!),
         client.getPostParticipants(postId!)
       ]);
-      
       setPost(postData);
       setParticipants(participantsData);
     } catch (error: any) {
-      console.error("Error loading data:", error);
       setError(error.response?.data?.message || 'Error loading data');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleBack = () => {
+  const handleTitleClick = () => {
     navigate(`/post/${postId}`);
   };
 
   const handleSelectParticipant = async (participantId: string) => {
     try {
       if (!postId) return;
-      
       await client.selectParticipant(postId, participantId);
-      navigate(`/post/${postId}`); // Go back to post details
+      await loadPostAndParticipants();
     } catch (error: any) {
-      console.error("Error selecting participant:", error);
       setError(error.response?.data?.message || 'Error selecting participant');
     }
   };
 
   const handleMessage = (participantId: string) => {
     // TODO: Implement messaging functionality
-    console.log("Message button clicked for participant:", participantId);
+  };
+
+  const handleDecline = async (participantId: string) => {
+    // TODO: Implement decline functionality
+  };
+
+  const handleMarkComplete = async (participantId: string) => {
+    // TODO: Implement mark complete functionality
+  };
+
+  const getParticipantName = (participant: Participant) => {
+    if (participant.user?.firstName && participant.user?.lastName) {
+      return `${participant.user.firstName} ${participant.user.lastName}`;
+    }
+    return 'Unknown User';
   };
 
   if (loading) {
@@ -67,50 +77,92 @@ export default function PendingOffers() {
 
   return (
     <div className="pending-offers-container">
-      <div className="pending-offers-header">
-        <h2>Pending Requests for "{post.title}"</h2>
-        <button className="back-btn" onClick={handleBack}>Back to Post</button>
+      <div className="post-card">
+        <h2 className="post-card-title" onClick={handleTitleClick}>
+          {post.title}
+        </h2>
+        <div className="post-card-info">
+          <p>📍 {post.location}</p>
+          <p>Posted on {new Date(post.createdAt).toLocaleDateString()}</p>
+        </div>
       </div>
 
-      {error && <div className="error-message">{error}</div>}
+      <div className="participants-section">
+        <h3>Pending Requests</h3>
+        {error && <div className="error-message">{error}</div>}
 
-      <div className="participants-list">
-        {participants.length === 0 ? (
-          <div className="no-participants">
-            <p>No pending requests yet.</p>
-          </div>
-        ) : (
-          participants.map((participant) => (
-            <div key={participant.userId} className="participant-item">
-              <div className="participant-info">
-                <h3>{participant.user?.username || 'Unknown User'}</h3>
-                {participant.user?.firstName && participant.user?.lastName && (
-                  <p>{participant.user.firstName} {participant.user.lastName}</p>
-                )}
-                {participant.user?.email && (
-                  <p>{participant.user.email}</p>
-                )}
-                <p>Status: {participant.status}</p>
-              </div>
-              <div className="participant-actions">
-                {participant.status === 'Pending' && (
-                  <button 
-                    className="accept-btn" 
-                    onClick={() => handleSelectParticipant(participant.userId)}
-                  >
-                    Accept
-                  </button>
-                )}
-                <button 
-                  className="message-btn" 
-                  onClick={() => handleMessage(participant.userId)}
-                >
-                  Message
-                </button>
-              </div>
+        <div className="participants-list">
+          {participants.length === 0 ? (
+            <div className="no-participants">
+              <p>No pending requests yet.</p>
             </div>
-          ))
-        )}
+          ) : (
+            participants.map((participant) => {
+              const name = getParticipantName(participant);
+              const isAccepted = participant.status === 'In Progress';
+              
+              return (
+                <div key={participant.userId} className="participant-item">
+                  <div className="participant-info">
+                    <div className="participant-header">
+                      <h3>{name}</h3>
+                      {isAccepted && (
+                        <span id="pending-offer-status-badge">In Progress</span>
+                      )}
+                    </div>
+                    <p>Posted on {new Date(post.createdAt).toLocaleDateString()}</p>
+                  </div>
+                  
+                  <div className="participant-actions" id="pending-offer-actions">
+                    {participant.status === 'Pending' ? (
+                      <>
+                        <button 
+                          id="pending-offer-accept-button" 
+                          onClick={() => handleSelectParticipant(participant.userId)}
+                        >
+                          Accept
+                        </button>
+                        <button 
+                          id="pending-offer-message-button" 
+                          onClick={() => handleMessage(participant.userId)}
+                        >
+                          Message
+                        </button>
+                        <button 
+                          id="pending-offer-decline-button" 
+                          onClick={() => handleDecline(participant.userId)}
+                        >
+                          Decline
+                        </button>
+                      </>
+                    ) : isAccepted && (
+                      <>
+                        <button 
+                          id="pending-offer-mark-complete-button" 
+                          onClick={() => handleMarkComplete(participant.userId)}
+                        >
+                          Mark as Complete
+                        </button>
+                        <button 
+                          id="pending-offer-message-button" 
+                          onClick={() => handleMessage(participant.userId)}
+                        >
+                          Message
+                        </button>
+                        <button 
+                          id="pending-offer-decline-button" 
+                          onClick={() => handleDecline(participant.userId)}
+                        >
+                          Decline
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
     </div>
   );

@@ -14,10 +14,9 @@ export interface Participant {
     completedAt: Date | null;
     user?: {
         _id: string;
-        username: string;
-        firstName?: string;
-        lastName?: string;
-        email?: string;
+        firstName: string;
+        lastName: string;
+        email: string;
     };
 }
 
@@ -32,7 +31,7 @@ export interface Post {
     description: string;
     createdAt: Date;
     updatedAt: Date;
-    status: 'Pending' | 'In Progress' | 'Complete';
+    status: 'Pending' | 'In Progress' | 'Wait for Complete' | 'Complete';
     participants: Participant[];
     selectedParticipantId: string | null;
     ownerCompleted: boolean;
@@ -126,4 +125,13 @@ export interface PostFilters {
 export const findPostsWithFilters = async (filters: PostFilters) => {
     const response = await axiosWithCredentials.get(`${POSTS_API}/filter`, { params: filters });
     return response.data;
+};
+
+export const markPostComplete = async (postId: string): Promise<Post> => {
+    try {
+        const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/mark-complete`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 }; 

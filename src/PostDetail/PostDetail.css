@@ -25,14 +25,30 @@
   top: 26px;
   right: 0;
   display: inline-block;
-  padding: 4px 12px;
+  padding: 8px 16px;
   border-radius: 4px;
   font-size: 14px;
-  font-weight: normal;
-  background-color: #FFD700;
-  color: #333;
+  font-weight: 500;
+  color: white;
   width: 150px;
   text-align: center;
+  background-color: #FFC107; /* Default color for unspecified states */
+}
+
+.status-badge.in-progress {
+  background-color: #06B6D4 !important;
+}
+
+.status-badge.complete {
+  background-color: #4CAF50 !important;
+}
+
+.status-badge.pending {
+  background-color: #FFC107 !important;
+}
+
+.status-badge.wait-for-complete {
+  background-color: #9C27B0 !important;
 }
 
 .post-type {
@@ -110,7 +126,8 @@
 
 .action-buttons-right {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 8px;
   width: 300px;
 }
 
@@ -145,11 +162,20 @@
 
 .accept-btn {
   background-color: #28a745;
-  margin-bottom: 8px;
+  width: 300px;
 }
 
 .accept-btn:hover {
   background-color: #218838;
+}
+
+.accept-btn.accepted {
+  background-color: #6c757d;
+  cursor: default;
+}
+
+.accept-btn.accepted:hover {
+  background-color: #6c757d;
 }
 
 .message {
@@ -178,6 +204,27 @@
 .error-message {
   color: #dc3545;
   margin-bottom: 1rem;
+}
+
+.complete-btn {
+  width: 300px;
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.complete-btn:hover {
+  background-color: #218838;
+}
+
+.complete-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {
