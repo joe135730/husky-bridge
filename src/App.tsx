@@ -14,7 +14,6 @@ import CreatePost from "./CreatePost/CreatePost";
 import PostDetail from "./PostDetail/PostDetail";
 import Chat from "./Chat/Chat";
 import Profile from "./Account/Profile/Profile";
-import AllPosts from './Posts/AllPosts'; // TEMPORARY IMPORT - DELETE LATER
 
 import './App.css'
 
@@ -52,8 +51,6 @@ function AppContent() {
           <Route path="/create-post" element={<CreatePost />} />
           <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/messages" element={<Chat />} />
-          {/* TEMPORARY ROUTE FOR TESTING - DELETE LATER */}
-          <Route path="/all-posts" element={<AllPosts />} />
         </Routes>
       </div>
         <hr />
