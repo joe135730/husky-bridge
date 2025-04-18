@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './Chat.css';
 import Navbar from '../navbar/navbar';
 import Footer from "../Footer/index";
 
 interface Message {
-  id: number;
+  id: string;
   text: string;
   sender: string;
   timestamp: string;
@@ -12,121 +12,128 @@ interface Message {
 }
 
 interface Contact {
-  id: number;
+  id: string;
   name: string;
   lastMessage: string;
-  avatar: string;
   isOnline: boolean;
 }
 
 export default function Chat() {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [messageInput, setMessageInput] = useState('');
-  const [showAddContact, setShowAddContact] = useState(false);
-  const [newContactName, setNewContactName] = useState('');
-  const [contacts, setContacts] = useState<Contact[]>([
-    {
-      id: 1,
-      name: 'Harry',
-      lastMessage: 'Hello',
-      avatar: '/avatars/harry.jpg',
-      isOnline: true
-    },
-    {
-      id: 2,
-      name: 'Jenny',
-      lastMessage: 'Hello',
-      avatar: '/avatars/jenny.jpg',
-      isOnline: false
-    },
-    {
-      id: 3,
-      name: 'Contact Name',
-      lastMessage: 'hello',
-      avatar: '/avatars/default.jpg',
-      isOnline: false
-    }
-  ]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [roomId, setRoomId] = useState<string | null>(null);
 
-  const messages: Message[] = [
-    {
-      id: 1,
-      text: 'Hello!',
-      sender: 'Harry',
-      timestamp: '00:08',
-      isSentByMe: false
-    },
-    {
-      id: 2,
-      text: 'Hi',
-      sender: 'Me',
-      timestamp: '00:08',
-      isSentByMe: true
-    },
-    {
-      id: 3,
-      text: "How're you doing?",
-      sender: 'Harry',
-      timestamp: '00:08',
-      isSentByMe: false
-    },
-    {
-      id: 4,
-      text: "I'm fine, and you?",
-      sender: 'Me',
-      timestamp: '00:08',
-      isSentByMe: true
-    },
-    {
-      id: 5,
-      text: "I'm cool too! Let's go camping tomorrow? Everybody will be there!",
-      sender: 'Harry',
-      timestamp: '00:08',
-      isSentByMe: false
-    },
-    {
-      id: 6,
-      text: "That's would be nice!",
-      sender: 'Me',
-      timestamp: '00:08',
-      isSentByMe: true
-    },
-    {
-      id: 7,
-      text: "I'm in.",
-      sender: 'Me',
-      timestamp: '00:08',
-      isSentByMe: true
-    }
-  ];
 
-  const handleContactSelect = (contact: Contact) => {
-    setSelectedContact(contact);
-  };
+  // Replace it with session-based fetch logic
+  const [currentUserId, setCurrentUserId] = useState<string>("");
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!messageInput.trim()) return;
+  useEffect(() => {
+    const loadProfileAndContacts = async () => {
+      try {
+        const profileRes = await fetch("/api/users/profile", {
+          method: "POST",
+          credentials: "include"
+        });
+        const currentUser = await profileRes.json();
+        setCurrentUserId(currentUser._id); // Save for message check later
 
-    // TODO: Implement sending message functionality
-    console.log('Sending message:', messageInput);
-    setMessageInput('');
-  };
+        const usersRes = await fetch("/api/users", {
+          credentials: "include"
+        });
+        const users = await usersRes.json();
 
-  const handleAddContact = () => {
-    if (!newContactName.trim()) return;
-    
-    const newContact: Contact = {
-      id: Math.max(...contacts.map(contact => contact.id)) + 1,
-      name: newContactName,
-      lastMessage: 'New contact added',
-      avatar: '/avatars/default.jpg',
-      isOnline: false
+        const formattedContacts = users.map((user: any) => ({
+          id: user._id,
+          name: user.firstName || user.email || "Unknown",
+          lastMessage: '',
+          isOnline: false
+        }));
+
+        setContacts(formattedContacts);
+      } catch (err) {
+        console.error("Failed to load user data", err);
+      }
     };
-    
-    setContacts(prevContacts => [...prevContacts, newContact]);
-    setNewContactName('');
-    setShowAddContact(false);
+
+    loadProfileAndContacts();
+  }, []);
+
+
+  // Load all users from DB (excluding current user)
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const res = await fetch("/api/users", { credentials: "include" });
+        const data = await res.json();
+        const contactList: Contact[] = data.map((user: any) => ({
+          id: user._id,
+          name: user.username || user.email || "Unknown",
+          lastMessage: '',
+          isOnline: false
+        }));
+        setContacts(contactList);
+      } catch (err) {
+        console.error("Failed to load contacts:", err);
+      }
+    };
+
+    fetchContacts();
+  }, []);
+
+  const handleContactSelect = async (contact: Contact) => {
+    setSelectedContact(contact);
+    const generatedRoomId = `room-${[currentUserId, contact.id].sort().join("-")}`;
+    setRoomId(generatedRoomId);
+
+    try {
+      const res = await fetch(`/api/chat/${generatedRoomId}`, {
+        credentials: "include"
+      });
+      const data = await res.json();
+      setMessages(data.map((msg: any) => ({
+        id: msg._id,
+        text: msg.message,
+        sender: msg.senderId,
+        timestamp: new Date(msg.timestamp).toLocaleTimeString(),
+        isSentByMe: msg.senderId === currentUserId
+      })));
+    } catch (err) {
+      console.error("Error fetching messages:", err);
+    }
+  };
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!messageInput.trim() || !roomId || !selectedContact) return;
+
+    const newMessage = {
+      roomId,
+      message: messageInput,
+      receiverId: selectedContact.id
+    };
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(newMessage)
+      });
+
+      const saved = await res.json();
+      setMessages(prev => [...prev, {
+        id: saved._id,
+        text: saved.message,
+        sender: currentUserId,
+        timestamp: new Date(saved.timestamp).toLocaleTimeString(),
+        isSentByMe: true
+      }]);
+      setMessageInput('');
+    } catch (err) {
+      console.error("Send message error:", err);
+    }
   };
 
   return (
@@ -137,24 +144,6 @@ export default function Chat() {
           <div className="contacts-header">
             <h2>Messages</h2>
           </div>
-          
-          {showAddContact && (
-            <div className="add-contact-form">
-              <input
-                type="text"
-                placeholder="Enter contact name"
-                value={newContactName}
-                onChange={(e) => setNewContactName(e.target.value)}
-              />
-              <div className="add-contact-buttons">
-                <button onClick={handleAddContact}>Add</button>
-                <button onClick={() => {
-                  setShowAddContact(false);
-                  setNewContactName('');
-                }}>Cancel</button>
-              </div>
-            </div>
-          )}
 
           <div className="contacts-list">
             {contacts.map(contact => (
@@ -163,10 +152,6 @@ export default function Chat() {
                 className={`contact-item ${selectedContact?.id === contact.id ? 'selected' : ''}`}
                 onClick={() => handleContactSelect(contact)}
               >
-                <div className="contact-avatar">
-                  <img src={contact.avatar} alt={contact.name} />
-                  {contact.isOnline && <span className="online-indicator"></span>}
-                </div>
                 <div className="contact-info">
                   <h3>{contact.name}</h3>
                   <p>{contact.lastMessage}</p>
@@ -174,13 +159,6 @@ export default function Chat() {
               </div>
             ))}
           </div>
-          
-          <button 
-            className="add-contact-btn floating"
-            onClick={() => setShowAddContact(true)}
-          >
-            <i className="fas fa-plus"></i>
-          </button>
         </div>
 
         <div className="chat-area">
@@ -220,7 +198,6 @@ export default function Chat() {
                 <button type="submit">
                   <i className="fas fa-paper-plane"></i>
                 </button>
-               
               </form>
             </>
           ) : (
@@ -233,4 +210,4 @@ export default function Chat() {
       <Footer />
     </>
   );
-} 
+}
