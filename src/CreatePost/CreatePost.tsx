@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from '../navbar/navbar';
 import Footer from "../Footer/index";
 import * as client from '../Posts/client';
@@ -8,16 +8,21 @@ import './CreatePost.css';
 
 export default function CreatePost() {
   const navigate = useNavigate();
-  const [postType, setPostType] = useState<Post['postType']>('request');
+  const [searchParams] = useSearchParams();
+  const [postType, setPostType] = useState<Post['postType']>(searchParams.get('postType') as Post['postType'] || 'request');
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<Post['category']>('general');
   const [location, setLocation] = useState('');
   const [availability, setAvailability] = useState('');
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    
+    setIsSubmitting(true);
     setError('');
 
     try {
@@ -30,11 +35,17 @@ export default function CreatePost() {
         description
       };
 
-      await client.createPost(newPost);
-      navigate('/my-posts');
+      const createdPost = await client.createPost(newPost);
+      if (createdPost) {
+        navigate('/AllPosts'); 
+      } else {
+        setError('Failed to create post. Please try again.');
+      }
     } catch (error: any) {
       console.error("Error creating post:", error);
       setError(error.response?.data?.message || 'Error creating post. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -150,7 +161,14 @@ export default function CreatePost() {
         </section>
 
         <div className="button-group">
-          <button type="submit" className="submit-btn">Post Now</button>
+          <button type="button" className="cancel-btn" onClick={() => navigate('/AllPosts')}>Cancel</button>
+          <button 
+            type="submit" 
+            className="submit-btn"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Creating...' : 'Post Now'}
+          </button>
         </div>
       </form>
     </div>
