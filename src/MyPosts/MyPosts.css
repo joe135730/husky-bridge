@@ -178,3 +178,113 @@
     border: none;
   }
 }
+
+/* Pending Offers Styles */
+.pending-offers-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.pending-offers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.pending-offers-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.participants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.participant-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.participant-info {
+  flex: 1;
+}
+
+.participant-info h3 {
+  margin: 0 0 0.5rem;
+  color: #333;
+}
+
+.participant-info p {
+  margin: 0.25rem 0;
+  color: #666;
+}
+
+.participant-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.no-participants {
+  text-align: center;
+  padding: 2rem;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  color: #666;
+}
+
+/* Status-related styles */
+.post-item.Pending {
+  border-left: 5px solid #f0ad4e;
+}
+
+.post-item.In-Progress {
+  border-left: 5px solid #5bc0de;
+}
+
+.post-item.Complete {
+  border-left: 5px solid #5cb85c;
+  background-color: #f9fff9;
+}
+
+.completed-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: #5cb85c;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
+
+/* Status badge styles */
+.status-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  color: white;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.status-badge.pending {
+  background-color: #f0ad4e;
+}
+
+.status-badge.in-progress {
+  background-color: #5bc0de;
+}
+
+.status-badge.complete {
+  background-color: #5cb85c;
+}

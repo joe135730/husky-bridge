@@ -8,6 +8,19 @@ const axiosWithCredentials = axios.create({
     withCredentials: true,
 });
 
+export interface Participant {
+    userId: string;
+    status: 'Pending' | 'In Progress' | 'Complete';
+    completedAt: Date | null;
+    user?: {
+        _id: string;
+        username: string;
+        firstName?: string;
+        lastName?: string;
+        email?: string;
+    };
+}
+
 export interface Post {
     _id?: string;
     userId: string;
@@ -17,15 +30,19 @@ export interface Post {
     location: string;
     availability: Date;
     description: string;
-    isCompleted: boolean;
     createdAt: Date;
     updatedAt: Date;
-    acceptedBy: string | null;
-    status: 'active' | 'pending' | 'completed';
+    status: 'Pending' | 'In Progress' | 'Complete';
+    participants: Participant[];
+    selectedParticipantId: string | null;
+    ownerCompleted: boolean;
+    participantCompleted: boolean;
+    userRelationship?: 'owner' | 'selected' | 'participant' | 'none';
+    userParticipantStatus?: 'Pending' | 'In Progress' | 'Complete';
 }
 
 // Create a new post
-export const createPost = async (post: Omit<Post, '_id' | 'userId' | 'isCompleted' | 'createdAt' | 'updatedAt' | 'acceptedBy' | 'status'>) => {
+export const createPost = async (post: Omit<Post, '_id' | 'userId' | 'createdAt' | 'updatedAt' | 'status' | 'participants' | 'selectedParticipantId' | 'ownerCompleted' | 'participantCompleted'>) => {
     const response = await axiosWithCredentials.post(POSTS_API, post);
     return response.data;
 };
@@ -36,9 +53,15 @@ export const findAllPosts = async () => {
     return response.data;
 };
 
-// Get current user's posts
+// Get current user's posts (created by the user)
 export const findMyPosts = async () => {
     const response = await axiosWithCredentials.get(`${POSTS_API}/user`);
+    return response.data;
+};
+
+// Get posts where the current user is participating (either as owner or participant)
+export const findParticipatingPosts = async () => {
+    const response = await axiosWithCredentials.get(`${POSTS_API}/participating`);
     return response.data;
 };
 
@@ -60,15 +83,33 @@ export const deletePost = async (postId: string) => {
     return response.data;
 };
 
-// Mark post as completed
-export const markPostAsCompleted = async (postId: string) => {
-    const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/complete`);
+// Mark post as completed by owner
+export const markPostAsCompletedByOwner = async (postId: string) => {
+    const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/complete-owner`);
     return response.data;
 };
 
-// Accept post
-export const acceptPost = async (postId: string) => {
-    const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/accept`);
+// Mark post as completed by participant
+export const markPostAsCompletedByParticipant = async (postId: string) => {
+    const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/complete-participant`);
+    return response.data;
+};
+
+// Express interest in a post (add current user as a participant)
+export const participateInPost = async (postId: string) => {
+    const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/participate`);
+    return response.data;
+};
+
+// Select a participant (post owner accepting a participant)
+export const selectParticipant = async (postId: string, participantId: string) => {
+    const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/select/${participantId}`);
+    return response.data;
+};
+
+// Get participants for a post
+export const getPostParticipants = async (postId: string) => {
+    const response = await axiosWithCredentials.get(`${POSTS_API}/${postId}/participants`);
     return response.data;
 };
 
@@ -77,8 +118,7 @@ export interface PostFilters {
     postType?: 'request' | 'offer';
     category?: 'general' | 'housing' | 'tutoring' | 'lend-borrow';
     location?: string;
-    isCompleted?: boolean;
-    status?: 'active' | 'pending' | 'completed';
+    status?: 'Pending' | 'In Progress' | 'Complete';
     dateRange?: number; // number of days to look back
     sort?: 'latest' | 'oldest';
 }
