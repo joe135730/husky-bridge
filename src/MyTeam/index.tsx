@@ -30,8 +30,7 @@ export default function MyTeam() {
                         <img src={member1} alt="Tzu Ping Wang" /> {/* // change this to your photo accordingly  */}
                         <h3>Tzu Ping Wang</h3>
                         <p>A creative UI/UX designer and talented frontend developer, excelling in translating designs into interactive code. Her blend of aesthetic sensibility and coding skills ensures Huskies enjoy smooth, intuitive, and visually appealing user experiences.</p>
-                        <Link to="/Account/profile" className="profile-link">View Profile</Link>  {/* temporary link to the profile page, link to sidebar after created  */}
-                        <Link to="/my-posts" className="my-posts-link">View all my post</Link>  {/* temporary link to the allmypost, link to sidebar after created  */}
+                    
                     </div>
                 </div>
             </section>
