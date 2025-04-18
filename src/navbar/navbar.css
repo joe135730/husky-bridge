@@ -54,6 +54,15 @@
     font-size: 2rem;
 }
 
+.navbar-right {
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    flex-wrap: nowrap;
+    margin-left: 2rem;
+}
+
 .nav-items-right {
     display: flex;
     align-items: center;
@@ -221,4 +230,25 @@
     /* Color of the strips */
     margin: 4px 0;
     /* Space between strips */
+}
+
+.post-navigation {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+}
+
+.view-all-post {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.view-all-post:hover {
+    color: rgba(255, 255, 255, 0.8);
 }
