@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Categories.css';
 
 interface CategoryCardProps {
@@ -22,6 +22,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ title, description, buttonT
 };
 
 export default function Categories() {
+    const navigate = useNavigate();
+
     return (
         <section className="categories-section">
             <h1>Categories</h1>
@@ -30,26 +32,25 @@ export default function Categories() {
                     title="General"
                     description="From event tickets to lost-and-found, this category covers everything else Huskies might need or offer."
                     buttonText="Community Help & More"
-                    link="/general"
-
+                    link="/AllPosts?category=general"
                 />
                 <CategoryCard
                     title="Borrow/ Lend"
                     description="Need something for a short time? Borrow books, gadgets, and more from fellow Huskies. Have extras? Lend them out and help your community."
                     buttonText="Find Items"
-                    link="/borrow-lend"
+                    link="/AllPosts?category=lend-borrow"
                 />
                 <CategoryCard
                     title="Housing"
                     description="Looking for housing or roommates? Browse available rentals or list your place to connect with fellow Northeastern students."
                     buttonText="Explore Housing"
-                    link="/housing"
+                    link="/AllPosts?category=housing"
                 />
                 <CategoryCard
                     title="Tutoring"
                     description="Need academic help? Find tutors for your subjects. Have expertise? Offer tutoring and support your peers."
                     buttonText="Find a Tutor"
-                    link="/tutoring"
+                    link="/AllPosts?category=tutoring"
                 />
             </div>
             <div className="categories-navigation">

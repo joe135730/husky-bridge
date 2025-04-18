@@ -21,10 +21,10 @@ export default function Introduction() {
             resources, share knowledge, and lend a hand—all in one place.
           </p>
           <div id="request-page" className="intro-buttons">
-            <Link to="/Request" className="seek-help-btn">
+            <Link to="/create-post" className="seek-help-btn">
               Seek for Help
             </Link>
-            <Link to="/Help" id="help-page" className="make-offer-btn">
+            <Link to="/create-post?postType=offer" id="help-page" className="make-offer-btn">
               Make an Offer
             </Link>
           </div>

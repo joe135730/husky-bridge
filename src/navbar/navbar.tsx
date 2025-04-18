@@ -51,31 +51,15 @@ export default function Navbar() {
           <SearchBar />
         </div>
       </div>
-      
+
       <div className="nav-items-right">
-        <Nav.Item className="nav-link-item">
-          <Nav.Link
-            as={Link}
-            to="/Request"
-            id="request-page"
-            active={pathname.includes("Request")}
-          >
-            View All Request
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item className="nav-link-item">
-          <Nav.Link
-            as={Link}
-            to="/Help"
-            id="help-page"
-            active={pathname.includes("Help")}
-          >
-            View All Help
-          </Nav.Link>
-        </Nav.Item>
-        
         {currentUser ? (
           <>
+            <div className="post-navigation">
+              <button className="view-all-post" onClick={() => navigate('/AllPosts')}>
+                View All Post
+              </button>
+            </div>
             <Nav.Item>
               <button className="add-a-post-button" onClick={() => navigate('/create-post')}>
                 Add a Post +

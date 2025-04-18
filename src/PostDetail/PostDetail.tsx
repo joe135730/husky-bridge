@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StoreType } from '../store';
 import Navbar from '../navbar/navbar';
-import Footer from "../Footer/index";
 import * as client from '../Posts/client';
 import { Post } from '../Posts/client';
 import './PostDetail.css';
@@ -152,7 +151,6 @@ export default function PostDetail() {
         </div>
       )}
     </div>
-    <Footer/>
     </>
   );
 } 
