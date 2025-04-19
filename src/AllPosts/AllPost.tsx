@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../navbar/navbar";
 import Footer from "../Footer/index";
 import * as client from "../Posts/client";
@@ -8,8 +8,7 @@ import "./AllPost.css";
 
 export default function AllPost() {
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const category = searchParams.get('category') as PostFilters['category'];
+    const { category } = useParams<{ category: PostFilters['category'] }>();
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -19,7 +18,13 @@ export default function AllPost() {
             setLoading(true);
             setError(null);
             
-            const fetchedPosts = await client.findAllPosts();
+            let fetchedPosts: Post[];
+            
+            if (category) {
+                fetchedPosts = await client.findPostByCategory(category);
+            } else {
+                fetchedPosts = await client.findAllPosts();
+            }
 
             if (Array.isArray(fetchedPosts)) {
                 setPosts(fetchedPosts);
