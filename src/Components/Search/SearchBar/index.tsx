@@ -49,6 +49,16 @@ export default function SearchBar() {
   const handleSearch = async () => {
     const selectedCategories = categories.filter(cat => cat.checked).map(cat => cat.id);
     
+    if (searchQuery.trim()) {
+      try {
+        const posts = await postClient.findPostsByTitle(searchQuery);
+        navigate(`/AllPosts`, { state: { posts, searchQuery } });
+        return;
+      } catch (error) {
+        console.error('Error fetching posts by title:', error);
+      }
+    }
+    
     if (selectedCategories.length >= 2) {
       try {
         const categories = selectedCategories.map(cat => cat as Post["category"]);
