@@ -9,6 +9,7 @@ import Navbar from './navbar/navbar';
 import Footer from './Footer';
 import MyTeam from "./MyTeam";
 import MyPosts from "./MyPosts/MyPosts";
+import PendingOffers from "./MyPosts/PendingOffers";
 import CreatePost from "./CreatePost/CreatePost";
 import PostDetail from "./PostDetail/PostDetail";
 import Chat from "./Chat/Chat";
@@ -47,6 +48,7 @@ function AppContent() {
           <Route path="/Account/*" element={<AccountRoutes />} />
           <Route path="/my-team" element={<MyTeam />} />
           <Route path="/my-posts" element={<MyPosts />} />
+          <Route path="/my-posts/:postId/pending-offers" element={<PendingOffers />} />
           <Route path="/create-post" element={<CreatePost />} />
           <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/messages" element={<Chat />} />

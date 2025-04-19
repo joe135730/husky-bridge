@@ -61,8 +61,23 @@ export default function MyPosts() {
                   filterState.dateRange?.['Last 30 Days'] ? 720 : undefined
       };
       
-      const data = await client.findMyPosts();
-      setPosts(data);
+      // Load both created and participating posts
+      const [myPosts, participatingPosts] = await Promise.all([
+        client.findMyPosts(),
+        client.findParticipatingPosts()
+      ]);
+      
+      // Combine and deduplicate posts
+      const allPosts = [...myPosts];
+      
+      // Only add participating posts that aren't already in myPosts
+      for (const post of participatingPosts) {
+        if (!myPosts.some((p: Post) => p._id === post._id)) {
+          allPosts.push(post);
+        }
+      }
+      
+      setPosts(allPosts);
     } catch (error: any) {
       console.error("Error loading posts:", error);
       setError(error.response?.data?.message || 'Error loading posts');
@@ -87,7 +102,7 @@ export default function MyPosts() {
 
   const handleComplete = async (postId: string) => {
     try {
-      await client.markPostAsCompleted(postId);
+      await client.markPostAsCompletedByOwner(postId);
       loadPosts(); // Reload posts to get updated data
     } catch (error: any) {
       console.error("Error completing post:", error);
@@ -155,14 +170,16 @@ export default function MyPosts() {
 
           <div className="posts-list">
             {posts.map(post => (
-              <div key={post._id} className={`post-item ${post.isCompleted ? 'completed' : ''}`}>
+              <div key={post._id} className={`post-item ${post.status}`}>
                 <h3>{post.title} ({post.status} – {post.category})</h3>
                 <p>📍 {post.location} | 📅 Posted on {new Date(post.createdAt).toLocaleDateString()}</p>
+                <p>{post.userRelationship === 'owner' ? 'You created this post' : 'You are participating in this post'}</p>
                 <button className="details-btn" onClick={() => handleViewDetails(post._id!)}>View Details</button>
-                {!post.isCompleted ? (
+                {post.userRelationship === 'owner' && post.status === 'In Progress' && !post.ownerCompleted && (
                   <button className="complete-btn" onClick={() => handleComplete(post._id!)}>Mark as Completed</button>
-                ) : (
-                  <button className="completed-btn" disabled>Completed</button>
+                )}
+                {post.status === 'Complete' && (
+                  <div className="completed-badge">Completed</div>
                 )}
               </div>
             ))}

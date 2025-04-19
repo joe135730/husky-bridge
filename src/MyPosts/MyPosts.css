@@ -178,3 +178,312 @@
     border: none;
   }
 }
+
+/* Pending Offers Styles */
+.pending-offers-container {
+  max-width: 800px;
+  margin: 5rem auto;
+  padding: 1rem;
+}
+
+.pending-offers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.pending-offers-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.participants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.participant-item {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.participant-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.participant-info {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.participant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+#pending-offer-status-badge {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: white;
+  display: inline-block;
+  width: auto;
+  min-width: 100px;
+  text-align: center;
+  background-color: #4ecdc4;
+}
+
+.status-badge {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: white;
+  display: inline-block;
+  width: auto;
+  min-width: 100px;
+  text-align: center;
+}
+
+.status-badge.in-progress {
+  background-color: #4ecdc4;
+}
+
+.mark-complete-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #4ecdc4;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+
+.mark-complete-btn:hover {
+  background-color: #36b1a8;
+}
+
+.participant-info h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  display: flex !important;
+  align-items: center;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.participant-info h3::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #4caf50;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+}
+
+.participant-info p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.participant-location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.participant-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+#pending-offer-actions button {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  flex: 1;
+  color: white;
+  text-align: center;
+  min-height: 45px;
+}
+
+#pending-offer-accept-button {
+  background-color: #4CAF50;
+}
+
+#pending-offer-accept-button:hover {
+  background-color: #43A047;
+}
+
+#pending-offer-mark-complete-button {
+  background-color: #4ecdc4;
+}
+
+#pending-offer-mark-complete-button:hover {
+  background-color: #36b1a8;
+}
+
+#pending-offer-mark-complete-button:disabled {
+  background-color: #6C757D !important;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+#pending-offer-message-button {
+  background-color: #1E3A8A;
+}
+
+#pending-offer-message-button:hover {
+  background-color: #265DAB;
+}
+
+#pending-offer-decline-button {
+  background-color: red;
+}
+
+#pending-offer-decline-button:hover {
+  background-color: #F43F5E;
+}
+
+.no-participants {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.error-message {
+  color: #dc3545;
+  padding: 1rem;
+  margin: 1rem 0;
+  background-color: #ffe6e6;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+/* Status-related styles */
+.post-item.Pending {
+  border-left: 5px solid #f0ad4e;
+}
+
+.post-item.In-Progress {
+  border-left: 5px solid #5bc0de;
+}
+
+.post-item.Complete {
+  border-left: 5px solid #5cb85c;
+  background-color: #f9fff9;
+}
+
+.completed-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: #5cb85c;
+  color: white;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
+
+/* Status badge styles */
+.status-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  color: white;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.status-badge.pending {
+  background-color: #f0ad4e;
+}
+
+.status-badge.in-progress {
+  background-color: #5bc0de;
+}
+
+.status-badge.complete {
+  background-color: #5cb85c;
+}
+
+.post-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.post-card-title {
+  color: #000;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  cursor: pointer;
+}
+
+.post-card-title:hover {
+  text-decoration: underline;
+}
+
+.post-card-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.post-card-info p {
+  margin: 0;
+  color: #666;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.participants-section > h3 {
+  display: none;
+}
