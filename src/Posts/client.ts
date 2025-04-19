@@ -207,3 +207,11 @@ export const findPostsByTitle = async (title: string) => {
   const response = await axiosWithCredentials.get(`${POSTS_API}/title/${encodeURIComponent(title)}`);
   return response.data;
 };
+
+// Remove a participant from a post
+export const removeParticipant = async (postId: string, participantId: string) => {
+  const response = await axiosWithCredentials.delete(
+    `${POSTS_API}/${postId}/participants/${participantId}`
+  );
+  return response.data;
+};

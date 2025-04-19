@@ -11,6 +11,7 @@ export default function PendingOffers() {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     if (postId) {
@@ -53,7 +54,20 @@ export default function PendingOffers() {
   };
 
   const handleDecline = async (participantId: string) => {
-    // TODO: Implement decline functionality
+    if (!postId || isProcessing) return;
+
+    try {
+      setIsProcessing(true);
+      setError('');
+      await client.removeParticipant(postId, participantId);
+      // Refresh the participants list after successful decline
+      await loadPostAndParticipants();
+    } catch (error: any) {
+      console.error('Error declining participant:', error);
+      setError(error.response?.data?.message || 'Error declining participant');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleMarkComplete = async (participantId: string) => {
