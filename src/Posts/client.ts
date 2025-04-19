@@ -10,7 +10,7 @@ const axiosWithCredentials = axios.create({
 
 export interface Participant {
   userId: string;
-  status: "Pending" | "In Progress" | "Complete";
+  status: "Pending" | "In Progress" | "Wait for Complete" | "Complete";
   completedAt: Date | null;
   user?: {
     _id: string;

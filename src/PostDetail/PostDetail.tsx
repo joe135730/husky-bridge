@@ -120,14 +120,17 @@ export default function PostDetail() {
     if (!post || !currentUser) return false;
     
     // For owner
-    if (post.userRelationship === 'owner' && post.status === 'In Progress') {
-      return true;
+    if (isOwner) {
+      // Show button if post is In Progress or if participant is in Wait for Complete
+      const participant = post.participants.find(p => p.userId === post.selectedParticipantId);
+      return post.status === 'In Progress' || 
+             (participant?.status === 'Wait for Complete' && !post.ownerCompleted);
     }
     
     // For participant
-    const isParticipant = post.participants?.some(p => p.userId === currentUser._id);
-    if (isParticipant) {
+    if (isParticipant && currentUser) {
       const participant = post.participants.find(p => p.userId === currentUser._id);
+      // Show button only if participant is In Progress
       return participant?.status === 'In Progress';
     }
     
@@ -146,15 +149,31 @@ export default function PostDetail() {
   const isParticipant = post.participants?.some(p => p.userId === currentUser?._id);
   const showStatusBadge = isOwner || isParticipant;
 
-  // Get the status to display based on user relationship
+  // Get the status to display based on user relationship and completion state
   const getDisplayStatus = () => {
+    // If post is fully complete, show Complete for everyone
+    if (post.status === 'Complete') {
+      return 'Complete';
+    }
+
     if (isOwner) {
+      // If participant has marked complete but owner hasn't
+      const participant = post.participants.find(p => p.userId === post.selectedParticipantId);
+      if (participant?.status === 'Wait for Complete' && !post.ownerCompleted) {
+        return 'In Progress';
+      }
+      // Otherwise show post status
       return post.status;
     }
+
     if (isParticipant && currentUser) {
       const participant = post.participants.find(p => p.userId === currentUser._id);
-      return participant?.status || 'Pending';
+      if (!participant) return post.status;
+
+      // Show participant's specific status
+      return participant.status;
     }
+
     return post.status;
   };
 
