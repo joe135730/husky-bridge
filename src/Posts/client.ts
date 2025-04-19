@@ -175,6 +175,7 @@ export const findPostsWithFilters = async (filters: PostFilters) => {
     return response.data;
   }
 };
+
 export const markPostComplete = async (postId: string): Promise<Post> => {
   try {
     const response = await axiosWithCredentials.put(
@@ -184,4 +185,9 @@ export const markPostComplete = async (postId: string): Promise<Post> => {
   } catch (error) {
     throw error;
   }
+};
+
+export const findPostByCategory = async (category: Post["category"]) => {
+  const response = await axiosWithCredentials.get(`${POSTS_API}/category/${category}`);
+  return response.data;
 };
