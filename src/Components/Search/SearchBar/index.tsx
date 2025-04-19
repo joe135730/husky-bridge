@@ -52,7 +52,7 @@ export default function SearchBar() {
     if (searchQuery.trim()) {
       try {
         const posts = await postClient.findPostsByTitle(searchQuery);
-        navigate(`/AllPosts`, { state: { posts, searchQuery } });
+        navigate(`/AllPosts?search=${encodeURIComponent(searchQuery)}`);
         return;
       } catch (error) {
         console.error('Error fetching posts by title:', error);
