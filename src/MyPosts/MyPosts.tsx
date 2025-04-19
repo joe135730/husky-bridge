@@ -79,8 +79,8 @@ export default function MyPosts() {
       
       setPosts(allPosts);
     } catch (error: any) {
-      console.error("Error loading posts:", error);
-      setError(error.response?.data?.message || 'Error loading posts');
+      //console.error("Error loading posts:", error);
+      //setError(error.response?.data?.message || 'Error loading posts');
     } finally {
       setLoading(false);
     }
