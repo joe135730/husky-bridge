@@ -136,4 +136,21 @@
   .submit-btn {
     width: 100%;
   }
+}
+
+.date-range {
+  display: flex;
+  gap: 20px;
+}
+
+.date-field {
+  flex: 1;
+}
+
+.date-field input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
 } 

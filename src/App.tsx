@@ -11,6 +11,7 @@ import MyTeam from "./MyTeam";
 import MyPosts from "./MyPosts/MyPosts";
 import PendingOffers from "./MyPosts/PendingOffers";
 import CreatePost from "./CreatePost/CreatePost";
+import EditPost from "./CreatePost/EditPost";
 import PostDetail from "./PostDetail/PostDetail";
 import Chat from "./Chat/Chat";
 import Profile from "./Account/Profile/Profile";
@@ -50,6 +51,7 @@ function AppContent() {
           <Route path="/my-posts" element={<MyPosts />} />
           <Route path="/my-posts/:postId/pending-offers" element={<PendingOffers />} />
           <Route path="/create-post" element={<CreatePost />} />
+          <Route path="/edit-post/:id" element={<EditPost />} />
           <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/messages" element={<Chat />} />
           <Route path="/AllPosts" element={<AllPost />} />

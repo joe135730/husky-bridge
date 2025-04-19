@@ -27,7 +27,7 @@ export interface Post {
   postType: "request" | "offer";
   category: "general" | "housing" | "tutoring" | "lend-borrow";
   location: string;
-  availability: Date;
+  availability: string; // Changed to string to store "startDate,endDate"
   description: string;
   createdAt: Date;
   updatedAt: Date;

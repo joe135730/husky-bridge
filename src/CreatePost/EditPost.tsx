@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { StoreType } from '../store';
 import Navbar from '../navbar/navbar';
 import Footer from "../Footer/index";
-import * as client from '../Posts/client';
+import * as client from './client';
 import { Post } from '../Posts/client';
 import './CreatePost.css';
 
-export default function CreatePost() {
+export default function EditPost() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const [postType, setPostType] = useState<Post['postType']>(searchParams.get('postType') as Post['postType'] || 'request');
+  const currentUser = useSelector((state: StoreType) => state.accountReducer.currentUser);
+  const [postType, setPostType] = useState<Post['postType']>('request');
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<Post['category']>('general');
   const [location, setLocation] = useState('');
@@ -19,15 +22,46 @@ export default function CreatePost() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    if (!currentUser) {
+      navigate('/Account/login');
+      return;
+    }
+    loadPost();
+  }, [currentUser, id]);
+
+  const loadPost = async () => {
+    try {
+      if (!id) return;
+      const post = await client.findPostById(id);
+      setPostType(post.postType.toLowerCase() as Post['postType']);
+      setTitle(post.title);
+      setCategory(post.category.toLowerCase() as Post['category']);
+      setLocation(post.location);
+      const [start, end] = post.availability.split(',').map(date => date.split('T')[0]);
+      setStartDate(start);
+      setEndDate(end);
+      setDescription(post.description);
+    } catch (error: any) {
+      console.error("Error loading post:", error);
+      setError(error.response?.data?.message || 'Error loading post');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!currentUser) {
+      navigate('/Account/login');
+      return;
+    }
+
     if (isSubmitting) return;
-    
     setIsSubmitting(true);
     setError('');
 
     try {
-      const newPost = {
+      if (!id) return;
+      const updatedPost = {
         title,
         postType,
         category,
@@ -35,16 +69,11 @@ export default function CreatePost() {
         availability: `${startDate},${endDate}`,
         description
       };
-
-      const createdPost = await client.createPost(newPost);
-      if (createdPost) {
-        navigate('/AllPosts'); 
-      } else {
-        setError('Failed to create post. Please try again.');
-      }
+      await client.updatePost(id, updatedPost);
+      navigate(`/post/${id}`);
     } catch (error: any) {
-      console.error("Error creating post:", error);
-      setError(error.response?.data?.message || 'Error creating post. Please try again.');
+      console.error("Error updating post:", error);
+      setError(error.response?.data?.message || 'Error updating post');
     } finally {
       setIsSubmitting(false);
     }
@@ -54,7 +83,7 @@ export default function CreatePost() {
     <>
     <Navbar />
     <div className="create-post-container">
-      <h1>Create a New Post</h1>
+      <h1>Edit Post</h1>
       
       {error && <div className="error-message">{error}</div>}
       
@@ -163,7 +192,8 @@ export default function CreatePost() {
 
           <div className="form-group">
             <label htmlFor="description">Description</label>
-            <textarea id="description" value={description}
+            <textarea id="description"
+              value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter your post description"
               rows={5}
@@ -173,13 +203,13 @@ export default function CreatePost() {
         </section>
 
         <div className="button-group">
-          <button type="button" className="cancel-btn" onClick={() => navigate('/AllPosts')}>Cancel</button>
+          <button type="button" className="cancel-btn" onClick={() => navigate(`/post/${id}`)}>Cancel</button>
           <button 
             type="submit" 
             className="submit-btn"
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Creating...' : 'Post Now'}
+            {isSubmitting ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </form>
