@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Navbar from "../navbar/navbar";
 import Footer from "../Footer/index";
 import * as client from "../Posts/client";
@@ -8,6 +8,7 @@ import "./AllPost.css";
 
 export default function AllPost() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { category } = useParams<{ category: PostFilters['category'] }>();
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
@@ -19,8 +20,11 @@ export default function AllPost() {
             setError(null);
             
             let fetchedPosts: Post[];
+            const searchQuery = searchParams.get('search');
             
-            if (category) {
+            if (searchQuery) {
+                fetchedPosts = await client.findPostsByTitle(searchQuery);
+            } else if (category) {
                 fetchedPosts = await client.findPostByCategory(category);
             } else {
                 fetchedPosts = await client.findAllPosts();
@@ -42,7 +46,7 @@ export default function AllPost() {
 
     useEffect(() => {
         fetchPosts();
-    }, [category]);
+    }, [category, searchParams]);
 
     const formatDate = (dateString: string | Date) => {
         const date = new Date(dateString);
@@ -50,6 +54,10 @@ export default function AllPost() {
     };
 
     const getCategoryTitle = () => {
+        const searchQuery = searchParams.get('search');
+        if (searchQuery) {
+            return `Search Results for "${searchQuery}"`;
+        }
         switch (category) {
             case 'general':
                 return 'General Posts';
