@@ -191,3 +191,14 @@ export const findPostByCategory = async (category: Post["category"]) => {
   const response = await axiosWithCredentials.get(`${POSTS_API}/category/${category}`);
   return response.data;
 };
+
+export const findPostsByCategories = async (categories: Post["category"][]) => {
+  try {
+    const postsPromises = categories.map(category => findPostByCategory(category));
+    const postsResults = await Promise.all(postsPromises);
+    return postsResults.flat();
+  } catch (error) {
+    console.error('Error fetching posts by categories:', error);
+    throw error;
+  }
+};
