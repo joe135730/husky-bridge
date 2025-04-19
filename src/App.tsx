@@ -53,6 +53,7 @@ function AppContent() {
           <Route path="/post/:id" element={<PostDetail />} />
           <Route path="/messages" element={<Chat />} />
           <Route path="/AllPosts" element={<AllPost />} />
+          <Route path="/posts/category/:category" element={<AllPost />} />
         </Routes>
       </div>
         <hr />
