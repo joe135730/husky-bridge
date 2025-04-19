@@ -62,8 +62,20 @@ export default function PostDetail() {
     navigate(`/edit-post/${post?._id}`);
   };
 
-  const handleDelete = () => {
-    navigate(`/delete-post/${post?._id}`);
+  const handleDelete = async () => {
+    try {
+      if (!post?._id) return;
+
+      // Show confirmation dialog
+      const confirmDelete = window.confirm('Are you sure you want to delete this post? This action cannot be undone.');
+      if (!confirmDelete) return;
+
+      await client.deletePost(post._id);
+      navigate('/my-posts'); // Navigate back to My Posts page after successful deletion
+    } catch (error: any) {
+      console.error('Error deleting post:', error);
+      setError(error.response?.data?.message || 'Error deleting post');
+    }
   };
 
   const handleManageRequests = () => {
