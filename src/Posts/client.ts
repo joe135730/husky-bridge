@@ -202,3 +202,8 @@ export const findPostsByCategories = async (categories: Post["category"][]) => {
     throw error;
   }
 };
+
+export const findPostsByTitle = async (title: string) => {
+  const response = await axiosWithCredentials.get(`${POSTS_API}/title/${encodeURIComponent(title)}`);
+  return response.data;
+};
