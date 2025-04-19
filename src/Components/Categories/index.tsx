@@ -1,29 +1,40 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Categories.css';
+import { findPostByCategory } from '../../Posts/client';
 
 interface CategoryCardProps {
     title: string;
     description: string;
     buttonText: string;
-    link: string;
     isRed?: boolean;
+    category: "general" | "housing" | "tutoring" | "lend-borrow";
 }
 
-const CategoryCard: React.FC<CategoryCardProps> = ({ title, description, buttonText, link, isRed }) => {
+const CategoryCard: React.FC<CategoryCardProps> = ({ title, description, buttonText, isRed, category }) => {
+    const navigate = useNavigate();
+
+    const handleCategoryClick = async () => {
+        try {
+            const posts = await findPostByCategory(category);
+            navigate(`/posts/category/${category}`, { state: { posts } });
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+            navigate(`/posts/category/${category}`);
+        }
+    };
+
     return (
         <div className={`category-card ${isRed ? 'red' : ''}`}>
             <h2>{title}</h2>
             <p>{description}</p>
-            <Link to={link} className="category-button">
+            <button onClick={handleCategoryClick} className="category-button">
                 {buttonText}
-            </Link>
+            </button>
         </div>
     );
 };
 
 export default function Categories() {
-    const navigate = useNavigate();
-
     return (
         <section className="categories-section">
             <h1>Categories</h1>
@@ -32,25 +43,25 @@ export default function Categories() {
                     title="General"
                     description="From event tickets to lost-and-found, this category covers everything else Huskies might need or offer."
                     buttonText="Community Help & More"
-                    link="/AllPosts?category=general"
+                    category="general"
                 />
                 <CategoryCard
                     title="Borrow/ Lend"
                     description="Need something for a short time? Borrow books, gadgets, and more from fellow Huskies. Have extras? Lend them out and help your community."
                     buttonText="Find Items"
-                    link="/AllPosts?category=lend-borrow"
+                    category="lend-borrow"
                 />
                 <CategoryCard
                     title="Housing"
                     description="Looking for housing or roommates? Browse available rentals or list your place to connect with fellow Northeastern students."
                     buttonText="Explore Housing"
-                    link="/AllPosts?category=housing"
+                    category="housing"
                 />
                 <CategoryCard
                     title="Tutoring"
                     description="Need academic help? Find tutors for your subjects. Have expertise? Offer tutoring and support your peers."
                     buttonText="Find a Tutor"
-                    link="/AllPosts?category=tutoring"
+                    category="tutoring"
                 />
             </div>
             <div className="categories-navigation">
