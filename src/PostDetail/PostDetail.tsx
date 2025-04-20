@@ -26,14 +26,14 @@ const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSubmit }) 
     <div className="report-modal-overlay">
       <div className="report-modal">
         <h2>Report Post Form</h2>
-        
+
         <div className="report-form-group">
           <label>Reason for Reporting</label>
           <div className="radio-option">
-            <input 
-              type="radio" 
-              id="inappropriate" 
-              name="reportReason" 
+            <input
+              type="radio"
+              id="inappropriate"
+              name="reportReason"
               value="Inappropriate Content"
               checked={reason === "Inappropriate Content"}
               onChange={(e) => setReason(e.target.value)}
@@ -41,10 +41,10 @@ const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSubmit }) 
             <label htmlFor="inappropriate">Inappropriate Content</label>
           </div>
           <div className="radio-option">
-            <input 
-              type="radio" 
-              id="spam" 
-              name="reportReason" 
+            <input
+              type="radio"
+              id="spam"
+              name="reportReason"
               value="Spam or Scam"
               checked={reason === "Spam or Scam"}
               onChange={(e) => setReason(e.target.value)}
@@ -52,10 +52,10 @@ const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSubmit }) 
             <label htmlFor="spam">Spam or Scam</label>
           </div>
           <div className="radio-option">
-            <input 
-              type="radio" 
-              id="false" 
-              name="reportReason" 
+            <input
+              type="radio"
+              id="false"
+              name="reportReason"
               value="False or Misleading Information"
               checked={reason === "False or Misleading Information"}
               onChange={(e) => setReason(e.target.value)}
@@ -63,10 +63,10 @@ const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSubmit }) 
             <label htmlFor="false">False or Misleading Information</label>
           </div>
           <div className="radio-option">
-            <input 
-              type="radio" 
-              id="other" 
-              name="reportReason" 
+            <input
+              type="radio"
+              id="other"
+              name="reportReason"
               value="Other"
               checked={reason === "Other"}
               onChange={(e) => setReason(e.target.value)}
@@ -74,23 +74,23 @@ const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSubmit }) 
             <label htmlFor="other">Other</label>
           </div>
         </div>
-        
+
         <div className="report-form-group">
           <label>Additional Comments</label>
-          <textarea 
+          <textarea
             className="comment-textarea"
             value={comments}
             onChange={(e) => setComments(e.target.value)}
             placeholder="Please provide additional details about your report..."
           />
         </div>
-        
+
         <div className="modal-buttons">
           <button className="cancel-button" onClick={onClose}>
             Cancel
           </button>
-          <button 
-            className="submit-button" 
+          <button
+            className="submit-button"
             onClick={() => onSubmit(reason, comments)}
           >
             Submit Report
@@ -122,7 +122,7 @@ export default function PostDetail() {
       setLoading(true);
       const data = await client.findPostById(id);
       setPost(data);
-      
+
       // Check if current user has already accepted this post
       if (currentUser && data.participants.some((p: { userId: string }) => p.userId === currentUser._id)) {
         setHasAccepted(true);
@@ -148,8 +148,7 @@ export default function PostDetail() {
   };
 
   const handleMessage = () => {
-    // TODO: Implement messaging functionality
-    console.log("Message button clicked");
+    navigate("/messages");
   };
 
   const handleEdit = () => {
@@ -203,7 +202,7 @@ export default function PostDetail() {
       setError("You must be logged in to report a post");
       return;
     }
-    
+
     // Show the report modal
     setShowReportModal(true);
   };
@@ -215,13 +214,13 @@ export default function PostDetail() {
   const handleSubmitReport = async (reason: string, comments: string) => {
     try {
       setError(null);
-      
+
       // Use axiosWithCredentials instead of fetch API
       await axiosWithCredentials.post(`/posts/${post?._id}/report`, {
         reason,
         comments
       });
-      
+
       setShowReportModal(false);
       alert("Report submitted successfully");
     } catch (err: any) {
@@ -238,7 +237,7 @@ export default function PostDetail() {
 
       const updatedPost = await client.markPostComplete(post._id);
       setPost(updatedPost);
-      
+
       // Refresh the post data to get the latest status
       await loadPost();
     } catch (err: any) {
@@ -251,22 +250,22 @@ export default function PostDetail() {
 
   const showCompleteButton = () => {
     if (!post || !currentUser) return false;
-    
+
     // For owner
     if (isOwner) {
       // Show button if post is In Progress or if participant is in Wait for Complete
       const participant = post.participants.find(p => p.userId === post.selectedParticipantId);
-      return post.status === 'In Progress' || 
-             (participant?.status === 'Wait for Complete' && !post.ownerCompleted);
+      return post.status === 'In Progress' ||
+        (participant?.status === 'Wait for Complete' && !post.ownerCompleted);
     }
-    
+
     // For participant
     if (isParticipant && currentUser) {
       const participant = post.participants.find(p => p.userId === currentUser._id);
       // Show button only if participant is In Progress
       return participant?.status === 'In Progress';
     }
-    
+
     return false;
   };
 
@@ -311,17 +310,17 @@ export default function PostDetail() {
   };
 
   const displayStatus = getDisplayStatus();
-  
+
   // Check if the current user is not selected
-  const isNotSelectedParticipant = isParticipant && currentUser && 
+  const isNotSelectedParticipant = isParticipant && currentUser &&
     post.participants.some(p => p.userId === currentUser._id && p.status === 'Not Selected');
-    
+
   // Handle removing post from MyPosts
   const handleRemoveFromMyPosts = async () => {
     try {
       if (!post?._id) return;
       setError(null);
-      
+
       await client.removePostFromMyPosts(post._id);
       navigate('/my-posts');
     } catch (err: any) {
@@ -334,18 +333,18 @@ export default function PostDetail() {
   const handleCancelCollaboration = async () => {
     try {
       if (!post?._id) return;
-      
+
       // Show confirmation dialog with different messages for owner vs participant
-      const message = isOwner 
+      const message = isOwner
         ? 'Are you sure you want to cancel this collaboration? The post will return to pending status and the current participant will be removed.'
         : 'Are you sure you want to cancel your participation? You will be removed from this post.';
-        
+
       const confirmCancel = window.confirm(message);
       if (!confirmCancel) return;
-      
+
       setError(null);
       await client.cancelCollaboration(post._id);
-      
+
       if (isOwner) {
         // Reload the post if owner is cancelling
         await loadPost();
@@ -363,13 +362,13 @@ export default function PostDetail() {
   const handleRemoveCompletedPost = async () => {
     try {
       if (!post?._id) return;
-      
+
       const confirmRemove = window.confirm(
         'Are you sure you want to remove this completed post from your list? This cannot be undone.'
       );
-      
+
       if (!confirmRemove) return;
-      
+
       setError(null);
       await client.removeCompletedPost(post._id);
       navigate('/my-posts');
@@ -402,7 +401,7 @@ export default function PostDetail() {
       )}
 
       <h1>{post.title}</h1>
-      
+
       <div className="post-meta">
         Posted by: {post.userId} | Date: {new Date(post.createdAt).toLocaleDateString()}
       </div>
@@ -416,7 +415,7 @@ export default function PostDetail() {
 
       <div className="detail-section">
         <h2>Post Information Section</h2>
-        
+
         <div className="detail-section-content">
           <div className="info-group">
             <div className="info-label">Category</div>
@@ -470,12 +469,12 @@ export default function PostDetail() {
             <>
               <button className="back-btn" onClick={handleBack}>Back to AllPosts</button>
               <button className="message-button" onClick={handleMessage}>Message</button>
-              {isParticipant && post.selectedParticipantId === currentUser?._id && 
-               (post.status === 'In Progress' || post.status === 'Wait for Complete') && (
-                <button className="cancel-collaboration" onClick={handleCancelCollaboration}>
-                  Cancel Participation
-                </button>
-              )}
+              {isParticipant && post.selectedParticipantId === currentUser?._id &&
+                (post.status === 'In Progress' || post.status === 'Wait for Complete') && (
+                  <button className="cancel-collaboration" onClick={handleCancelCollaboration}>
+                    Cancel Participation
+                  </button>
+                )}
               {isParticipant && post.status === 'Complete' && (
                 <button className="remove-btn" onClick={handleRemoveCompletedPost}>
                   Remove from My Posts
@@ -486,8 +485,8 @@ export default function PostDetail() {
         </div>
         <div className="action-buttons-right">
           {!isOwner && !isParticipant && (
-            <button 
-              className={`accept-btn ${hasAccepted ? 'accepted' : ''}`} 
+            <button
+              className={`accept-btn ${hasAccepted ? 'accepted' : ''}`}
               onClick={handleAccept}
               disabled={hasAccepted || post.status === 'Complete' || post.ownerCompleted || !!post.selectedParticipantId}
             >
@@ -495,7 +494,7 @@ export default function PostDetail() {
             </button>
           )}
           {isNotSelectedParticipant && (
-            <button 
+            <button
               className="remove-btn"
               onClick={handleRemoveFromMyPosts}
             >
@@ -503,7 +502,7 @@ export default function PostDetail() {
             </button>
           )}
           {showCompleteButton() && (
-            <button 
+            <button
               className="complete-btn"
               onClick={handleMarkComplete}
               disabled={isCompleting}
@@ -516,7 +515,7 @@ export default function PostDetail() {
       </div>
 
       {/* Add report modal */}
-      <ReportModal 
+      <ReportModal
         isOpen={showReportModal}
         onClose={handleCloseReport}
         onSubmit={handleSubmitReport}
