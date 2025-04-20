@@ -34,7 +34,10 @@ export default function PendingOffers() {
       if (
         postData.selectedParticipantId || 
         postData.status === 'In Progress' ||
-        participantsData.some((p: Participant) => p.status === 'In Progress')
+        postData.status === 'Wait for Complete' ||
+        participantsData.some((p: Participant) => 
+          p.status === 'In Progress' || p.status === 'Wait for Complete'
+        )
       ) {
         setHasSelectedParticipant(true);
       } else {
@@ -99,8 +102,40 @@ export default function PendingOffers() {
   };
 
   const handleMarkComplete = async (participantId: string) => {
-    // TODO: Implement mark complete functionality
-    console.log(`Will mark participant ${participantId} as complete when implemented`);
+    try {
+      if (!postId) return;
+      setIsProcessing(true);
+      setError('');
+      
+      const confirmComplete = window.confirm(
+        'Are you sure you want to mark this collaboration as complete?'
+      );
+      
+      if (!confirmComplete) {
+        setIsProcessing(false);
+        return;
+      }
+      
+      // Use try-catch within the function to handle potential session issues
+      try {
+        await client.markPostComplete(postId);
+        await loadPostAndParticipants();
+      } catch (innerError: any) {
+        console.error('API error when marking post as complete:', innerError);
+        
+        // Check if the error is authentication-related
+        if (innerError.response?.status === 401) {
+          setError('Your session has expired. Please refresh the page and try again.');
+        } else {
+          setError(innerError.response?.data?.message || 'Error marking post as complete');
+        }
+      }
+    } catch (error: any) {
+      console.error('Error marking post as complete:', error);
+      setError(error.response?.data?.message || 'Error marking post as complete');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const getParticipantName = (participant: Participant) => {
@@ -156,6 +191,9 @@ export default function PendingOffers() {
                       {participant.status === 'In Progress' && (
                         <span id="pending-offer-status-badge">In Progress</span>
                       )}
+                      {participant.status === 'Wait for Complete' && (
+                        <span id="pending-offer-status-badge" className="wait-for-complete">Wait for Complete</span>
+                      )}
                       {participant.status === 'Not Selected' && (
                         <span id="pending-offer-status-badge" className="not-selected">Not Selected</span>
                       )}
@@ -190,13 +228,14 @@ export default function PendingOffers() {
                       </>
                     )}
                     
-                    {participant.status === 'In Progress' && (
+                    {participant.status === 'In Progress' && post.status !== 'Wait for Complete' && (
                       <>
                         <button 
                           id="pending-offer-mark-complete-button" 
                           onClick={() => handleMarkComplete(participant.userId)}
+                          disabled={isProcessing}
                         >
-                          Mark as Complete
+                          {isProcessing ? 'Processing...' : 'Mark as Complete'}
                         </button>
                         <button 
                           id="pending-offer-message-button" 
@@ -214,6 +253,32 @@ export default function PendingOffers() {
                       </>
                     )}
                     
+                    {(participant.status === 'Wait for Complete' || 
+                      (participant.status === 'In Progress' && post.status === 'Wait for Complete')) && (
+                      <>
+                        <button 
+                          id="pending-offer-mark-complete-button" 
+                          disabled={true}
+                          className="disabled"
+                        >
+                          Waiting for Completion
+                        </button>
+                        <button 
+                          id="pending-offer-message-button" 
+                          onClick={() => handleMessage(participant.userId)}
+                        >
+                          Message
+                        </button>
+                        <button 
+                          id="pending-offer-decline-button" 
+                          onClick={() => handleDecline(participant.userId)}
+                          disabled={isProcessing}
+                        >
+                          Decline
+                        </button>
+                      </>
+                    )}
+
                     {participant.status === 'Not Selected' && (
                       <>
                         <button 

@@ -370,6 +370,26 @@ export default function PostDetail() {
     }
   };
 
+  // Handle removing a completed post from participant's view
+  const handleRemoveCompletedPost = async () => {
+    try {
+      if (!post?._id) return;
+      
+      const confirmRemove = window.confirm(
+        'Are you sure you want to remove this completed post from your list? This cannot be undone.'
+      );
+      
+      if (!confirmRemove) return;
+      
+      setError(null);
+      await client.removeCompletedPost(post._id);
+      navigate('/my-posts');
+    } catch (err: any) {
+      console.error('Error removing completed post:', err);
+      setError(err.response?.data?.message || 'Failed to remove completed post');
+    }
+  };
+
   return (
     <div className="post-detail-container">
       {showStatusBadge && (
@@ -465,6 +485,11 @@ export default function PostDetail() {
                (post.status === 'In Progress' || post.status === 'Wait for Complete') && (
                 <button className="cancel-collaboration" onClick={handleCancelCollaboration}>
                   Cancel Participation
+                </button>
+              )}
+              {isParticipant && post.status === 'Complete' && (
+                <button className="remove-btn" onClick={handleRemoveCompletedPost}>
+                  Remove from My Posts
                 </button>
               )}
             </>

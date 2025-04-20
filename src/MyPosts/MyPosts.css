@@ -385,8 +385,18 @@
   background-color: #138496;
 }
 
+#pending-offer-mark-complete-button.disabled {
+  background-color: #aaaaaa !important;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 #pending-offer-status-badge.not-selected {
   background-color: #6c757d;
+}
+
+#pending-offer-status-badge.wait-for-complete {
+  background-color: #9C27B0;
 }
 
 .info-message {

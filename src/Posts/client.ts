@@ -235,3 +235,11 @@ export const cancelCollaboration = async (postId: string) => {
   );
   return response.data;
 };
+
+// Remove a completed post from participant's view (without changing post status)
+export const removeCompletedPost = async (postId: string) => {
+  const response = await axiosWithCredentials.put(
+    `${POSTS_API}/${postId}/remove-completed-post`
+  );
+  return response.data;
+};
