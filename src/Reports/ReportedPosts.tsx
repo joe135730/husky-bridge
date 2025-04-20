@@ -30,7 +30,7 @@ const ReportedPosts = () => {
       currentUser, 
       role: currentUser?.role,
       isLoggedIn: !!currentUser,
-      isAdmin: currentUser?.role === "ADMIN"
+      isAdmin: currentUser?.role?.toUpperCase() === "ADMIN"
     });
   }, [currentUser]);
   
@@ -47,7 +47,7 @@ const ReportedPosts = () => {
       return;
     }
     
-    if (currentUser.role !== "ADMIN") {
+    if (currentUser.role?.toUpperCase() !== "ADMIN") {
       console.log("User is not admin:", currentUser.role);
       setError(`You need admin privileges to view this page. Your current role: ${currentUser.role || 'undefined'}`);
       setTimeout(() => navigate("/"), 3000);
@@ -59,7 +59,7 @@ const ReportedPosts = () => {
       try {
         setLoading(true);
         // Only fetch if user is admin
-        if (!currentUser || currentUser.role !== "ADMIN") {
+        if (!currentUser || currentUser.role?.toUpperCase() !== "ADMIN") {
           return;
         }
         
@@ -93,7 +93,7 @@ const ReportedPosts = () => {
     };
 
     // Only fetch if user data is loaded and user is admin
-    if (currentUser && currentUser.role === "ADMIN") {
+    if (currentUser && currentUser.role?.toUpperCase() === "ADMIN") {
       fetchReportedPosts();
     } else if (currentUser !== null) {
       // User is loaded but not admin
@@ -170,7 +170,7 @@ const ReportedPosts = () => {
     return <div className="loading">Checking authorization...</div>;
   }
 
-  if (currentUser && currentUser.role !== "ADMIN") {
+  if (currentUser && currentUser.role?.toUpperCase() !== "ADMIN") {
     return (
       <div className="error-container">
         <div className="role-info">

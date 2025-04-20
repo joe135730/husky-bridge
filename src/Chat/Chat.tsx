@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import './Chat.css';
 import { axiosWithCredentials } from '../api/client';
+import { useSelector } from 'react-redux';
+import { StoreType } from '../store';
 
 interface Message {
   id: string;
@@ -24,6 +26,16 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string>("");
+  const currentUser = useSelector((state: StoreType) => state.accountReducer.currentUser);
+
+  // Add authentication debugging
+  useEffect(() => {
+    console.log("Chat Component - Auth State:", {
+      isLoggedIn: !!currentUser,
+      userId: currentUser?._id,
+      role: currentUser?.role
+    });
+  }, [currentUser]);
 
   // Check for focused user from PendingOffers
   useEffect(() => {
@@ -56,8 +68,15 @@ export default function Chat() {
         }));
 
         setContacts(formattedContacts);
-      } catch (err) {
+      } catch (err: any) {
         console.error("Failed to load user data", err);
+        
+        // Check for auth errors
+        if (err.response?.status === 401) {
+          console.log("Authentication required. User session may have expired.");
+        } else if (err.response?.status === 403) {
+          console.log("Access forbidden. User may not have correct permissions.");
+        }
       }
     };
 

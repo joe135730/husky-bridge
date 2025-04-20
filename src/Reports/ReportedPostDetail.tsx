@@ -36,7 +36,7 @@ const ReportedPostDetail = () => {
       return;
     }
     
-    if (!currentUser || currentUser.role !== "ADMIN") {
+    if (!currentUser || currentUser.role?.toUpperCase() !== "ADMIN") {
       setError("You need admin privileges to view this page");
       // Redirect after a delay
       setTimeout(() => navigate("/"), 3000);
@@ -46,7 +46,7 @@ const ReportedPostDetail = () => {
   useEffect(() => {
     const fetchReportedPost = async () => {
       try {
-        if (!currentUser || currentUser.role !== "ADMIN") {
+        if (!currentUser || currentUser.role?.toUpperCase() !== "ADMIN") {
           return;
         }
         
@@ -73,7 +73,7 @@ const ReportedPostDetail = () => {
     };
 
     // Only fetch if user is admin and we have a postId
-    if (postId && currentUser && currentUser.role === "ADMIN") {
+    if (postId && currentUser && currentUser.role?.toUpperCase() === "ADMIN") {
       fetchReportedPost();
     } else if (currentUser !== null) {
       // User is loaded but not admin or no postId
