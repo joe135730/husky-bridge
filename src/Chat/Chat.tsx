@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './Chat.css';
+import { axiosWithCredentials } from '../api/client';
 
 interface Message {
   id: string;
@@ -40,17 +41,12 @@ export default function Chat() {
   useEffect(() => {
     const loadProfileAndContacts = async () => {
       try {
-        const profileRes = await fetch("/api/users/profile", {
-          method: "POST",
-          credentials: "include"
-        });
-        const currentUser = await profileRes.json();
+        const profileRes = await axiosWithCredentials.post("/users/profile");
+        const currentUser = profileRes.data;
         setCurrentUserId(currentUser._id);
 
-        const usersRes = await fetch("/api/users", {
-          credentials: "include"
-        });
-        const users = await usersRes.json();
+        const usersRes = await axiosWithCredentials.get("/users");
+        const users = usersRes.data;
 
         const formattedContacts = users.map((user: any) => ({
           id: user._id,
@@ -73,9 +69,9 @@ export default function Chat() {
     const fetchContacts = async () => {
       try {
         console.log("Trying to get the contact list...");
-        const res = await fetch("/api/users", { credentials: "include" });
+        const res = await axiosWithCredentials.get("/users");
         console.log("API response status:", res.status);
-        const data = await res.json();
+        const data = res.data;
         console.log("Received user information:", data);
 
         // Make sure the data is in array format
@@ -103,10 +99,8 @@ export default function Chat() {
     setRoomId(generatedRoomId);
 
     try {
-      const res = await fetch(`/api/chat/${generatedRoomId}`, {
-        credentials: "include"
-      });
-      const data = await res.json();
+      const res = await axiosWithCredentials.get(`/chat/${generatedRoomId}`);
+      const data = res.data;
 
       const formattedMessages = data.map((msg: any) => ({
         id: msg._id,
@@ -150,14 +144,8 @@ export default function Chat() {
     };
 
     try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(newMessage)
-      });
-
-      const saved = await res.json();
+      const res = await axiosWithCredentials.post("/chat", newMessage);
+      const saved = res.data;
       setMessages(prev => [...prev, {
         id: saved._id,
         text: saved.message,
