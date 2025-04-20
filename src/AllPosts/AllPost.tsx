@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import * as client from "../Posts/client";
 import { Post, PostFilters } from "../Posts/client";
+import { StoreType } from "../store";
 import "./AllPost.css";
 
 export default function AllPost() {
@@ -11,6 +13,7 @@ export default function AllPost() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const currentUser = useSelector((state: StoreType) => state.accountReducer.currentUser);
 
     const fetchPosts = async () => {
         try {
@@ -49,6 +52,16 @@ export default function AllPost() {
     const formatDate = (dateString: string | Date) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    };
+
+    const handlePostClick = (postId: string) => {
+        if (!currentUser) {
+            // Redirect to login if not authenticated
+            navigate("/Account/login", { state: { from: `/post/${postId}` } });
+        } else {
+            // Navigate to post detail if authenticated
+            navigate(`/post/${postId}`);
+        }
     };
 
     const getCategoryTitle = () => {
@@ -100,7 +113,10 @@ export default function AllPost() {
                             <span className="post-date">{formatDate(post.createdAt)}</span>
                         </div>
                     </div>
-                    <button className="go-button" onClick={() => navigate(`/post/${post._id}`)}>
+                    <button 
+                        className="go-button" 
+                        onClick={() => post._id && handlePostClick(post._id)}
+                    >
                         GO
                     </button>
                 </div>

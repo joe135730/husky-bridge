@@ -53,19 +53,18 @@ export default function Navbar() {
       </div>
 
       <div className="nav-items-right">
+        <div className="post-navigation">
+          <button className="view-all-post" onClick={() => navigate('/AllPosts')}>
+            View All Post
+          </button>
+        </div>
+        
         {currentUser ? (
-          <>
-            <div className="post-navigation">
-              <button className="view-all-post" onClick={() => navigate('/AllPosts')}>
-                View All Post
-              </button>
-            </div>
-            <Nav.Item>
-              <button className="add-a-post-button" onClick={() => navigate('/create-post')}>
-                Add a Post +
-              </button>
-            </Nav.Item>
-          </>
+          <Nav.Item>
+            <button className="add-a-post-button" onClick={() => navigate('/create-post')}>
+              Add a Post +
+            </button>
+          </Nav.Item>
         ) : (
           <Nav.Item>
             <Nav.Link as={Link} to="/Account/login" id="login-page">

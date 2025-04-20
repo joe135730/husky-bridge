@@ -74,7 +74,11 @@ function AppContent() {
               <EditPost />
             </ProtectedRoute>
           } />
-          <Route path="/post/:id" element={<PostDetail />} />
+          <Route path="/post/:id" element={
+            <ProtectedRoute>
+              <PostDetail />
+            </ProtectedRoute>
+          } />
           <Route path="/messages" element={
             <ProtectedRoute>
               <Chat />
