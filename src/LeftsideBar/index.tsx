@@ -1,17 +1,19 @@
 // src/Components/LeftSideBar/index.tsx
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faUser, faEnvelope, faClipboard, faCog, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faUser, faEnvelope, faClipboard, faCog, faSignOutAlt, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import { clearCurrentUser } from "../store/account-reducer";
 import * as accountClient from "../Account/client";
 import "./LeftSideBar.css";
+import { StoreType } from "../store";
 
 const LeftSideBar = ({ onClose }: { onClose: () => void }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const currentUser = useSelector((state: StoreType) => state.accountReducer.currentUser);
+  
   const handleSignout = async () => {
     try {
       await accountClient.signout();
@@ -48,9 +50,15 @@ const LeftSideBar = ({ onClose }: { onClose: () => void }) => {
           </Link>
         </li>
         <li>
-          <Link to="/settings" onClick={onClose}>
-            <FontAwesomeIcon icon={faCog} /> Settings
-          </Link>
+          {currentUser?.role && (
+            <>
+              {(currentUser.role === "ADMIN" || currentUser.role === "admin") && (
+                <Link to="/reports" onClick={onClose}>
+                  <FontAwesomeIcon icon={faExclamationCircle} /> Reports
+                </Link>
+              )}
+            </>
+          )}
         </li>
         <li>
           <button className="logout-link" onClick={handleSignout}>

@@ -26,7 +26,14 @@ export default function Login() {
 
         try {
             const user = await client.signin(email, password);
-            dispatch(setCurrentUser(user));
+            
+            const userWithConsistentRole = {
+                ...user,
+                role: user.role.toUpperCase()
+            };
+            
+            dispatch(setCurrentUser(userWithConsistentRole));
+            
             navigate("/");
         } catch (err: any) {
             console.error("Login error:", err);

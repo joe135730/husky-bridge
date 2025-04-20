@@ -1,8 +1,9 @@
 import { Route, Routes, BrowserRouter, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as accountClient from "./Account/client";
 import { setCurrentUser } from "./store/account-reducer.ts";
+import { StoreType } from "./store";
 import LandingPage from './LandingPage';
 import AccountRoutes from './Account';
 import Navbar from './navbar/navbar';
@@ -16,6 +17,8 @@ import PostDetail from "./PostDetail/PostDetail";
 import Chat from "./Chat/Chat";
 import Profile from "./Account/Profile/Profile";
 import AllPost from "./AllPosts/AllPost";
+import ReportedPosts from "./Reports/ReportedPosts";
+import ReportedPostDetail from "./Reports/ReportedPostDetail";
 
 import './App.css'
 
@@ -56,10 +59,12 @@ function AppContent() {
           <Route path="/messages" element={<Chat />} />
           <Route path="/AllPosts" element={<AllPost />} />
           <Route path="/posts/category/:category" element={<AllPost />} />
+          <Route path="/reports" element={<ReportedPosts />} />
+          <Route path="/reports/:postId" element={<ReportedPostDetail />} />
         </Routes>
       </div>
-        <hr />
-        <Footer />
+      <hr />
+      <Footer />
     </div>
   );
 }

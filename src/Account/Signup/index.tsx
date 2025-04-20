@@ -13,6 +13,7 @@ export default function Signup() {
         lastName: '',
         email: '',
         password: '',
+        role: 'STUDENT'  // Default to STUDENT
     });
 
     const [errors, setErrors] = useState({
@@ -48,10 +49,19 @@ export default function Signup() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        
+        // For the role field, convert to uppercase to match the schema enum
+        if (name === 'role') {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value.toUpperCase()
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
 
         // For password field, check validation
         if (name === 'password') {
@@ -205,7 +215,8 @@ export default function Signup() {
                             <input 
                                 type="radio" 
                                 name="role" 
-                                value="student" 
+                                value="STUDENT" 
+                                checked={formData.role === "STUDENT"}
                                 onChange={handleInputChange}
                             />
                             <span>Student</span>
@@ -214,7 +225,8 @@ export default function Signup() {
                             <input 
                                 type="radio" 
                                 name="role" 
-                                value="admin" 
+                                value="ADMIN" 
+                                checked={formData.role === "ADMIN"}
                                 onChange={handleInputChange}
                             />
                             <span>Admin</span>

@@ -188,11 +188,13 @@ export default function EditProfile() {
                     <label>NEU Role</label>
                     <select
                         value={formData.role}
-                        onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value }))}
+                        onChange={(e) => setFormData(prev => ({ 
+                            ...prev, 
+                            role: e.target.value.toUpperCase() 
+                        }))}
                     >
-                        <option value="">Select Role</option>
-                        <option value="student">Student</option>
-                        <option value="admin">Admin</option>
+                        <option value="STUDENT">Student</option>
+                        <option value="ADMIN">Admin</option>
                     </select>
 
                     <div className="form-actions">

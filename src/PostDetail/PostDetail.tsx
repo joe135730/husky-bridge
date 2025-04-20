@@ -5,7 +5,114 @@ import { StoreType } from '../store';
 import * as client from '../Posts/client';
 import type { Post } from '../Posts/client';
 import './PostDetail.css';
+import './components/ReportModal.css';
 import { findPostById, participateInPost, markPostComplete } from '../Posts/client';
+import React from 'react';
+import axios from 'axios';
+
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000/api";
+
+// Create a custom axios instance with credentials 
+const axiosWithCredentials = axios.create({
+  baseURL: API_BASE,
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// Add ReportModal component
+interface ReportModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (reason: string, comments: string) => void;
+  postId: string;
+}
+
+const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSubmit, postId }) => {
+  const [reason, setReason] = useState<string>("Inappropriate Content");
+  const [comments, setComments] = useState<string>("");
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="report-modal-overlay">
+      <div className="report-modal">
+        <h2>Report Post Form</h2>
+        
+        <div className="report-form-group">
+          <label>Reason for Reporting</label>
+          <div className="radio-option">
+            <input 
+              type="radio" 
+              id="inappropriate" 
+              name="reportReason" 
+              value="Inappropriate Content"
+              checked={reason === "Inappropriate Content"}
+              onChange={(e) => setReason(e.target.value)}
+            />
+            <label htmlFor="inappropriate">Inappropriate Content</label>
+          </div>
+          <div className="radio-option">
+            <input 
+              type="radio" 
+              id="spam" 
+              name="reportReason" 
+              value="Spam or Scam"
+              checked={reason === "Spam or Scam"}
+              onChange={(e) => setReason(e.target.value)}
+            />
+            <label htmlFor="spam">Spam or Scam</label>
+          </div>
+          <div className="radio-option">
+            <input 
+              type="radio" 
+              id="false" 
+              name="reportReason" 
+              value="False or Misleading Information"
+              checked={reason === "False or Misleading Information"}
+              onChange={(e) => setReason(e.target.value)}
+            />
+            <label htmlFor="false">False or Misleading Information</label>
+          </div>
+          <div className="radio-option">
+            <input 
+              type="radio" 
+              id="other" 
+              name="reportReason" 
+              value="Other"
+              checked={reason === "Other"}
+              onChange={(e) => setReason(e.target.value)}
+            />
+            <label htmlFor="other">Other</label>
+          </div>
+        </div>
+        
+        <div className="report-form-group">
+          <label>Additional Comments</label>
+          <textarea 
+            className="comment-textarea"
+            value={comments}
+            onChange={(e) => setComments(e.target.value)}
+            placeholder="Please provide additional details about your report..."
+          />
+        </div>
+        
+        <div className="modal-buttons">
+          <button className="cancel-button" onClick={onClose}>
+            Cancel
+          </button>
+          <button 
+            className="submit-button" 
+            onClick={() => onSubmit(reason, comments)}
+          >
+            Submit Report
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function PostDetail() {
   const { id } = useParams();
@@ -16,6 +123,7 @@ export default function PostDetail() {
   const [error, setError] = useState<string | null>(null);
   const [hasAccepted, setHasAccepted] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   useEffect(() => {
     loadPost();
@@ -104,8 +212,45 @@ export default function PostDetail() {
   };
 
   const handleReport = () => {
-    // TODO: Implement report functionality
-    console.log("Report button clicked");
+    if (!currentUser) {
+      setError("You must be logged in to report a post");
+      return;
+    }
+    
+    // Show the report modal
+    setShowReportModal(true);
+  };
+
+  const handleCloseReport = () => {
+    setShowReportModal(false);
+  };
+
+  const handleSubmitReport = async (reason: string, comments: string) => {
+    try {
+      setError(null);
+      
+      // Use fetch API directly with credentials included
+      const response = await fetch(`${API_BASE}/posts/${post?._id}/report`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reason, comments }),
+        credentials: 'include'
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || `Error: ${response.status}`);
+      }
+      
+      setShowReportModal(false);
+      alert("Report submitted successfully");
+    } catch (err: any) {
+      console.error("Error reporting post:", err);
+      setError("Failed to submit report. Please try again later.");
+    }
   };
 
   const handleMarkComplete = async () => {
@@ -298,6 +443,14 @@ export default function PostDetail() {
           <button className="report-post" onClick={handleReport}>Report Post</button>
         </div>
       </div>
+
+      {/* Add report modal */}
+      <ReportModal 
+        isOpen={showReportModal}
+        onClose={handleCloseReport}
+        onSubmit={handleSubmitReport}
+        postId={post?._id || ""}
+      />
     </div>
   );
 } 

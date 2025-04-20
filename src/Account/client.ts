@@ -5,7 +5,11 @@ const USERS_API = `${API_BASE}/users`;
 
 // Create an axios instance with credentials to maintain session
 const axiosWithCredentials = axios.create({
+  baseURL: API_BASE,
   withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
 export interface User {
