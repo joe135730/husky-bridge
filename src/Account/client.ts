@@ -12,6 +12,9 @@ const axiosWithCredentials = axios.create({
   }
 });
 
+// Additional Axios config to ensure credentials are always sent
+axiosWithCredentials.defaults.withCredentials = true;
+
 export interface User {
     _id?: string;
     firstName: string;

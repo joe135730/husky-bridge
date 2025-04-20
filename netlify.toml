@@ -8,6 +8,18 @@
   to = "/index.html"
   status = 200
 
+# Security headers for all pages
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Allow images and scripts from self and certain external domains
+    Content-Security-Policy = "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' https://husky-bridge-server.onrender.com; connect-src 'self' https://husky-bridge-server.onrender.com;"
+
 [build.environment]
   NODE_VERSION = "18"
+  VITE_API_BASE = "https://husky-bridge-server.onrender.com/api"
+  VITE_REMOTE_SERVER = "https://husky-bridge-server.onrender.com"
   # Production variables are set in the Netlify dashboard 
