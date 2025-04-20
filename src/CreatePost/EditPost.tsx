@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StoreType } from '../store';
-import Navbar from '../navbar/navbar';
-import Footer from "../Footer/index";
 import * as client from './client';
 import { Post } from '../Posts/client';
 import './CreatePost.css';
@@ -80,8 +78,6 @@ export default function EditPost() {
   };
 
   return (
-    <>
-    <Navbar />
     <div className="create-post-container">
       <h1>Edit Post</h1>
       
@@ -214,7 +210,5 @@ export default function EditPost() {
         </div>
       </form>
     </div>
-    <Footer/>
-    </>
   );
 } 

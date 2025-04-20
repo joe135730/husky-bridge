@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import Navbar from '../navbar/navbar';
-import Footer from "../Footer/index";
 import * as client from '../Posts/client';
 import { Post } from '../Posts/client';
 import './CreatePost.css';
@@ -51,8 +49,6 @@ export default function CreatePost() {
   };
 
   return (
-    <>
-    <Navbar />
     <div className="create-post-container">
       <h1>Create a New Post</h1>
       
@@ -184,7 +180,5 @@ export default function CreatePost() {
         </div>
       </form>
     </div>
-    <Footer/>
-    </>
   );
 } 

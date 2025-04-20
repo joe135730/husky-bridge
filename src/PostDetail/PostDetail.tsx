@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StoreType } from '../store';
-import Navbar from '../navbar/navbar';
 import * as client from '../Posts/client';
 import type { Post } from '../Posts/client';
 import './PostDetail.css';

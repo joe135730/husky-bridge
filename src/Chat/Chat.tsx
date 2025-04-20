@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import './Chat.css';
-import Navbar from '../navbar/navbar';
-import Footer from "../Footer/index";
 
 interface Message {
   id: string;
@@ -174,77 +172,73 @@ export default function Chat() {
   };
 
   return (
-    <>
-      <Navbar />
-      <div className="chat-container">
-        <div className="contacts-sidebar">
-          <div className="contacts-header">
-            <h2>Messages</h2>
-          </div>
-
-          <div className="contacts-list">
-            {contacts.map(contact => (
-              <div
-                key={contact.id}
-                className={`contact-item ${selectedContact?.id === contact.id ? 'selected' : ''}`}
-                onClick={() => handleContactSelect(contact)}
-              >
-                <div className="contact-info">
-                  <h3>{contact.name}</h3>
-                  <p className="last-message-preview">{contact.lastMessage}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+    <div className="chat-container">
+      <div className="contacts-sidebar">
+        <div className="contacts-header">
+          <h2>Messages</h2>
         </div>
 
-        <div className="chat-area">
-          {selectedContact ? (
-            <>
-              <div className="chat-header">
-                <div className="chat-header-info">
-                  <h2>{selectedContact.name}</h2>
-                  {selectedContact.isOnline && <span className="status">Online</span>}
-                </div>
-                <button className="more-options">
-                  <i className="fas fa-ellipsis-v"></i>
-                </button>
+        <div className="contacts-list">
+          {contacts.map(contact => (
+            <div
+              key={contact.id}
+              className={`contact-item ${selectedContact?.id === contact.id ? 'selected' : ''}`}
+              onClick={() => handleContactSelect(contact)}
+            >
+              <div className="contact-info">
+                <h3>{contact.name}</h3>
+                <p className="last-message-preview">{contact.lastMessage}</p>
               </div>
-
-              <div className="messages-container">
-                {messages.map(message => (
-                  <div
-                    key={message.id}
-                    className={`message ${message.isSentByMe ? 'sent' : 'received'}`}
-                  >
-                    <div className="message-content">
-                      <p>{message.text}</p>
-                      <span className="timestamp">{message.timestamp}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <form className="message-input-container" onSubmit={handleSendMessage}>
-                <input
-                  type="text"
-                  placeholder="Text here..."
-                  value={messageInput}
-                  onChange={(e) => setMessageInput(e.target.value)}
-                />
-                <button type="submit">
-                  <i className="fas fa-paper-plane"></i>
-                </button>
-              </form>
-            </>
-          ) : (
-            <div className="no-chat-selected">
-              <p>Select a conversation to start messaging</p>
             </div>
-          )}
+          ))}
         </div>
       </div>
-      <Footer />
-    </>
+
+      <div className="chat-area">
+        {selectedContact ? (
+          <>
+            <div className="chat-header">
+              <div className="chat-header-info">
+                <h2>{selectedContact.name}</h2>
+                {selectedContact.isOnline && <span className="status">Online</span>}
+              </div>
+              <button className="more-options">
+                <i className="fas fa-ellipsis-v"></i>
+              </button>
+            </div>
+
+            <div className="messages-container">
+              {messages.map(message => (
+                <div
+                  key={message.id}
+                  className={`message ${message.isSentByMe ? 'sent' : 'received'}`}
+                >
+                  <div className="message-content">
+                    <p>{message.text}</p>
+                    <span className="timestamp">{message.timestamp}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <form className="message-input-container" onSubmit={handleSendMessage}>
+              <input
+                type="text"
+                placeholder="Text here..."
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.target.value)}
+              />
+              <button type="submit">
+                <i className="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </>
+        ) : (
+          <div className="no-chat-selected">
+            <p>Select a conversation to start messaging</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

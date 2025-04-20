@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import Navbar from "../navbar/navbar";
-import Footer from "../Footer/index";
 import * as client from "../Posts/client";
 import { Post, PostFilters } from "../Posts/client";
 import "./AllPost.css";
@@ -74,55 +72,44 @@ export default function AllPost() {
 
     if (loading) {
         return (
-            <>
-                <Navbar />
-                <div className="all-posts-container">
-                    <div className="loading">Loading posts...</div>
-                </div>
-                <Footer />
-            </>
+            <div className="all-posts-container">
+                <div className="loading">Loading posts...</div>
+            </div>
         );
     }
 
     if (error) {
         return (
-            <>
-                <Navbar />
-                <div className="all-posts-container">
-                    <div className="error-message">{error}</div>
-                    <button onClick={fetchPosts} className="retry-button">Try Again</button>
-                </div>
-                <Footer />
-            </>
+            <div className="all-posts-container">
+                <div className="error-message">{error}</div>
+                <button onClick={fetchPosts} className="retry-button">Try Again</button>
+            </div>
         );
     }
 
     return (
-        <>
-            <Navbar />
-            <div className="all-posts-container">
-                <h3>{getCategoryTitle()}</h3>
-                <div className="posts-count">{posts.length} results</div>
-                {posts.map((post) => (
-                    <div key={post._id} className="post-item">
-                        <div className="post-info">
-                            <div className="post-title">{post.title}</div>
-                            <div className="post-metadata">
-                                <span className="post-author">{post.userId}</span>
-                                <span className="post-date">{formatDate(post.createdAt)}</span>
-                            </div>
+        <div className="all-posts-container">
+            <h3>{getCategoryTitle()}</h3>
+            <div className="posts-count">{posts.length} results</div>
+            {posts.map((post) => (
+                <div key={post._id} className="post-item">
+                    <div className="post-info">
+                        <div className="post-title">{post.title}</div>
+                        <div className="post-metadata">
+                            <span className="post-author">{post.userId}</span>
+                            <span className="post-date">{formatDate(post.createdAt)}</span>
                         </div>
-                        <button className="go-button" onClick={() => navigate(`/post/${post._id}`)}>
-                            GO
-                        </button>
                     </div>
-                ))}
-                {posts.length === 0 && (
-                    <div className="no-posts">
-                        <p>No posts available in this category.</p>
-                    </div>
-                )}
-            </div>
-        </>
+                    <button className="go-button" onClick={() => navigate(`/post/${post._id}`)}>
+                        GO
+                    </button>
+                </div>
+            ))}
+            {posts.length === 0 && (
+                <div className="no-posts">
+                    <p>No posts available in this category.</p>
+                </div>
+            )}
+        </div>
     );
 }
