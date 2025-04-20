@@ -15,6 +15,18 @@ const axiosWithCredentials = axios.create({
 // Additional Axios config to ensure credentials are always sent
 axiosWithCredentials.defaults.withCredentials = true;
 
+// Add request interceptor to ensure cookies are included in all requests
+axiosWithCredentials.interceptors.request.use(
+  config => {
+    // Always include credentials
+    config.withCredentials = true;
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);
+
 export interface User {
     _id?: string;
     firstName: string;
