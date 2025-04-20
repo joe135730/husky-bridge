@@ -27,19 +27,6 @@ axiosWithCredentials.interceptors.request.use(
   }
 );
 
-// Add response interceptor to handle 401 errors globally
-axiosWithCredentials.interceptors.response.use(
-  response => response,
-  async error => {
-    // Handle 401 Unauthorized errors
-    if (error.response && error.response.status === 401) {
-      // Clear localStorage if server says we're not authenticated
-      localStorage.removeItem('currentUser');
-    }
-    return Promise.reject(error);
-  }
-);
-
 export interface User {
     _id?: string;
     firstName: string;
@@ -58,43 +45,32 @@ export const signup = async (user: User) => {
 };
 
 export const signin = async (email: string, password: string) => {
-    try {
-        const response = await axiosWithCredentials.post(`${USERS_API}/signin`, { email, password });
-        // Save user data to localStorage as fallback
-        localStorage.setItem('currentUser', JSON.stringify(response.data));
-        return response.data;
-    } catch (error) {
-        console.error("Sign in error:", error);
-        throw error;
-    }
+    const response = await axiosWithCredentials.post(`${USERS_API}/signin`, { email, password });
+    // Save user data to localStorage as fallback
+    localStorage.setItem('currentUser', JSON.stringify(response.data));
+    return response.data;
 };
 
 export const signout = async () => {
-    try {
-        const response = await axiosWithCredentials.post(`${USERS_API}/signout`);
-        // Clear localStorage on signout
-        localStorage.removeItem('currentUser');
-        return response.data;
-    } catch (error) {
-        // Still clear localStorage even if server signout fails
-        localStorage.removeItem('currentUser');
-        console.error("Sign out error:", error);
-        throw error;
-    }
+    const response = await axiosWithCredentials.post(`${USERS_API}/signout`);
+    // Clear localStorage on signout
+    localStorage.removeItem('currentUser');
+    return response.data;
 };
 
 export const profile = async () => {
     try {
-        // Make request to get the current user profile
         const response = await axiosWithCredentials.post(`${USERS_API}/profile`);
         // Update localStorage with fresh user data
         localStorage.setItem('currentUser', JSON.stringify(response.data));
         return response.data;
     } catch (error: any) {
-        // If server says we're not authenticated and we have localStorage data
+        // For 401 errors (not logged in), try localStorage fallback
         if (error.response && error.response.status === 401) {
-            // Don't fall back to localStorage anymore - this causes session inconsistency
-            localStorage.removeItem('currentUser');
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                return JSON.parse(savedUser);
+            }
             return null;
         }
         // Rethrow other errors
@@ -104,30 +80,38 @@ export const profile = async () => {
 
 // Helper function to check and refresh authentication status
 export const verifyAuth = async () => {
+    // First check localStorage
+    const savedUser = localStorage.getItem('currentUser');
+    let user = null;
+
+    if (savedUser) {
+        try {
+            user = JSON.parse(savedUser);
+            // Set auth header with user ID for extra authentication
+            axiosWithCredentials.defaults.headers.common['X-Auth-User'] = user._id;
+        } catch (e) {
+            console.error("Error parsing stored user data:", e);
+            localStorage.removeItem('currentUser');
+        }
+    }
+
+    // Then verify with server if possible
     try {
-        // Always check with the server first
         const response = await axiosWithCredentials.post(`${USERS_API}/profile`);
         // Update localStorage with fresh data
         localStorage.setItem('currentUser', JSON.stringify(response.data));
         return response.data;
     } catch (error: any) {
-        // If the server says we're not authenticated
-        if (error.response?.status === 401) {
-            // Clear localStorage for consistency
-            localStorage.removeItem('currentUser');
-            return null;
+        // If server verification fails but we have localStorage data, use that
+        if (error.response?.status === 401 && user) {
+            console.log("Using localStorage fallback for authentication");
+            return user;
         }
         
-        // For network errors or other issues, use localStorage as a fallback
-        if (!error.response) {
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                try {
-                    return JSON.parse(savedUser);
-                } catch (e) {
-                    localStorage.removeItem('currentUser');
-                }
-            }
+        if (error.response?.status === 401) {
+            // Clear localStorage if server says we're not authenticated
+            localStorage.removeItem('currentUser');
+            return null;
         }
         
         throw error;
