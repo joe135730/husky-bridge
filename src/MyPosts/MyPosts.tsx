@@ -40,7 +40,7 @@ export default function MyPosts() {
 
   useEffect(() => {
     loadPosts();
-  }, [sort]);
+  }, [sort, filterState]);
 
   const loadPosts = async () => {
     try {
@@ -67,8 +67,8 @@ export default function MyPosts() {
         client.findParticipatingPosts()
       ]);
       
-      // Combine and deduplicate posts
-      const allPosts = [...myPosts];
+      // Combine posts
+      let allPosts = [...myPosts];
       
       // Only add participating posts that aren't already in myPosts
       for (const post of participatingPosts) {
@@ -76,11 +76,74 @@ export default function MyPosts() {
           allPosts.push(post);
         }
       }
+
+      // Apply filters
+      // Filter by post type (can select both requests and offers)
+      if (filterState.postType) {
+        const selectedTypes = Object.entries(filterState.postType)
+          .filter(([_, selected]) => selected)
+          .map(([type]) => type === 'My Requests' ? 'request' : 'offer');
+        
+        if (selectedTypes.length > 0) {
+          allPosts = allPosts.filter(post => selectedTypes.includes(post.postType));
+        }
+      }
+
+      // Filter by category (can select multiple categories)
+      if (filterState.category) {
+        const selectedCategories = Object.entries(filterState.category)
+          .filter(([_, selected]) => selected)
+          .map(([category]) => {
+            const categoryMap: { [key: string]: string } = {
+              'General': 'general',
+              'Tutoring': 'tutoring',
+              'Housing': 'housing',
+              'Borrow/Lend': 'lend-borrow'
+            };
+            return categoryMap[category];
+          });
+
+        if (selectedCategories.length > 0) {
+          allPosts = allPosts.filter(post => selectedCategories.includes(post.category));
+        }
+      }
+
+      // Filter by date range (keep the most restrictive range if multiple selected)
+      if (filterState.dateRange) {
+        const selectedRanges = Object.entries(filterState.dateRange)
+          .filter(([_, selected]) => selected)
+          .map(([range]) => {
+            switch (range) {
+              case 'Last Hour': return 1;
+              case 'Last 24 Hours': return 24;
+              case 'Last 7 Days': return 168;
+              case 'Last 30 Days': return 720;
+              case 'All': return 0;
+              default: return 0;
+            }
+          })
+          .filter(hours => hours > 0);
+
+        if (selectedRanges.length > 0) {
+          const mostRestrictiveRange = Math.min(...selectedRanges);
+          const cutoff = new Date(new Date().getTime() - (mostRestrictiveRange * 60 * 60 * 1000));
+          allPosts = allPosts.filter(post => new Date(post.createdAt) >= cutoff);
+        }
+      }
+
+      // Apply sorting
+      allPosts.sort((a, b) => {
+        if (sort === 'latest') {
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        } else {
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        }
+      });
       
       setPosts(allPosts);
     } catch (error: any) {
-      //console.error("Error loading posts:", error);
-      //setError(error.response?.data?.message || 'Error loading posts');
+      console.error("Error loading posts:", error);
+      setError(error.response?.data?.message || 'Error loading posts');
     } finally {
       setLoading(false);
     }
@@ -141,30 +204,89 @@ export default function MyPosts() {
           <div className="filters-sidebar">
             <div className="filter-section">
               <h4>General</h4>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('postType', 'My Requests')} /> My Requests</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('postType', 'My Offer')} /> My Offer</label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  checked={filterState.postType?.['My Requests'] || false}
+                  onChange={() => handleCheckboxChange('postType', 'My Requests')} 
+                /> My Requests
+              </label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  checked={filterState.postType?.['My Offer'] || false}
+                  onChange={() => handleCheckboxChange('postType', 'My Offer')} 
+                /> My Offer
+              </label>
             </div>
             <div className="filter-section">
               <h4>Category</h4>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('category', 'General')} /> General</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('category', 'Tutoring')} /> Tutoring</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('category', 'Housing')} /> Housing</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('category', 'Borrow/Lend')} /> Borrow/Lend</label>
-            </div>
-            <div className="filter-section">
-              <h4>Location</h4>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('location', 'Snell Library')} /> Snell Library</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('location', 'Curry Student Center')} /> Curry Student Center</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('location', 'International Village')} /> International Village</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('location', 'East Village')} /> East Village</label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  checked={filterState.category?.['General'] || false}
+                  onChange={() => handleCheckboxChange('category', 'General')} 
+                /> General
+              </label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  checked={filterState.category?.['Tutoring'] || false}
+                  onChange={() => handleCheckboxChange('category', 'Tutoring')} 
+                /> Tutoring
+              </label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  checked={filterState.category?.['Housing'] || false}
+                  onChange={() => handleCheckboxChange('category', 'Housing')} 
+                /> Housing
+              </label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  checked={filterState.category?.['Borrow/Lend'] || false}
+                  onChange={() => handleCheckboxChange('category', 'Borrow/Lend')} 
+                /> Borrow/Lend
+              </label>
             </div>
             <div className="filter-section">
               <h4>Date Posted</h4>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('dateRange', 'All')} /> All</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('dateRange', 'Last Hour')} /> Last Hour</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('dateRange', 'Last 24 Hours')} /> Last 24 Hours</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('dateRange', 'Last 7 Days')} /> Last 7 Days</label>
-              <label><input type="checkbox" onChange={() => handleCheckboxChange('dateRange', 'Last 30 Days')} /> Last 30 Days</label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  checked={filterState.dateRange?.['All'] || false}
+                  onChange={() => handleCheckboxChange('dateRange', 'All')} 
+                /> All
+              </label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  checked={filterState.dateRange?.['Last Hour'] || false}
+                  onChange={() => handleCheckboxChange('dateRange', 'Last Hour')} 
+                /> Last Hour
+              </label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  checked={filterState.dateRange?.['Last 24 Hours'] || false}
+                  onChange={() => handleCheckboxChange('dateRange', 'Last 24 Hours')} 
+                /> Last 24 Hours
+              </label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  checked={filterState.dateRange?.['Last 7 Days'] || false}
+                  onChange={() => handleCheckboxChange('dateRange', 'Last 7 Days')} 
+                /> Last 7 Days
+              </label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  checked={filterState.dateRange?.['Last 30 Days'] || false}
+                  onChange={() => handleCheckboxChange('dateRange', 'Last 30 Days')} 
+                /> Last 30 Days
+              </label>
             </div>
           </div>
 
