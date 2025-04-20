@@ -7,6 +7,10 @@ import LandingPage from './LandingPage';
 import AccountRoutes from './Account';
 import Navbar from './navbar/navbar';
 import Footer from './Footer';
+import FAQs from "./Footer/Faqs/faqs";
+
+<Route path="/faqs" element={<FAQs />} />
+
 import MyTeam from "./MyTeam";
 import MyPosts from "./MyPosts/MyPosts";
 import PendingOffers from "./MyPosts/PendingOffers";
@@ -24,8 +28,8 @@ import './App.css'
 function AppContent() {
   const location = useLocation();
   const dispatch = useDispatch();
-  const isAuthPage = location.pathname.startsWith('/Account/') && 
-                    !location.pathname.includes('/Account/profile');
+  const isAuthPage = location.pathname.startsWith('/Account/') &&
+    !location.pathname.includes('/Account/profile');
 
   useEffect(() => {
     const checkLoggedIn = async () => {
@@ -34,7 +38,7 @@ function AppContent() {
         // Call the profile endpoint to check if user is logged in
         const currentUser = await accountClient.profile();
         if (currentUser) {
-          console.log("App - User authenticated:", { 
+          console.log("App - User authenticated:", {
             userId: currentUser._id,
             role: currentUser.role
           });
@@ -55,7 +59,7 @@ function AppContent() {
 
     // Add an interval to periodically check and refresh the session
     const sessionRefreshInterval = setInterval(checkLoggedIn, 5 * 60 * 1000); // Check every 5 minutes
-    
+
     // Cleanup interval on component unmount
     return () => clearInterval(sessionRefreshInterval);
   }, [dispatch]);
@@ -67,6 +71,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/Account/*" element={<AccountRoutes />} />
+          <Route path="/faqs" element={<FAQs />} />
           <Route path="/my-team" element={<MyTeam />} />
           <Route path="/my-posts" element={
             <ProtectedRoute>
