@@ -1,4 +1,4 @@
-// src/Components/LeftSideBar/index.tsx
+import { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,7 +12,8 @@ const LeftSideBar = ({ onClose }: { onClose: () => void }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentUser = useSelector((state: StoreType) => state.accountReducer.currentUser);
-  
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
   const handleSignout = async () => {
     try {
       await accountClient.signout();
@@ -24,7 +25,6 @@ const LeftSideBar = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
-  // Handler for authenticated links
   const handleAuthenticatedLink = (path: string, event: React.MouseEvent) => {
     if (!currentUser) {
       event.preventDefault();
@@ -35,8 +35,21 @@ const LeftSideBar = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
+  // ✅ Click-outside detection
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
+
   return (
-    <div className="left-sidebar">
+    <div className="left-sidebar" ref={sidebarRef}>
       <button className="close-button" onClick={onClose}>✖</button>
       <ul>
         <li>
@@ -59,17 +72,13 @@ const LeftSideBar = ({ onClose }: { onClose: () => void }) => {
             <FontAwesomeIcon icon={faClipboard} /> My Post
           </Link>
         </li>
-        <li>
-          {currentUser?.role && (
-            <>
-              {(currentUser.role === "ADMIN" || currentUser.role === "admin") && (
-                <Link to="/reports" onClick={onClose}>
-                  <FontAwesomeIcon icon={faExclamationCircle} /> Reports
-                </Link>
-              )}
-            </>
-          )}
-        </li>
+        {currentUser?.role?.toUpperCase() === "ADMIN" && (
+          <li>
+            <Link to="/reports" onClick={onClose}>
+              <FontAwesomeIcon icon={faExclamationCircle} /> Reports
+            </Link>
+          </li>
+        )}
         <li>
           {currentUser ? (
             <button className="logout-link" onClick={handleSignout}>
