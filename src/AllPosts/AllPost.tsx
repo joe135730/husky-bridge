@@ -19,10 +19,10 @@ export default function AllPost() {
         try {
             setLoading(true);
             setError(null);
-            
+
             let fetchedPosts: Post[];
             const searchQuery = searchParams.get('search');
-            
+
             if (searchQuery) {
                 fetchedPosts = await client.findPostsByTitle(searchQuery);
             } else if (category) {
@@ -109,12 +109,13 @@ export default function AllPost() {
                     <div className="post-info">
                         <div className="post-title">{post.title}</div>
                         <div className="post-metadata">
-                            <span className="post-author">{post.userId}</span>
-                            <span className="post-date">{formatDate(post.createdAt)}</span>
+                            {/* Remove or comment out the userId line */}
+                            {/* <span className="post-author">{post.userId}</span> */}
+                            <span className="post-date">Date posted: {formatDate(post.createdAt)}</span>
                         </div>
                     </div>
-                    <button 
-                        className="go-button" 
+                    <button
+                        className="go-button"
                         onClick={() => post._id && handlePostClick(post._id)}
                     >
                         GO

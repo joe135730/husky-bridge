@@ -403,8 +403,9 @@ export default function PostDetail() {
       <h1>{post.title}</h1>
 
       <div className="post-meta">
-        Posted by: {post.userId} | Date: {new Date(post.createdAt).toLocaleDateString()}
+        Posted on: {new Date(post.createdAt).toLocaleDateString()}
       </div>
+
 
       {error && <div className="error-message">{error}</div>}
 
