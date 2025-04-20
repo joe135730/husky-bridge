@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const storedUser = localStorage.getItem("currentUser");
+
 const initialState = {
-  currentUser: null,
+  currentUser: storedUser ? JSON.parse(storedUser) : null,
 };
 
 const accountSlice = createSlice({
@@ -10,12 +12,14 @@ const accountSlice = createSlice({
   reducers: {
     setCurrentUser: (state, action) => {
       state.currentUser = action.payload;
+      localStorage.setItem("currentUser", JSON.stringify(action.payload));
     },
     clearCurrentUser: (state) => {
       state.currentUser = null;
+      localStorage.removeItem("currentUser");
     },
   },
 });
 
 export const { setCurrentUser, clearCurrentUser } = accountSlice.actions;
-export default accountSlice.reducer; 
+export default accountSlice.reducer;
