@@ -117,7 +117,7 @@
 }
 
 .add-a-post-button {
-    background-color: #c30000;
+    background-color: #ff0000;
     color: white;
     border: none;
     border-radius: 4px;
@@ -170,6 +170,7 @@
     .navbar-left {
         gap: 0rem;
     }
+
     .view-all-post {
         display: none;
     }
@@ -210,7 +211,8 @@
     }
 
     .navbar-search {
-        display: none; /* Hide search on mobile first row */
+        display: none;
+        /* Hide search on mobile first row */
     }
 
     .nav-items-right {
@@ -221,7 +223,7 @@
         margin: 0;
         gap: 0.5rem;
     }
-    
+
     .sidebar-toggle {
         order: -1;
         margin-right: 0.25rem;
