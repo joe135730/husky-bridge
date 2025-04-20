@@ -17,7 +17,6 @@ import Chat from "./Chat/Chat";
 import AllPost from "./AllPosts/AllPost";
 import ReportedPosts from "./Reports/ReportedPosts";
 import ReportedPostDetail from "./Reports/ReportedPostDetail";
-import AuthDebug from "./Account/AuthDebug";
 
 import './App.css'
 
@@ -68,8 +67,6 @@ function AppContent() {
       </div>
       <hr />
       <Footer />
-      {/* Debug component - only show in development or test environments */}
-      {import.meta.env.DEV && <AuthDebug />}
     </div>
   );
 }
