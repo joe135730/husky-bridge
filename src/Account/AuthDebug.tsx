@@ -1,30 +1,23 @@
-import { useState, useEffect } from 'react';
-import * as client from './client';
-import { useSelector } from 'react-redux';
-import { StoreType } from '../store';
+import { useState } from 'react';
+import axios from 'axios';
+
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000/api";
+
+// Create an axios instance with credentials to maintain session
+const axiosWithCredentials = axios.create({
+  baseURL: API_BASE,
+  withCredentials: true
+});
 
 export default function AuthDebug() {
   const [authInfo, setAuthInfo] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  const [browserCookies, setBrowserCookies] = useState<string>('');
-  const currentUser = useSelector((state: StoreType) => state.accountReducer.currentUser);
-
-  // Get browser cookies on mount
-  useEffect(() => {
-    setBrowserCookies(document.cookie);
-  }, []);
 
   const checkAuth = async () => {
     try {
       setError(null);
-      setAuthInfo(null); // Clear previous data
-      
-      // Update browser cookies
-      setBrowserCookies(document.cookie);
-      
-      // Use the comprehensive auth check function
-      const result = await client.checkAuthStatus();
-      setAuthInfo(result);
+      const response = await axiosWithCredentials.get('/auth/debug');
+      setAuthInfo(response.data);
     } catch (err: any) {
       console.error("Auth debug error:", err);
       setError(err.message || 'Error checking auth');
@@ -34,29 +27,6 @@ export default function AuthDebug() {
   return (
     <div style={{ margin: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
       <h3>Authentication Debugger</h3>
-      
-      <div style={{ marginBottom: '15px' }}>
-        <h4>Redux Store User</h4>
-        {currentUser ? (
-          <pre style={{ background: '#f5f5f5', padding: '10px', overflow: 'auto' }}>
-            {JSON.stringify({
-              id: currentUser._id,
-              name: `${currentUser.firstName} ${currentUser.lastName}`,
-              email: currentUser.email,
-              role: currentUser.role
-            }, null, 2)}
-          </pre>
-        ) : (
-          <p>No user in Redux store</p>
-        )}
-      </div>
-      
-      <div style={{ marginBottom: '15px' }}>
-        <h4>Browser Cookies</h4>
-        <pre style={{ background: '#f5f5f5', padding: '10px', overflow: 'auto', wordBreak: 'break-all' }}>
-          {browserCookies || 'No cookies found'}
-        </pre>
-      </div>
       
       <button 
         onClick={checkAuth}

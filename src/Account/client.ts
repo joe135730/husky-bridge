@@ -46,31 +46,21 @@ export const signup = async (user: User) => {
 
 export const signin = async (email: string, password: string) => {
     const response = await axiosWithCredentials.post(`${USERS_API}/signin`, { email, password });
-    // Save user data to localStorage as fallback
-    localStorage.setItem('currentUser', JSON.stringify(response.data));
     return response.data;
 };
 
 export const signout = async () => {
     const response = await axiosWithCredentials.post(`${USERS_API}/signout`);
-    // Clear localStorage on signout
-    localStorage.removeItem('currentUser');
     return response.data;
 };
 
 export const profile = async () => {
     try {
         const response = await axiosWithCredentials.post(`${USERS_API}/profile`);
-        // Update localStorage with fresh user data
-        localStorage.setItem('currentUser', JSON.stringify(response.data));
         return response.data;
     } catch (error: any) {
-        // For 401 errors (not logged in), try localStorage fallback
+        // For 401 errors (not logged in), return null instead of throwing
         if (error.response && error.response.status === 401) {
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                return JSON.parse(savedUser);
-            }
             return null;
         }
         // Rethrow other errors
@@ -78,49 +68,7 @@ export const profile = async () => {
     }
 };
 
-// Helper function to check and refresh authentication status
-export const verifyAuth = async () => {
-    // First check localStorage
-    const savedUser = localStorage.getItem('currentUser');
-    let user = null;
-
-    if (savedUser) {
-        try {
-            user = JSON.parse(savedUser);
-            // Set auth header with user ID for extra authentication
-            axiosWithCredentials.defaults.headers.common['X-Auth-User'] = user._id;
-        } catch (e) {
-            console.error("Error parsing stored user data:", e);
-            localStorage.removeItem('currentUser');
-        }
-    }
-
-    // Then verify with server if possible
-    try {
-        const response = await axiosWithCredentials.post(`${USERS_API}/profile`);
-        // Update localStorage with fresh data
-        localStorage.setItem('currentUser', JSON.stringify(response.data));
-        return response.data;
-    } catch (error: any) {
-        // If server verification fails but we have localStorage data, use that
-        if (error.response?.status === 401 && user) {
-            console.log("Using localStorage fallback for authentication");
-            return user;
-        }
-        
-        if (error.response?.status === 401) {
-            // Clear localStorage if server says we're not authenticated
-            localStorage.removeItem('currentUser');
-            return null;
-        }
-        
-        throw error;
-    }
-};
-
-// Add call to verifyAuth in other functions
 export const findAllUsers = async () => {
-    await verifyAuth(); // Ensure authentication is valid
     const response = await axiosWithCredentials.get(USERS_API);
     return response.data;
 };
@@ -138,35 +86,4 @@ export const updateUser = async (userId: string, user: User) => {
 export const deleteUser = async (userId: string) => {
     const response = await axiosWithCredentials.delete(`${USERS_API}/${userId}`);
     return response.data;
-};
-
-// Check if cookies are working and debug auth issues
-export const checkAuthStatus = async () => {
-    console.log("Client: Starting auth status check");
-    
-    // First, check if we have data in localStorage
-    const savedUser = localStorage.getItem('currentUser');
-    console.log("Client: localStorage check:", {
-        hasUser: !!savedUser,
-        userData: savedUser ? JSON.parse(savedUser) : null
-    });
-    
-    try {
-        // Make a request to the debug endpoint
-        console.log("Client: Making request to auth debug endpoint");
-        const response = await axiosWithCredentials.get(`${API_BASE}/auth/debug`);
-        console.log("Client: Auth debug response:", response.data);
-        
-        return {
-            localStorage: savedUser ? JSON.parse(savedUser) : null,
-            serverResponse: response.data
-        };
-    } catch (error) {
-        console.error("Client: Auth debug request failed:", error);
-        return {
-            localStorage: savedUser ? JSON.parse(savedUser) : null,
-            serverResponse: null,
-            error: error
-        };
-    }
 };

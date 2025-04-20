@@ -30,19 +30,10 @@ function AppContent() {
   useEffect(() => {
     const checkLoggedIn = async () => {
       try {
-        // First try to get user from localStorage for immediate display
-        const savedUser = localStorage.getItem('currentUser');
-        if (savedUser) {
-          const parsedUser = JSON.parse(savedUser);
-          dispatch(setCurrentUser(parsedUser));
-          console.log("Restored user from localStorage:", parsedUser?.firstName);
-        }
-
-        // Then call the profile endpoint to verify and get fresh data
+        // Call the profile endpoint to check if user is logged in
         const currentUser = await accountClient.profile();
         if (currentUser) {
           dispatch(setCurrentUser(currentUser));
-          console.log("User authenticated via API:", currentUser.firstName);
         } else {
           // User is not logged in - this is a normal state, not an error
           console.log("User not authenticated");
