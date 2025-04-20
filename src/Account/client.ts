@@ -3,9 +3,6 @@ import axios from "axios";
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000/api";
 const USERS_API = `${API_BASE}/users`;
 
-// Get token from local storage
-const getToken = () => localStorage.getItem('authToken');
-
 // Create an axios instance with credentials to maintain session
 const axiosWithCredentials = axios.create({
   baseURL: API_BASE,
@@ -14,18 +11,6 @@ const axiosWithCredentials = axios.create({
     'Content-Type': 'application/json'
   }
 });
-
-// Add token to requests if available
-axiosWithCredentials.interceptors.request.use(
-  (config) => {
-    const token = getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
 
 export interface User {
     _id?: string;
@@ -37,47 +22,21 @@ export interface User {
     dob?: Date;
     lastActivity?: Date;
     totalActivity?: string;
-    token?: string; // JWT token for auth
 }
 
 export const signup = async (user: User) => {
-    try {
-        const response = await axiosWithCredentials.post(`${USERS_API}/signup`, user);
-        // Store token in localStorage if provided
-        if (response.data.token) {
-            localStorage.setItem('authToken', response.data.token);
-        }
-        return response.data;
-    } catch (error) {
-        console.log("Signup error:", error);
-        throw error;
-    }
+    const response = await axiosWithCredentials.post(`${USERS_API}/signup`, user);
+    return response.data;
 };
 
 export const signin = async (email: string, password: string) => {
-    try {
-        const response = await axiosWithCredentials.post(`${USERS_API}/signin`, { email, password });
-        // Store token in localStorage if provided
-        if (response.data.token) {
-            localStorage.setItem('authToken', response.data.token);
-        }
-        return response.data;
-    } catch (error) {
-        console.log("Signin error:", error);
-        throw error;
-    }
+    const response = await axiosWithCredentials.post(`${USERS_API}/signin`, { email, password });
+    return response.data;
 };
 
 export const signout = async () => {
-    try {
-        const response = await axiosWithCredentials.post(`${USERS_API}/signout`);
-        // Clear token on logout
-        localStorage.removeItem('authToken');
-        return response.data;
-    } catch (error) {
-        console.log("Signout error:", error);
-        throw error;
-    }
+    const response = await axiosWithCredentials.post(`${USERS_API}/signout`);
+    return response.data;
 };
 
 export const profile = async () => {
