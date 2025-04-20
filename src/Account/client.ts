@@ -1,16 +1,7 @@
-import axios from "axios";
+import { axiosWithCredentials } from "../api/client";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000/api";
-const USERS_API = `${API_BASE}/users`;
-
-// Create an axios instance with credentials to maintain session
-const axiosWithCredentials = axios.create({
-  baseURL: API_BASE,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+// Define API endpoint path
+const USERS_API = `/users`;
 
 export interface User {
     _id?: string;

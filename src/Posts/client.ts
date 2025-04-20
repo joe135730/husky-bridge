@@ -1,16 +1,7 @@
-import axios from "axios";
+import { axiosWithCredentials } from "../api/client";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000/api";
-const POSTS_API = `${API_BASE}/posts`;
-
-// Create a custom axios instance with credentials 
-export const axiosWithCredentials = axios.create({
-  baseURL: API_BASE,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+// Define API endpoint paths
+const POSTS_API = `/posts`;
 
 export interface Participant {
   userId: string;

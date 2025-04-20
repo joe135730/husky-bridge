@@ -6,8 +6,7 @@ import * as client from '../Posts/client';
 import type { Post } from '../Posts/client';
 import './PostDetail.css';
 import './components/ReportModal.css';
-
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000/api";
+import { axiosWithCredentials } from '../api/client';
 
 // Add ReportModal component
 interface ReportModalProps {
@@ -217,21 +216,11 @@ export default function PostDetail() {
     try {
       setError(null);
       
-      // Use fetch API directly with credentials included
-      const response = await fetch(`${API_BASE}/posts/${post?._id}/report`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ reason, comments }),
-        credentials: 'include'
+      // Use axiosWithCredentials instead of fetch API
+      const response = await axiosWithCredentials.post(`/posts/${post?._id}/report`, {
+        reason,
+        comments
       });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.message || `Error: ${response.status}`);
-      }
       
       setShowReportModal(false);
       alert("Report submitted successfully");

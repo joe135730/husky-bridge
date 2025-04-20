@@ -1,20 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import "./Reports.css";
 import { StoreType } from "../store";
-
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000/api";
-
-// Create a custom axios instance with credentials 
-const axiosWithCredentials = axios.create({
-  baseURL: API_BASE,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+import { axiosWithCredentials } from "../api/client";
 
 interface ReportedPostDetails {
   _id: string;
