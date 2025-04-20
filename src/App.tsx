@@ -33,9 +33,13 @@ function AppContent() {
         const currentUser = await accountClient.profile();
         if (currentUser) {
           dispatch(setCurrentUser(currentUser));
+        } else {
+          // User is not logged in - this is a normal state, not an error
+          console.log("User not authenticated");
         }
       } catch (error) {
-        console.log("Not logged in");
+        // Only log unexpected errors
+        console.error("Error checking authentication status:", error);
       }
     };
     checkLoggedIn();

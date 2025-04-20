@@ -43,7 +43,12 @@ export const profile = async () => {
     try {
         const response = await axiosWithCredentials.post(`${USERS_API}/profile`);
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
+        // For 401 errors (not logged in), return null instead of throwing
+        if (error.response && error.response.status === 401) {
+            return null;
+        }
+        // Rethrow other errors
         throw error;
     }
 };
