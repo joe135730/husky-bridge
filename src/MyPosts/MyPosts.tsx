@@ -7,7 +7,7 @@ import './MyPosts.css';
 interface FilterState {
   postType?: {
     'My Requests': boolean;
-    'My Offers': boolean;
+    'My Offer': boolean;
   };
   category?: {
     'General': boolean;
@@ -67,11 +67,7 @@ export default function MyPosts() {
       if (filterState.postType) {
         const selectedTypes = Object.entries(filterState.postType)
           .filter(([_, selected]) => selected)
-          .map(([type]) => {
-            if (type === 'My Requests') return 'request';
-            if (type === 'My Offers') return 'offer';
-            return '';
-          }).filter(type => type !== '');
+          .map(([type]) => type === 'My Requests' ? 'request' : 'offer');
         
         if (selectedTypes.length > 0) {
           allPosts = allPosts.filter(post => selectedTypes.includes(post.postType));
@@ -152,22 +148,6 @@ export default function MyPosts() {
     }));
   };
 
-  // Helper function to clear all filters
-  const clearFilters = () => {
-    setFilterState({});
-  };
-
-  // Helper function to set a single filter type and clear others
-  const setPostTypeFilter = (type: string) => {
-    // Only set the postType filter and clear other filters
-    setFilterState({
-      postType: {
-        'My Requests': type === 'My Requests',
-        'My Offers': type === 'My Offers'
-      }
-    });
-  };
-
   const handleComplete = async (postId: string) => {
     try {
       await client.markPostAsCompletedByOwner(postId);
@@ -191,27 +171,6 @@ export default function MyPosts() {
       <div className="my-posts-container">
         <div className="my-posts-header">
           <h2>My Posts</h2>
-
-          <div className="filter-buttons">
-            <button
-              className={`filter-btn ${!filterState.postType?.['My Requests'] && !filterState.postType?.['My Offers'] ? 'active' : ''}`}
-              onClick={clearFilters}
-            >
-              All Posts
-            </button>
-            <button
-              className={`filter-btn ${filterState.postType?.['My Requests'] ? 'active' : ''}`}
-              onClick={() => setPostTypeFilter('My Requests')}
-            >
-              My Requests
-            </button>
-            <button
-              className={`filter-btn ${filterState.postType?.['My Offers'] ? 'active' : ''}`}
-              onClick={() => setPostTypeFilter('My Offers')}
-            >
-              My Offers
-            </button>
-          </div>
 
           <div className="filter-dropdown">
             <label htmlFor="sort-posts">Sort by:</label>
@@ -240,9 +199,9 @@ export default function MyPosts() {
               <label>
                 <input 
                   type="checkbox" 
-                  checked={filterState.postType?.['My Offers'] || false}
-                  onChange={() => handleCheckboxChange('postType', 'My Offers')} 
-                /> My Offers
+                  checked={filterState.postType?.['My Offer'] || false}
+                  onChange={() => handleCheckboxChange('postType', 'My Offer')} 
+                /> My Offer
               </label>
             </div>
             <div className="filter-section">
@@ -317,23 +276,22 @@ export default function MyPosts() {
           </div>
 
           <div className="posts-list">
-            {posts.length > 0 ? (
-              posts.map(post => (
-                <div key={post._id} className={`post-item ${post.status}`}>
-                  <h3>{post.title} ({post.status} – {post.category})</h3>
-                  <p>📍 {post.location} | 📅 Posted on {new Date(post.createdAt).toLocaleDateString()}</p>
-                  <p>Type: {post.postType === 'request' ? 'Request' : 'Offer'}</p>
-                  <p>{post.userRelationship === 'owner' ? 'You created this post' : 'You are participating in this post'}</p>
-                  <button className="details-btn" onClick={() => handleViewDetails(post._id!)}>View Details</button>
-                  {post.userRelationship === 'owner' && post.status === 'In Progress' && !post.ownerCompleted && (
-                    <button className="complete-btn" onClick={() => handleComplete(post._id!)}>Mark as Completed</button>
-                  )}
-                  {post.status === 'Complete' && (
-                    <div className="completed-badge">Completed</div>
-                  )}
-                </div>
-              ))
-            ) : (
+            {posts.map(post => (
+              <div key={post._id} className={`post-item ${post.status}`}>
+                <h3>{post.title} ({post.status} – {post.category})</h3>
+                <p>📍 {post.location} | 📅 Posted on {new Date(post.createdAt).toLocaleDateString()}</p>
+                <p>{post.userRelationship === 'owner' ? 'You created this post' : 'You are participating in this post'}</p>
+                <button className="details-btn" onClick={() => handleViewDetails(post._id!)}>View Details</button>
+                {post.userRelationship === 'owner' && post.status === 'In Progress' && !post.ownerCompleted && (
+                  <button className="complete-btn" onClick={() => handleComplete(post._id!)}>Mark as Completed</button>
+                )}
+                {post.status === 'Complete' && (
+                  <div className="completed-badge">Completed</div>
+                )}
+              </div>
+            ))}
+
+            {posts.length === 0 && (
               <div className="no-posts">
                 <p>No posts found. Create your first post!</p>
                 <button onClick={() => navigate('/create-post')} className="create-post-btn">Create Post</button>
