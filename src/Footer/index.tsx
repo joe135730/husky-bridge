@@ -39,9 +39,9 @@ export default function Footer() {
                     <h3>Explore</h3>
                     <ul className="footer-links">
                         <li><Link to="/my-team">My Team</Link></li>
-                        <li><Link to="/borrow-lend">Borrow/Lend</Link></li>
-                        <li><Link to="/housing">Housing</Link></li>
-                        <li><Link to="/tutoring">Tutoring</Link></li>
+                        <li><Link to="/posts/category/lend-borrow">Borrow/Lend</Link></li>
+                        <li><Link to="/posts/category/housing">Housing</Link></li>
+                        <li><Link to="/posts/category//tutoring">Tutoring</Link></li>
                         <li><Link to="/community">Community Listing</Link></li>
                     </ul>
                 </div>
