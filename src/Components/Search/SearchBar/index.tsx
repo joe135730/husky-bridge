@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SearchBar.css";
 import * as postClient from "../../../Posts/client";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+
 
 interface Category {
   id: string;
@@ -41,7 +44,7 @@ export default function SearchBar() {
   ]);
 
   const handleCategoryChange = (categoryId: string) => {
-    setCategories(categories.map(cat => 
+    setCategories(categories.map(cat =>
       cat.id === categoryId ? { ...cat, checked: !cat.checked } : cat
     ));
   };
@@ -56,17 +59,17 @@ export default function SearchBar() {
         console.error('Error fetching posts by title:', error);
       }
     }
-    
+
     if (selectedCategories.length >= 2) {
       try {
         const categories = selectedCategories.map(cat => cat as Post["category"]);
         const posts = await postClient.findPostsByCategories(categories);
-        
-        navigate(`/posts/multiple-categories`, { 
-          state: { 
+
+        navigate(`/posts/multiple-categories`, {
+          state: {
             posts,
             categories
-          } 
+          }
         });
       } catch (error) {
         console.error('Error fetching posts:', error);
@@ -81,10 +84,10 @@ export default function SearchBar() {
         console.error('Error fetching posts:', error);
         navigate(`/posts/category/${selectedCategories[0]}`);
       }
-    } else if(selectedCategories.length === 0) {
+    } else if (selectedCategories.length === 0) {
       navigate(`/AllPosts`);
       return;
-    } 
+    }
     else {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
@@ -110,7 +113,7 @@ export default function SearchBar() {
           className="search-input"
         />
         <div className="category-dropdown-container">
-          <div 
+          <div
             className="category-dropdown"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
@@ -132,7 +135,10 @@ export default function SearchBar() {
             </div>
           )}
         </div>
-        <button className="search-button" onClick={handleSearch}>Search</button>
+        <button className="search-button" onClick={handleSearch}>
+          <FontAwesomeIcon icon={faSearch} />
+        </button>
+
       </div>
     </div>
   );
