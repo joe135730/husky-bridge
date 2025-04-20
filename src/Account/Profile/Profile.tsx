@@ -19,18 +19,12 @@ export default function Profile() {
         const loadProfile = async () => {
             try {
                 const user = await client.profile();
-                if (user) {
-                    setUserData({
-                        firstName: user.firstName || '',
-                        lastName: user.lastName || '',
-                        email: user.email || '',
-                        role: user.role || ''
-                    });
-                } else {
-                    // User is not authenticated, redirect to login
-                    console.log("User not authenticated, redirecting to login");
-                    navigate('/Account/login');
-                }
+                setUserData({
+                    firstName: user.firstName || '',
+                    lastName: user.lastName || '',
+                    email: user.email || '',
+                    role: user.role || ''
+                });
             } catch (error) {
                 console.error("Error loading profile:", error);
                 navigate('/Account/login');
