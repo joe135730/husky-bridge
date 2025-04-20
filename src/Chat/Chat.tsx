@@ -88,14 +88,7 @@ export default function Chat() {
     const fetchContacts = async () => {
       try {
         console.log("Trying to get the contact list...");
-        
-        // Add a short delay to ensure session is established
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Add a unique timestamp parameter to prevent caching
-        const timestamp = new Date().getTime();
-        const res = await axiosWithCredentials.get(`/users?_t=${timestamp}`);
-        
+        const res = await axiosWithCredentials.get("/users");
         console.log("API response status:", res.status);
         const data = res.data;
         console.log("Received user information:", data);
@@ -111,23 +104,13 @@ export default function Chat() {
           isOnline: false
         }));
         setContacts(contactList);
-      } catch (err: any) {
+      } catch (err) {
         console.error("Failed to load contacts:", err);
-        
-        // Check for auth errors
-        if (err.response?.status === 401) {
-          console.log("Authentication required to fetch contacts. User session may have expired.");
-        } else if (err.response?.status === 403) {
-          console.log("Access forbidden for contacts. User may not have correct permissions.");
-        }
       }
     };
 
-    // Only fetch contacts if the user is authenticated
-    if (currentUser) {
-      fetchContacts();
-    }
-  }, [currentUser]);
+    fetchContacts();
+  }, []);
 
   const handleContactSelect = async (contact: Contact) => {
     setSelectedContact(contact);

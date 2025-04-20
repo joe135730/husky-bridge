@@ -4,7 +4,6 @@ import { StoreType } from "../store/index";
 import { useEffect, useState } from "react";
 import * as accountClient from "../Account/client";
 import { setCurrentUser } from "../store/account-reducer";
-import { getUserFromLocalStorage } from "../utils/auth";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -58,11 +57,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     });
   }, [currentUser, refreshedUser, location.pathname, isRefreshing]);
 
-  // Consider both the Redux currentUser, our refreshed user, and localStorage
-  const localUser = getUserFromLocalStorage();
-  const effectiveUser = currentUser || refreshedUser || localUser;
-  
-  if (!effectiveUser) {
+  // Consider both the Redux currentUser and our refreshed user
+  if (!currentUser && !refreshedUser) {
     // Only redirect if we've tried refreshing and it failed
     if (!isRefreshing) {
       console.log("Protected Route - Authentication failed, redirecting to login");
@@ -73,14 +69,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       return <div className="loading">Verifying authentication...</div>;
     }
   }
-
-  // If we have a local user but not in Redux, restore it
-  useEffect(() => {
-    if (localUser && !currentUser && !refreshedUser) {
-      console.log("Protected Route - Restoring user from localStorage");
-      dispatch(setCurrentUser(localUser));
-    }
-  }, [localUser, currentUser, refreshedUser, dispatch]);
 
   return <>{children}</>;
 }; 
