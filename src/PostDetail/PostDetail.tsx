@@ -414,9 +414,9 @@ export default function PostDetail() {
             <button 
               className={`accept-btn ${hasAccepted ? 'accepted' : ''}`} 
               onClick={handleAccept}
-              disabled={hasAccepted}
+              disabled={hasAccepted || post.status === 'Complete' || post.ownerCompleted || !!post.selectedParticipantId}
             >
-              Accept
+              {post.status === 'Complete' ? 'Post Completed' : hasAccepted ? 'Accepted' : post.selectedParticipantId ? 'No Longer Available' : 'Accept'}
             </button>
           )}
           {showCompleteButton() && (

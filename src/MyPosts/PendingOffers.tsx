@@ -12,6 +12,7 @@ export default function PendingOffers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [hasSelectedParticipant, setHasSelectedParticipant] = useState(false);
 
   useEffect(() => {
     if (postId) {
@@ -28,6 +29,11 @@ export default function PendingOffers() {
       ]);
       setPost(postData);
       setParticipants(participantsData);
+      
+      // Check if there's already a selected participant
+      if (postData.selectedParticipantId || postData.status === 'In Progress') {
+        setHasSelectedParticipant(true);
+      }
     } catch (error: any) {
       setError(error.response?.data?.message || 'Error loading data');
     } finally {
@@ -42,10 +48,16 @@ export default function PendingOffers() {
   const handleSelectParticipant = async (participantId: string) => {
     try {
       if (!postId) return;
+      setIsProcessing(true);
+      setError('');
+      
       await client.selectParticipant(postId, participantId);
       await loadPostAndParticipants();
+      setHasSelectedParticipant(true);
     } catch (error: any) {
       setError(error.response?.data?.message || 'Error selecting participant');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -107,6 +119,11 @@ export default function PendingOffers() {
       <div className="participants-section">
         <h3>Pending Requests</h3>
         {error && <div className="error-message">{error}</div>}
+        {hasSelectedParticipant && (
+          <div className="info-message">
+            You have already accepted a participant for this post. You cannot accept additional participants.
+          </div>
+        )}
 
         <div className="participants-list">
           {participants.length === 0 ? (
@@ -136,6 +153,8 @@ export default function PendingOffers() {
                         <button 
                           id="pending-offer-accept-button" 
                           onClick={() => handleSelectParticipant(participant.userId)}
+                          disabled={hasSelectedParticipant || isProcessing}
+                          className={hasSelectedParticipant ? 'disabled' : ''}
                         >
                           Accept
                         </button>
@@ -148,6 +167,7 @@ export default function PendingOffers() {
                         <button 
                           id="pending-offer-decline-button" 
                           onClick={() => handleDecline(participant.userId)}
+                          disabled={isProcessing}
                         >
                           Decline
                         </button>
@@ -169,6 +189,7 @@ export default function PendingOffers() {
                         <button 
                           id="pending-offer-decline-button" 
                           onClick={() => handleDecline(participant.userId)}
+                          disabled={isProcessing}
                         >
                           Decline
                         </button>
