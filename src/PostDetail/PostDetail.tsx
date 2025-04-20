@@ -144,7 +144,7 @@ export default function PostDetail() {
     if (post?.userRelationship === 'owner') {
       navigate('/my-posts');
     } else {
-      navigate('/all-posts');
+      navigate('/AllPosts');
     }
   };
 
@@ -341,6 +341,35 @@ export default function PostDetail() {
     }
   };
 
+  // Handle cancelling an active collaboration
+  const handleCancelCollaboration = async () => {
+    try {
+      if (!post?._id) return;
+      
+      // Show confirmation dialog with different messages for owner vs participant
+      const message = isOwner 
+        ? 'Are you sure you want to cancel this collaboration? The post will return to pending status and the current participant will be removed.'
+        : 'Are you sure you want to cancel your participation? You will be removed from this post.';
+        
+      const confirmCancel = window.confirm(message);
+      if (!confirmCancel) return;
+      
+      setError(null);
+      await client.cancelCollaboration(post._id);
+      
+      if (isOwner) {
+        // Reload the post if owner is cancelling
+        await loadPost();
+      } else {
+        // Navigate back to My Posts if participant is cancelling
+        navigate('/my-posts');
+      }
+    } catch (err: any) {
+      console.error('Error cancelling collaboration:', err);
+      setError(err.response?.data?.message || 'Failed to cancel collaboration');
+    }
+  };
+
   return (
     <div className="post-detail-container">
       {showStatusBadge && (
@@ -406,7 +435,18 @@ export default function PostDetail() {
         <div className="action-buttons-left">
           {isOwner && (
             <>
-              {post.status !== 'Wait for Complete' ? (
+              {post.status === 'In Progress' || post.status === 'Wait for Complete' ? (
+                <>
+                  <button className="edit-post" onClick={handleEdit}>Edit Post</button>
+                  <button className="delete-post" onClick={handleDelete}>Delete Post</button>
+                  <button className="manage-requests" onClick={handleManageRequests}>Manage Requests</button>
+                  <button className="back-btn" onClick={handleBack}>Back to My Posts</button>
+                  <button className="message-button" onClick={handleMessage}>Message</button>
+                  <button className="cancel-collaboration" onClick={handleCancelCollaboration}>
+                    Cancel Collaboration
+                  </button>
+                </>
+              ) : (
                 <>
                   <button className="edit-post" onClick={handleEdit}>Edit Post</button>
                   <button className="delete-post" onClick={handleDelete}>Delete Post</button>
@@ -414,19 +454,19 @@ export default function PostDetail() {
                   <button className="back-btn" onClick={handleBack}>Back to My Posts</button>
                   <button className="message-button" onClick={handleMessage}>Message</button>
                 </>
-              ) : (
-                <>
-                  <button className="back-btn" onClick={handleBack}>Back to My Posts</button>
-                  <button className="delete-post" onClick={handleDelete}>Delete Post</button>
-                  <button className="message-button" onClick={handleMessage}>Message</button>
-                </>
               )}
             </>
           )}
           {!isOwner && (
             <>
-              <button className="back-btn" onClick={handleBack}>Back to All Posts</button>
+              <button className="back-btn" onClick={handleBack}>Back to AllPosts</button>
               <button className="message-button" onClick={handleMessage}>Message</button>
+              {isParticipant && post.selectedParticipantId === currentUser?._id && 
+               (post.status === 'In Progress' || post.status === 'Wait for Complete') && (
+                <button className="cancel-collaboration" onClick={handleCancelCollaboration}>
+                  Cancel Participation
+                </button>
+              )}
             </>
           )}
         </div>

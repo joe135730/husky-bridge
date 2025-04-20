@@ -385,6 +385,10 @@
   background-color: #138496;
 }
 
+#pending-offer-status-badge.not-selected {
+  background-color: #6c757d;
+}
+
 .info-message {
   background-color: #cce5ff;
   color: #004085;

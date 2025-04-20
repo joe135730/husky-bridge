@@ -227,3 +227,11 @@ export const removePostFromMyPosts = async (postId: string) => {
   );
   return response.data;
 };
+
+// Cancel active collaboration (for both owner and participant)
+export const cancelCollaboration = async (postId: string) => {
+  const response = await axiosWithCredentials.put(
+    `${POSTS_API}/${postId}/cancel-collaboration`
+  );
+  return response.data;
+};

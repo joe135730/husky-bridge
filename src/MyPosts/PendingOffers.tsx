@@ -31,8 +31,14 @@ export default function PendingOffers() {
       setParticipants(participantsData);
       
       // Check if there's already a selected participant
-      if (postData.selectedParticipantId || postData.status === 'In Progress') {
+      if (
+        postData.selectedParticipantId || 
+        postData.status === 'In Progress' ||
+        participantsData.some((p: Participant) => p.status === 'In Progress')
+      ) {
         setHasSelectedParticipant(true);
+      } else {
+        setHasSelectedParticipant(false); // Reset the state when no selected participant
       }
     } catch (error: any) {
       setError(error.response?.data?.message || 'Error loading data');
@@ -141,22 +147,24 @@ export default function PendingOffers() {
           ) : (
             participants.map((participant) => {
               const name = getParticipantName(participant);
-              const isAccepted = participant.status === 'In Progress';
               
               return (
                 <div key={participant.userId} className="participant-item">
                   <div className="participant-info">
                     <div className="participant-header">
                       <h3>{name}</h3>
-                      {isAccepted && (
+                      {participant.status === 'In Progress' && (
                         <span id="pending-offer-status-badge">In Progress</span>
+                      )}
+                      {participant.status === 'Not Selected' && (
+                        <span id="pending-offer-status-badge" className="not-selected">Not Selected</span>
                       )}
                     </div>
                     <p>Posted on {new Date(post.createdAt).toLocaleDateString()}</p>
                   </div>
                   
                   <div className="participant-actions" id="pending-offer-actions">
-                    {participant.status === 'Pending' ? (
+                    {participant.status === 'Pending' && (
                       <>
                         <button 
                           id="pending-offer-accept-button" 
@@ -180,13 +188,41 @@ export default function PendingOffers() {
                           Decline
                         </button>
                       </>
-                    ) : isAccepted && (
+                    )}
+                    
+                    {participant.status === 'In Progress' && (
                       <>
                         <button 
                           id="pending-offer-mark-complete-button" 
                           onClick={() => handleMarkComplete(participant.userId)}
                         >
                           Mark as Complete
+                        </button>
+                        <button 
+                          id="pending-offer-message-button" 
+                          onClick={() => handleMessage(participant.userId)}
+                        >
+                          Message
+                        </button>
+                        <button 
+                          id="pending-offer-decline-button" 
+                          onClick={() => handleDecline(participant.userId)}
+                          disabled={isProcessing}
+                        >
+                          Decline
+                        </button>
+                      </>
+                    )}
+                    
+                    {participant.status === 'Not Selected' && (
+                      <>
+                        <button 
+                          id="pending-offer-accept-button" 
+                          onClick={() => handleSelectParticipant(participant.userId)}
+                          disabled={hasSelectedParticipant || isProcessing}
+                          className={hasSelectedParticipant ? 'disabled' : ''}
+                        >
+                          Accept
                         </button>
                         <button 
                           id="pending-offer-message-button" 
