@@ -30,20 +30,34 @@ function AppContent() {
   useEffect(() => {
     const checkLoggedIn = async () => {
       try {
+        console.log("App - Checking authentication status");
         // Call the profile endpoint to check if user is logged in
         const currentUser = await accountClient.profile();
         if (currentUser) {
+          console.log("App - User authenticated:", { 
+            userId: currentUser._id,
+            role: currentUser.role
+          });
           dispatch(setCurrentUser(currentUser));
         } else {
           // User is not logged in - this is a normal state, not an error
-          console.log("User not authenticated");
+          console.log("App - User not authenticated");
+          dispatch(setCurrentUser(null));
         }
       } catch (error) {
         // Only log unexpected errors
-        console.error("Error checking authentication status:", error);
+        console.error("App - Error checking authentication status:", error);
+        // Clear current user on unexpected errors
+        dispatch(setCurrentUser(null));
       }
     };
     checkLoggedIn();
+
+    // Add an interval to periodically check and refresh the session
+    const sessionRefreshInterval = setInterval(checkLoggedIn, 5 * 60 * 1000); // Check every 5 minutes
+    
+    // Cleanup interval on component unmount
+    return () => clearInterval(sessionRefreshInterval);
   }, [dispatch]);
 
   return (
