@@ -1,5 +1,5 @@
 import { Route, Routes, BrowserRouter, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import * as accountClient from "./Account/client";
 import { setCurrentUser } from "./store/account-reducer.ts";
@@ -23,23 +23,48 @@ import './App.css'
 function AppContent() {
   const location = useLocation();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
   const isAuthPage = location.pathname.startsWith('/Account/') && 
                     !location.pathname.includes('/Account/profile');
 
   useEffect(() => {
     const checkLoggedIn = async () => {
       try {
+        setLoading(true);
         // Call the profile endpoint to check if user is logged in
         const currentUser = await accountClient.profile();
         if (currentUser) {
+          console.log("User authenticated:", currentUser.email);
           dispatch(setCurrentUser(currentUser));
         }
       } catch (error) {
-        console.log("Not logged in");
+        console.log("Not logged in - silent error expected on initial load");
+        // This is normal for non-logged in users, don't show errors
+      } finally {
+        setLoading(false);
       }
     };
+    
+    // Check auth status on initial load
     checkLoggedIn();
+    
+    // Set up event listener for storage changes (detecting login/logout in other tabs)
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'auth_status') {
+        checkLoggedIn();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [dispatch]);
+
+  if (loading && isAuthPage) {
+    return <div className="loading-container">Loading...</div>;
+  }
 
   return (
     <div className="app-container">

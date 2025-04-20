@@ -31,11 +31,23 @@ export const signup = async (user: User) => {
 
 export const signin = async (email: string, password: string) => {
     const response = await axiosWithCredentials.post(`${USERS_API}/signin`, { email, password });
+    // Update local storage to notify other tabs
+    localStorage.setItem('auth_status', 'logged_in');
+    // Remove and re-add to trigger storage event
+    setTimeout(() => {
+        localStorage.removeItem('auth_status');
+    }, 100);
     return response.data;
 };
 
 export const signout = async () => {
     const response = await axiosWithCredentials.post(`${USERS_API}/signout`);
+    // Update local storage to notify other tabs
+    localStorage.setItem('auth_status', 'logged_out');
+    // Remove and re-add to trigger storage event
+    setTimeout(() => {
+        localStorage.removeItem('auth_status');
+    }, 100);
     return response.data;
 };
 
