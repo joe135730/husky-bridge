@@ -14,7 +14,7 @@ export const axiosWithCredentials = axios.create({
 
 export interface Participant {
   userId: string;
-  status: "Pending" | "In Progress" | "Wait for Complete" | "Complete";
+  status: "Pending" | "In Progress" | "Wait for Complete" | "Complete" | "Not Selected";
   completedAt: Date | null;
   user?: {
     _id: string;
@@ -216,6 +216,14 @@ export const findPostsByTitle = async (title: string) => {
 export const removeParticipant = async (postId: string, participantId: string) => {
   const response = await axiosWithCredentials.delete(
     `${POSTS_API}/${postId}/participants/${participantId}`
+  );
+  return response.data;
+};
+
+// Remove a post from My Posts (for not selected participants)
+export const removePostFromMyPosts = async (postId: string) => {
+  const response = await axiosWithCredentials.put(
+    `${POSTS_API}/${postId}/remove-from-my-posts`
   );
   return response.data;
 };

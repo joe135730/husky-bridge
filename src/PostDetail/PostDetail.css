@@ -51,6 +51,10 @@
   background-color: #9C27B0 !important;
 }
 
+.status-badge.not-selected {
+  background-color: #6c757d !important;
+}
+
 .post-type {
   display: flex;
   margin-bottom: 32px;
@@ -237,6 +241,22 @@
 .complete-btn:disabled {
   background-color: #6c757d;
   cursor: not-allowed;
+}
+
+.remove-btn {
+  width: 300px;
+  padding: 10px 20px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.remove-btn:hover {
+  background-color: #c82333;
 }
 
 @media (max-width: 768px) {

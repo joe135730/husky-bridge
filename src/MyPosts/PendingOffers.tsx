@@ -48,6 +48,14 @@ export default function PendingOffers() {
   const handleSelectParticipant = async (participantId: string) => {
     try {
       if (!postId) return;
+      
+      // Show confirmation dialog warning about other participants
+      const confirmSelect = window.confirm(
+        'Accepting this participant will mark all other participants as "Not Selected". Do you want to continue?'
+      );
+      
+      if (!confirmSelect) return;
+      
       setIsProcessing(true);
       setError('');
       

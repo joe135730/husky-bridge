@@ -322,6 +322,24 @@ export default function PostDetail() {
   };
 
   const displayStatus = getDisplayStatus();
+  
+  // Check if the current user is not selected
+  const isNotSelectedParticipant = isParticipant && currentUser && 
+    post.participants.some(p => p.userId === currentUser._id && p.status === 'Not Selected');
+    
+  // Handle removing post from MyPosts
+  const handleRemoveFromMyPosts = async () => {
+    try {
+      if (!post?._id) return;
+      setError(null);
+      
+      await client.removePostFromMyPosts(post._id);
+      navigate('/my-posts');
+    } catch (err: any) {
+      console.error('Error removing post from My Posts:', err);
+      setError(err.response?.data?.message || 'Failed to remove post from My Posts');
+    }
+  };
 
   return (
     <div className="post-detail-container">
@@ -338,6 +356,9 @@ export default function PostDetail() {
           )}
           {displayStatus === 'Wait for Complete' && (
             <div className="status-badge wait-for-complete">Wait for Complete</div>
+          )}
+          {displayStatus === 'Not Selected' && (
+            <div className="status-badge not-selected">Not Selected</div>
           )}
         </>
       )}
@@ -417,6 +438,14 @@ export default function PostDetail() {
               disabled={hasAccepted || post.status === 'Complete' || post.ownerCompleted || !!post.selectedParticipantId}
             >
               {post.status === 'Complete' ? 'Post Completed' : hasAccepted ? 'Accepted' : post.selectedParticipantId ? 'No Longer Available' : 'Accept'}
+            </button>
+          )}
+          {isNotSelectedParticipant && (
+            <button 
+              className="remove-btn"
+              onClick={handleRemoveFromMyPosts}
+            >
+              Remove from My Posts
             </button>
           )}
           {showCompleteButton() && (
