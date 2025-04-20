@@ -50,7 +50,6 @@ export default function SearchBar() {
     const selectedCategories = categories.filter(cat => cat.checked).map(cat => cat.id);
     if (searchQuery.trim()) {
       try {
-        const posts = await postClient.findPostsByTitle(searchQuery);
         navigate(`/AllPosts?search=${encodeURIComponent(searchQuery)}`);
         return;
       } catch (error) {

@@ -168,7 +168,7 @@ export default function EditProfile() {
                         onChange={(e) => setFormData(prev => ({ ...prev, currentPassword: e.target.value }))}
                         onBlur={() => handlePasswordBlur('currentPassword')}
                     />
-                    {errors.currentPassword && 
+                    {touched.currentPassword && errors.currentPassword && 
                         <span className="error-message">{errors.currentPassword}</span>
                     }
 
@@ -181,7 +181,7 @@ export default function EditProfile() {
                         onChange={(e) => setFormData(prev => ({ ...prev, newPassword: e.target.value }))}
                         onBlur={() => handlePasswordBlur('newPassword')}
                     />
-                    {errors.newPassword && 
+                    {touched.newPassword && errors.newPassword && 
                         <span className="error-message">{errors.newPassword}</span>
                     }
 

@@ -17,7 +17,7 @@ interface ReportModalProps {
   postId: string;
 }
 
-const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSubmit, postId }) => {
+const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [reason, setReason] = useState<string>("Inappropriate Content");
   const [comments, setComments] = useState<string>("");
 

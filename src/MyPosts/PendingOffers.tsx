@@ -74,6 +74,7 @@ export default function PendingOffers() {
 
   const handleMarkComplete = async (participantId: string) => {
     // TODO: Implement mark complete functionality
+    console.log(`Will mark participant ${participantId} as complete when implemented`);
   };
 
   const getParticipantName = (participant: Participant) => {

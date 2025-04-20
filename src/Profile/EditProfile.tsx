@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './EditProfile.css';
 
 export default function EditProfile() {
+    const navigate = useNavigate();
     const [fullName, setFullName] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');

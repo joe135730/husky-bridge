@@ -2,9 +2,7 @@
 import Nav from "react-bootstrap/Nav";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { clearCurrentUser } from "../store/account-reducer.ts";
 import { StoreType } from "../store";
-import * as accountClient from "../Account/client";
 import SearchBar from "../Components/Search/SearchBar";
 import "./navbar.css";
 import { useState, useEffect } from "react";
@@ -14,7 +12,6 @@ export default function Navbar() {
   const { pathname } = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar
   const { currentUser } = useSelector((state: StoreType) => state.accountReducer);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
