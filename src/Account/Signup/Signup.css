@@ -299,3 +299,14 @@ button[type="submit"]:disabled {
 .form-input.error {
     border-color: #dc3545;
 }
+
+/* Add media query for mobile devices */
+@media screen and (max-width: 768px) {
+    .signup-container{
+      padding: 0rem;
+    }
+    .signup-container h1,
+    .signup-container .signup-subtitle{
+      padding-left: 10px;
+    }
+  }
