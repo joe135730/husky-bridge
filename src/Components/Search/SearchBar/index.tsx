@@ -48,11 +48,6 @@ export default function SearchBar() {
 
   const handleSearch = async () => {
     const selectedCategories = categories.filter(cat => cat.checked).map(cat => cat.id);
-    if(selectedCategories.length === 0) {
-      navigate(`/AllPosts`);
-      return;
-    }
-
     if (searchQuery.trim()) {
       try {
         const posts = await postClient.findPostsByTitle(searchQuery);
@@ -87,7 +82,11 @@ export default function SearchBar() {
         console.error('Error fetching posts:', error);
         navigate(`/posts/category/${selectedCategories[0]}`);
       }
-    } else {
+    } else if(selectedCategories.length === 0) {
+      navigate(`/AllPosts`);
+      return;
+    } 
+    else {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
   };
