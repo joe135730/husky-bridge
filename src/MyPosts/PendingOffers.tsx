@@ -50,7 +50,9 @@ export default function PendingOffers() {
   };
 
   const handleMessage = (participantId: string) => {
-    // TODO: Implement messaging functionality
+    // Navigate to chat and store the participant ID to focus on
+    localStorage.setItem('chatFocusUser', participantId);
+    navigate('/messages');
   };
 
   const handleDecline = async (participantId: string) => {

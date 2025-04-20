@@ -24,10 +24,20 @@ export default function Chat() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [roomId, setRoomId] = useState<string | null>(null);
-
-
-  // Replace it with session-based fetch logic
   const [currentUserId, setCurrentUserId] = useState<string>("");
+
+  // Check for focused user from PendingOffers
+  useEffect(() => {
+    const focusUserId = localStorage.getItem('chatFocusUser');
+    if (focusUserId && contacts.length > 0) {
+      const contactToFocus = contacts.find(contact => contact.id === focusUserId);
+      if (contactToFocus) {
+        handleContactSelect(contactToFocus);
+      }
+      // Clear the stored ID after focusing
+      localStorage.removeItem('chatFocusUser');
+    }
+  }, [contacts]);
 
   useEffect(() => {
     const loadProfileAndContacts = async () => {
@@ -37,7 +47,7 @@ export default function Chat() {
           credentials: "include"
         });
         const currentUser = await profileRes.json();
-        setCurrentUserId(currentUser._id); // Save for message check later
+        setCurrentUserId(currentUser._id);
 
         const usersRes = await fetch("/api/users", {
           credentials: "include"
@@ -59,7 +69,6 @@ export default function Chat() {
 
     loadProfileAndContacts();
   }, []);
-
 
   // Load all users from DB (excluding current user)
   useEffect(() => {
