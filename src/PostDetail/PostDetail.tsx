@@ -103,7 +103,8 @@ const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSubmit }) 
 };
 
 export default function PostDetail() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params.id;
   const navigate = useNavigate();
   const currentUser = useSelector((state: StoreType) => state.accountReducer.currentUser);
   const [post, setPost] = useState<Post | null>(null);

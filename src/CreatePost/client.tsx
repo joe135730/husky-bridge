@@ -44,14 +44,23 @@ export const updatePost = async (id: string, postData: Partial<Post>): Promise<P
   return response.data;
 };
 
-export const fetchPost = async (postId: string) => {
-  const response = await axiosWithCredentials.get(`/posts/${postId}`);
-  return response.data;
+export const fetchPost = async (postId: string): Promise<Post> => {
+  try {
+    const response = await axiosWithCredentials.get(`/posts/${postId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    throw error;
+  }
 };
 
-export const deletePost = async (postId: string) => {
-  const response = await axiosWithCredentials.delete(`/posts/${postId}`);
-  return response.data;
+export const deletePost = async (postId: string): Promise<void> => {
+  try {
+    await axiosWithCredentials.delete(`/posts/${postId}`);
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    throw error;
+  }
 };
 
 
