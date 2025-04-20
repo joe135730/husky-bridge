@@ -9,6 +9,7 @@ import Navbar from './navbar/navbar';
 import Footer from './Footer';
 import FAQs from "./Footer/Faqs/faqs";
 import TOS from "./Footer/TermsOfService/tos"; 
+import PrivacyPolicy from "./Footer/Policy/policy";
 
 <Route path="/faqs" element={<FAQs />} />
 
@@ -74,6 +75,7 @@ function AppContent() {
           <Route path="/Account/*" element={<AccountRoutes />} />
           <Route path="/faqs" element={<FAQs />} />
           <Route path="/terms" element={<TOS />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/my-team" element={<MyTeam />} />
           <Route path="/my-posts" element={
             <ProtectedRoute>

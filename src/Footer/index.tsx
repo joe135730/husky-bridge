@@ -42,7 +42,6 @@ export default function Footer() {
                         <li><Link to="/posts/category/lend-borrow">Borrow/Lend</Link></li>
                         <li><Link to="/posts/category/housing">Housing</Link></li>
                         <li><Link to="/posts/category/tutoring">Tutoring</Link></li>
-                        <li><Link to="/community">Community Listing</Link></li>
                     </ul>
                 </div>
 
@@ -50,13 +49,12 @@ export default function Footer() {
                     <h3>Support</h3>
                     <ul className="footer-links">
                         <li><Link to="/faqs">FAQs</Link></li>
-                        <li><Link to="/report-issue">Report an Issue</Link></li>
                         <li><Link to="/terms">Term of Service</Link></li>
                         <li><Link to="/privacy">Privacy Policy</Link></li>
                     </ul>
                 </div>
             </div>
-            
+
             <div className="footer-bottom">
                 <p>© 2025 HuskyBridge. All rights reserved.</p>
             </div>
