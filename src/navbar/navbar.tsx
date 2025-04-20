@@ -30,16 +30,6 @@ export default function Navbar() {
     };
   }, []);
 
-  const handleSignout = async () => {
-    try {
-      await accountClient.signout();
-      dispatch(clearCurrentUser());
-      navigate("/");
-    } catch (error) {
-      console.error("Signout error:", error);
-    }
-  };
-
   return (
     <Nav variant="pills" id="wd-toc" className="navbar-container">
       <div className="navbar-left">

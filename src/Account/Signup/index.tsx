@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import neulogo from "../../assets/neuLogo.png"
 import "./Signup.css";
 import { Button, Form } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';

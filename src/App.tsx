@@ -1,9 +1,8 @@
 import { Route, Routes, BrowserRouter, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import * as accountClient from "./Account/client";
 import { setCurrentUser } from "./store/account-reducer.ts";
-import { StoreType } from "./store";
 import LandingPage from './LandingPage';
 import AccountRoutes from './Account';
 import Navbar from './navbar/navbar';
@@ -15,7 +14,6 @@ import CreatePost from "./CreatePost/CreatePost";
 import EditPost from "./CreatePost/EditPost";
 import PostDetail from "./PostDetail/PostDetail";
 import Chat from "./Chat/Chat";
-import Profile from "./Account/Profile/Profile";
 import AllPost from "./AllPosts/AllPost";
 import ReportedPosts from "./Reports/ReportedPosts";
 import ReportedPostDetail from "./Reports/ReportedPostDetail";

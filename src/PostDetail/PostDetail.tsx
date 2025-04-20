@@ -6,20 +6,8 @@ import * as client from '../Posts/client';
 import type { Post } from '../Posts/client';
 import './PostDetail.css';
 import './components/ReportModal.css';
-import { findPostById, participateInPost, markPostComplete } from '../Posts/client';
-import React from 'react';
-import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000/api";
-
-// Create a custom axios instance with credentials 
-const axiosWithCredentials = axios.create({
-  baseURL: API_BASE,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
 
 // Add ReportModal component
 interface ReportModalProps {

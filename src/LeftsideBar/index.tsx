@@ -1,9 +1,8 @@
 // src/Components/LeftSideBar/index.tsx
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faUser, faEnvelope, faClipboard, faCog, faSignOutAlt, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faUser, faEnvelope, faClipboard, faSignOutAlt, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import { clearCurrentUser } from "../store/account-reducer";
 import * as accountClient from "../Account/client";
 import "./LeftSideBar.css";

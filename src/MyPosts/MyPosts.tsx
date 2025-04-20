@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as client from '../Posts/client';
-import { Post, PostFilters } from '../Posts/client';
+import { Post } from '../Posts/client';
 import './MyPosts.css';
 
 interface FilterState {
@@ -45,21 +45,6 @@ export default function MyPosts() {
   const loadPosts = async () => {
     try {
       setLoading(true);
-      // Convert filter state to API filters
-      const apiFilters: PostFilters = {
-        sort,
-        postType: filterState.postType?.['My Requests'] ? 'request' : 
-                 filterState.postType?.['My Offer'] ? 'offer' : undefined,
-        category: filterState.category?.['General'] ? 'general' :
-                 filterState.category?.['Housing'] ? 'housing' :
-                 filterState.category?.['Tutoring'] ? 'tutoring' :
-                 filterState.category?.['Borrow/Lend'] ? 'lend-borrow' : undefined,
-        location: Object.entries(filterState.location || {}).find(([_, value]) => value)?.[0],
-        dateRange: filterState.dateRange?.['Last Hour'] ? 1 :
-                  filterState.dateRange?.['Last 24 Hours'] ? 24 :
-                  filterState.dateRange?.['Last 7 Days'] ? 168 :
-                  filterState.dateRange?.['Last 30 Days'] ? 720 : undefined
-      };
       
       // Load both created and participating posts
       const [myPosts, participatingPosts] = await Promise.all([

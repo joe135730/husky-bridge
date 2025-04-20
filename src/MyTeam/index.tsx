@@ -1,5 +1,4 @@
 import Introduction from '../Components/Introduction';
-import { Link } from 'react-router-dom';
 import './MyTeam.css';
 import member from '../assets/member.png'; // change this to your photo accordingly 
 import member1 from '../assets/member1.png';
