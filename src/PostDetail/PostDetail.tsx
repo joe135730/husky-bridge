@@ -427,10 +427,23 @@ export default function PostDetail() {
             <div className="info-value">{post.location}</div>
           </div>
 
-          <div className="info-group">
-            <div className="info-label">Availability</div>
-            <div className="info-value">{new Date(post.availability).toLocaleDateString()}</div>
-          </div>
+          {post.availability?.includes(',') && (
+            <>
+              <div className="info-group">
+                <div className="info-label">Start Date</div>
+                <div className="info-value">
+                  {new Date(post.availability.split(',')[0]).toLocaleDateString()}
+                </div>
+              </div>
+              <div className="info-group">
+                <div className="info-label">End Date</div>
+                <div className="info-value">
+                  {new Date(post.availability.split(',')[1]).toLocaleDateString()}
+                </div>
+              </div>
+            </>
+          )}
+
 
           <div className="info-group">
             <div className="info-label">Description</div>
