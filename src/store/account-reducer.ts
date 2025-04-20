@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { saveUserToLocalStorage, getUserFromLocalStorage } from "../utils/auth";
 
 const initialState = {
-  currentUser: null,
+  currentUser: getUserFromLocalStorage() || null, // Initialize from localStorage if available
 };
 
 const accountSlice = createSlice({
@@ -10,9 +11,13 @@ const accountSlice = createSlice({
   reducers: {
     setCurrentUser: (state, action) => {
       state.currentUser = action.payload;
+      // Sync with localStorage
+      saveUserToLocalStorage(action.payload);
     },
     clearCurrentUser: (state) => {
       state.currentUser = null;
+      // Clear from localStorage as well
+      saveUserToLocalStorage(null);
     },
   },
 });
