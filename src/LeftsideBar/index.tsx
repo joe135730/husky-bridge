@@ -24,6 +24,17 @@ const LeftSideBar = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
+  // Handler for authenticated links
+  const handleAuthenticatedLink = (path: string, event: React.MouseEvent) => {
+    if (!currentUser) {
+      event.preventDefault();
+      navigate("/Account/login", { state: { from: path } });
+      onClose();
+    } else {
+      onClose();
+    }
+  };
+
   return (
     <div className="left-sidebar">
       <button className="close-button" onClick={onClose}>✖</button>
@@ -34,7 +45,7 @@ const LeftSideBar = ({ onClose }: { onClose: () => void }) => {
           </Link>
         </li>
         <li>
-          <Link to="/Account/profile" onClick={onClose}>
+          <Link to="/Account/profile" onClick={(e) => handleAuthenticatedLink("/Account/profile", e)}>
             <FontAwesomeIcon icon={faUser} /> Profile
           </Link>
         </li>
@@ -44,7 +55,7 @@ const LeftSideBar = ({ onClose }: { onClose: () => void }) => {
           </Link>
         </li>
         <li>
-          <Link to="/my-posts" onClick={onClose}>
+          <Link to="/my-posts" onClick={(e) => handleAuthenticatedLink("/my-posts", e)}>
             <FontAwesomeIcon icon={faClipboard} /> My Post
           </Link>
         </li>
@@ -60,9 +71,15 @@ const LeftSideBar = ({ onClose }: { onClose: () => void }) => {
           )}
         </li>
         <li>
-          <button className="logout-link" onClick={handleSignout}>
-            <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: '10px' }} /> Logout
-          </button>
+          {currentUser ? (
+            <button className="logout-link" onClick={handleSignout}>
+              <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: '10px' }} /> Logout
+            </button>
+          ) : (
+            <Link to="/Account/login" onClick={onClose}>
+              <FontAwesomeIcon icon={faUser} style={{ marginRight: '10px' }} /> Login
+            </Link>
+          )}
         </li>
       </ul>
     </div>

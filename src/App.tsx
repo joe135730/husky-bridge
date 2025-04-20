@@ -17,6 +17,7 @@ import Chat from "./Chat/Chat";
 import AllPost from "./AllPosts/AllPost";
 import ReportedPosts from "./Reports/ReportedPosts";
 import ReportedPostDetail from "./Reports/ReportedPostDetail";
+import { ProtectedRoute } from "./Components/ProtectedRoute";
 
 import './App.css'
 
@@ -53,16 +54,44 @@ function AppContent() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/Account/*" element={<AccountRoutes />} />
           <Route path="/my-team" element={<MyTeam />} />
-          <Route path="/my-posts" element={<MyPosts />} />
-          <Route path="/my-posts/:postId/pending-offers" element={<PendingOffers />} />
-          <Route path="/create-post" element={<CreatePost />} />
-          <Route path="/edit-post/:id" element={<EditPost />} />
+          <Route path="/my-posts" element={
+            <ProtectedRoute>
+              <MyPosts />
+            </ProtectedRoute>
+          } />
+          <Route path="/my-posts/:postId/pending-offers" element={
+            <ProtectedRoute>
+              <PendingOffers />
+            </ProtectedRoute>
+          } />
+          <Route path="/create-post" element={
+            <ProtectedRoute>
+              <CreatePost />
+            </ProtectedRoute>
+          } />
+          <Route path="/edit-post/:id" element={
+            <ProtectedRoute>
+              <EditPost />
+            </ProtectedRoute>
+          } />
           <Route path="/post/:id" element={<PostDetail />} />
-          <Route path="/messages" element={<Chat />} />
+          <Route path="/messages" element={
+            <ProtectedRoute>
+              <Chat />
+            </ProtectedRoute>
+          } />
           <Route path="/AllPosts" element={<AllPost />} />
           <Route path="/posts/category/:category" element={<AllPost />} />
-          <Route path="/reports" element={<ReportedPosts />} />
-          <Route path="/reports/:postId" element={<ReportedPostDetail />} />
+          <Route path="/reports" element={
+            <ProtectedRoute>
+              <ReportedPosts />
+            </ProtectedRoute>
+          } />
+          <Route path="/reports/:postId" element={
+            <ProtectedRoute>
+              <ReportedPostDetail />
+            </ProtectedRoute>
+          } />
         </Routes>
       </div>
       <hr />
