@@ -217,7 +217,7 @@ export default function PostDetail() {
       setError(null);
       
       // Use axiosWithCredentials instead of fetch API
-      const response = await axiosWithCredentials.post(`/posts/${post?._id}/report`, {
+      await axiosWithCredentials.post(`/posts/${post?._id}/report`, {
         reason,
         comments
       });

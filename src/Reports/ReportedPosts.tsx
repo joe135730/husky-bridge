@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import "./Reports.css";
 import { StoreType } from "../store";
-import { axiosWithCredentials, API_BASE } from "../api/client";
+import { axiosWithCredentials } from "../api/client";
 
 interface ReportedPost {
   _id: string;
