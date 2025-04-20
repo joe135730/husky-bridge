@@ -1,7 +1,7 @@
 // src/navbar/navbar.tsx
 import Nav from "react-bootstrap/Nav";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { StoreType } from "../store";
 import SearchBar from "../Components/Search/SearchBar";
 import "./navbar.css";
