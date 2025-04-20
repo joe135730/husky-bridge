@@ -101,7 +101,7 @@ export default function PendingOffers() {
     }
   };
 
-  const handleMarkComplete = async (participantId: string) => {
+  const handleMarkComplete = async () => {
     try {
       if (!postId) return;
       setIsProcessing(true);
@@ -232,7 +232,7 @@ export default function PendingOffers() {
                       <>
                         <button 
                           id="pending-offer-mark-complete-button" 
-                          onClick={() => handleMarkComplete(participant.userId)}
+                          onClick={() => handleMarkComplete()}
                           disabled={isProcessing}
                         >
                           {isProcessing ? 'Processing...' : 'Mark as Complete'}
