@@ -41,7 +41,7 @@ export default function Footer() {
                         <li><Link to="/my-team">My Team</Link></li>
                         <li><Link to="/posts/category/lend-borrow">Borrow/Lend</Link></li>
                         <li><Link to="/posts/category/housing">Housing</Link></li>
-                        <li><Link to="/posts/category//tutoring">Tutoring</Link></li>
+                        <li><Link to="/posts/category/tutoring">Tutoring</Link></li>
                         <li><Link to="/community">Community Listing</Link></li>
                     </ul>
                 </div>
