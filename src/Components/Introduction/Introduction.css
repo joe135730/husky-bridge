@@ -157,4 +157,17 @@
     .husky-logo {
         max-width: 300px;
     }
-} 
+}
+
+.husky-logo {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    transition: transform 0.8s ease, filter 0.4s ease;
+    will-change: transform;
+}
+
+.husky-logo:hover {
+    transform: scale(1.0) rotate(360deg);
+    filter: drop-shadow(0 0 10px #ff0000);
+}
