@@ -8,17 +8,6 @@
   to = "/index.html"
   status = 200
 
-# Define security headers for the site
-[[headers]]
-  for = "/*"
-  [headers.values]
-    # Allow cross-site credentials
-    Access-Control-Allow-Credentials = "true"
-    # Common security headers
-    X-Content-Type-Options = "nosniff"
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-
 [build.environment]
   NODE_VERSION = "18"
   # Production variables are set in the Netlify dashboard 
