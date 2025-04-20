@@ -66,7 +66,7 @@
 .nav-items-right {
     display: flex;
     align-items: center;
-    gap: 2.5rem;
+    gap: 0rem;
     flex-wrap: nowrap;
     margin-left: 2rem;
 }
@@ -121,7 +121,7 @@
     color: white;
     border: none;
     border-radius: 4px;
-    padding: 6px 15px;
+    padding: 10px 15px;
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -153,7 +153,7 @@
 /* Media query for medium screens */
 @media screen and (max-width: 1200px) {
     .navbar-container {
-        padding: 1rem 1.5rem;
+        padding: 1rem 0rem;
     }
 
     .nav-link-item {
@@ -165,50 +165,89 @@
     }
 }
 
+/* Media query for tablets */
+@media screen and (max-width: 1024px) {
+    .navbar-left {
+        gap: 0rem;
+    }
+    .view-all-post {
+        display: none;
+    }
+}
+
 /* Media query for mobile screens */
 @media screen and (max-width: 768px) {
     .navbar-container {
-        padding: 1rem;
+        padding: 0.5rem;
+        min-height: 60px;
         height: auto;
-        gap: 0;
-        flex-direction: column;
-        position: relative;
+        flex-direction: row;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        position: fixed;
     }
 
     .navbar-left {
-        flex-direction: column;
-        width: 100%;
-        gap: 1.5rem;
+        flex-direction: row;
+        width: auto;
+        gap: 0rem;
         align-items: center;
+        margin-left: 0;
     }
 
     .navbar-brand {
         margin: 0;
-        text-align: center;
+        text-align: left;
         position: relative;
-        width: 100%;
+        width: auto;
     }
 
     .navbar-brand .nav-link {
-        font-size: 24px;
-        display: block;
-        text-align: center;
+        font-size: 20px;
+        display: inline-block;
+        text-align: left;
+        padding-left: 0.25rem;
     }
 
     .navbar-search {
-        width: 100%;
-        max-width: none;
-        min-width: 0;
-        padding: 0 1rem;
-        box-sizing: border-box;
+        display: none; /* Hide search on mobile first row */
     }
 
     .nav-items-right {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
+        position: static;
+        display: flex;
+        align-items: center;
         width: auto;
         margin: 0;
+        gap: 0.5rem;
+    }
+    
+    .sidebar-toggle {
+        order: -1;
+        margin-right: 0.25rem;
+    }
+
+    .post-navigation {
+        margin-right: 0.5rem;
+    }
+
+    .view-all-post {
+        display: none;
+    }
+
+    .add-a-post-button {
+        font-size: 14px;
+        padding: 10px 5px;
+    }
+
+    /* Second row for search */
+    .navbar-search-mobile {
+        order: 3;
+        width: 100%;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        padding: 0 0.5rem;
+        box-sizing: border-box;
     }
 }
 

@@ -1,13 +1,12 @@
 .create-post-container {
   max-width: 800px;
   width: 100%;
-  margin: 2rem auto;
+  margin: 100px auto 2rem;
   padding: 2rem;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   min-height: calc(100vh - 300px);
-  margin-bottom: 2rem;
   box-sizing: border-box;
 }
 
@@ -118,7 +117,7 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .create-post-container {
-    margin: 1rem;
+    margin: 0px auto 2rem;
     padding: 1rem;
     width: calc(100% - 2rem);
   }

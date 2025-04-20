@@ -7,7 +7,7 @@ import { StoreType } from "../store";
 import * as accountClient from "../Account/client";
 import SearchBar from "../Components/Search/SearchBar";
 import "./navbar.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LeftSideBar from "../LeftsideBar"; // Adjust the import path as necessary
 
 export default function Navbar() {
@@ -16,6 +16,19 @@ export default function Navbar() {
   const { currentUser } = useSelector((state: StoreType) => state.accountReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const handleSignout = async () => {
     try {
@@ -29,14 +42,12 @@ export default function Navbar() {
 
   return (
     <Nav variant="pills" id="wd-toc" className="navbar-container">
-      <button className="sidebar-toggle" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-        <span className="strip"></span>
-        <span className="strip"></span>
-        <span className="strip"></span>
-      </button>
-      {isSidebarOpen && <LeftSideBar onClose={() => setIsSidebarOpen(false)} />} {/* Sidebar component */}
-      
       <div className="navbar-left">
+        <button className="sidebar-toggle" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+          <span className="strip"></span>
+          <span className="strip"></span>
+          <span className="strip"></span>
+        </button>
         <div className="navbar-brand">
           <Nav.Link
             as={Link}
@@ -47,9 +58,11 @@ export default function Navbar() {
             HuskyBridge
           </Nav.Link>
         </div>
-        <div className="navbar-search">
-          <SearchBar />
-        </div>
+        {!isMobile && (
+          <div className="navbar-search">
+            <SearchBar />
+          </div>
+        )}
       </div>
 
       <div className="nav-items-right">
@@ -76,6 +89,14 @@ export default function Navbar() {
           </Nav.Item>
         )}
       </div>
+      
+      {isMobile && (
+        <div className="navbar-search-mobile">
+          <SearchBar />
+        </div>
+      )}
+      
+      {isSidebarOpen && <LeftSideBar onClose={() => setIsSidebarOpen(false)} />}
     </Nav>
   );
 }

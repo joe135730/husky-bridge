@@ -4,6 +4,13 @@
     padding: 0 1rem;
 }
 
+/* Add media query for mobile */
+@media screen and (max-width: 768px) {
+    .all-posts-container {
+        margin-top: 0px; /* Increase top margin to account for taller navbar on mobile */
+    }
+}
+
 .posts-count {
     color: #666;
     margin-bottom: 1rem;

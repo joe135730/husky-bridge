@@ -103,7 +103,7 @@
     cursor: pointer;
     font-weight: 500;
     min-width: 40px;
-    font-size: 0.9rem;
+    font-size: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -116,11 +116,14 @@
 /* Media query for tablets */
 @media screen and (max-width: 1024px) {
     .category-dropdown-container {
-        min-width: 100px;
+        min-width: 155px;
     }
 
     .search-input {
         min-width: 120px;
+    }
+    .search-button{
+        min-width: 80px;
     }
 }
 

@@ -1,6 +1,6 @@
 .post-detail-container {
   max-width: 800px;
-  margin: 5rem auto;
+  margin: 100px auto 2rem;
   padding: 2rem;
   background-color: white;
   position: relative;
@@ -229,8 +229,7 @@
 
 @media (max-width: 768px) {
   .post-detail-container {
-    margin: 1rem;
-    padding: 1rem;
+    margin-top: 0px;
   }
 
   .post-type {

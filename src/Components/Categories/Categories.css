@@ -153,7 +153,6 @@
 
     .categories-container {
         grid-template-columns: 1fr;
-        padding: 0 1rem;
         max-width: 450px;
     }
 
