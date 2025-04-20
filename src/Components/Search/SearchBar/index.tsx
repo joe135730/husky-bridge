@@ -48,6 +48,10 @@ export default function SearchBar() {
 
   const handleSearch = async () => {
     const selectedCategories = categories.filter(cat => cat.checked).map(cat => cat.id);
+    if(selectedCategories.length >= 0) {
+      navigate(`/AllPosts`);
+      return;
+    }
     
     if (searchQuery.trim()) {
       try {
