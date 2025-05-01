@@ -1,54 +1,107 @@
-# React + TypeScript + Vite
+# Husky Bridge Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React-based frontend application built with TypeScript, Vite, and React Router.
 
-Currently, two official plugins are available:
+## 🚀 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Framework**: React 19
+- **Language**: TypeScript
+- **Build Tool**: Vite 6
+- **State Management**: Redux Toolkit
+- **Routing**: React Router DOM 7.5.2
+- **UI Components**: React Bootstrap
+- **Icons**: Font Awesome
+- **HTTP Client**: Axios
+- **Code Quality**: ESLint, TypeScript ESLint
 
-## Expanding the ESLint configuration
+## 📦 Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Node.js (Latest LTS version recommended)
+- npm or yarn package manager
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 🛠️ Installation
+
+1. Clone the repository:
+```bash
+git clone [your-repository-url]
+cd husky-bridge
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
 ```
+
+## 🏃‍♂️ Development
+
+To start the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+The application will be available at `http://localhost:5173` (or another port if 5173 is in use).
+
+## 🏗️ Building for Production
+
+To create a production build:
+
+```bash
+npm run build
+# or
+yarn build
+```
+
+The build artifacts will be stored in the `dist/` directory.
+
+## 🔍 Code Quality
+
+Run linting:
+
+```bash
+npm run lint
+# or
+yarn lint
+```
+
+## 🎯 Project Structure
+
+```
+husky-bridge/
+├── src/               # Source files
+├── public/           # Static files
+├── dist/             # Build output
+├── package.json      # Project dependencies and scripts
+└── tsconfig.json     # TypeScript configuration
+```
+
+## 🔐 Security
+
+This project uses the latest secure versions of dependencies, including:
+- React Router DOM 7.5.2+ (patched against pre-render data spoofing vulnerability)
+- Regular security updates through npm/yarn
+
+## 📝 Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run lint` - Run ESLint
+- `npm run preview` - Preview production build locally
+
+## 🤝 Contributing
+
+1. Create a new branch for your feature
+2. Make your changes
+3. Submit a pull request
+
+## 📄 License
+
+[Your License Here]
+
+---
+
+For more information or support, please contact [Your Contact Information]
