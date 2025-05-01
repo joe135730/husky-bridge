@@ -92,16 +92,3 @@ This project uses the latest secure versions of dependencies, including:
 - `npm run lint` - Run ESLint
 - `npm run preview` - Preview production build locally
 
-## 🤝 Contributing
-
-1. Create a new branch for your feature
-2. Make your changes
-3. Submit a pull request
-
-## 📄 License
-
-[Your License Here]
-
----
-
-For more information or support, please contact [Your Contact Information]
