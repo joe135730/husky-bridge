@@ -1,9 +1,10 @@
 .footer {
     background-color: black;
     color: white;
-    padding: 2rem ;
+    padding: 2rem;
     width: 100%;
     box-sizing: border-box;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .footer-content {
@@ -127,3 +128,4 @@
         text-align: center;
     }
 } 
+
