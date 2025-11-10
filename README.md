@@ -1,5 +1,7 @@
 # Husky Bridge Frontend
 
+Husky Bridge Backend:　https://github.com/joe135730/husky-bridge-server
+
 A modern React-based frontend application built with TypeScript, Vite, and React Router.
 
 ## 🚀 Tech Stack
