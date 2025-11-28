@@ -378,9 +378,10 @@ export default function PostDetail() {
       setError(null);
       await client.removeCompletedPost(post._id);
       navigate('/my-posts');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error removing completed post:', err);
-      setError(err.response?.data?.message || 'Failed to remove completed post');
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Failed to remove completed post');
     }
   };
 
