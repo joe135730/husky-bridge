@@ -27,8 +27,8 @@ jobs:
         run: npm run lint
 
       # TODO: when you add tests, enable this:
-      # - name: Run unit tests
-      #   run: npm test
+      - name: Run unit tests
+        run: npm test
 
       - name: Build
         run: npm run build
