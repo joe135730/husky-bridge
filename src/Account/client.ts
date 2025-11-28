@@ -55,7 +55,7 @@ export const findUserById = async (userId: string) => {
     return response.data;
 };
 
-export const updateUser = async (userId: string, user: User) => {
+export const updateUser = async (userId: string, user: Partial<User> & { currentPassword?: string }) => {
     const response = await axiosWithCredentials.put(`${USERS_API}/${userId}`, user);
     return response.data;
 };

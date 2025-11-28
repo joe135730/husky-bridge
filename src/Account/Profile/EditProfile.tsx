@@ -98,12 +98,14 @@ export default function EditProfile() {
             const updateData: {
                 firstName: string;
                 lastName: string;
+                email: string;
                 role: string;
                 password?: string;
                 currentPassword?: string;
             } = {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
+                email: formData.email,
                 role: formData.role
             };
 
