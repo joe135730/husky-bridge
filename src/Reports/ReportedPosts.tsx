@@ -73,7 +73,7 @@ const ReportedPosts = () => {
         setError(null);
       } catch (err: unknown) {
         console.error("Error fetching reported posts:", err);
-        const error = err as { response?: { status?: number; data?: { message?: string } }; message?: string };
+        const error = err as { response?: { status?: number; data?: { message?: string }; headers?: unknown }; message?: string };
         console.log("Error details:", {
           status: error.response?.status,
           data: error.response?.data,
@@ -193,7 +193,7 @@ const ReportedPosts = () => {
   return (
     <div className="reported-posts-container">
       <h1>Reported Posts</h1>
-      <div className="admin-badge">Admin: {currentUser.username}</div>
+      <div className="admin-badge">Admin: {currentUser.email || currentUser.firstName || 'Admin User'}</div>
       
       {reportedPosts.length === 0 ? (
         <div className="no-posts">No reported posts found</div>
