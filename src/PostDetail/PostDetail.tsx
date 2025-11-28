@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StoreType } from '../store';
@@ -112,11 +112,7 @@ export default function PostDetail() {
   const [isCompleting, setIsCompleting] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
 
-  useEffect(() => {
-    loadPost();
-  }, [id]);
-
-  const loadPost = async () => {
+  const loadPost = useCallback(async () => {
     try {
       if (!id) return;
       setLoading(true);
@@ -130,13 +126,18 @@ export default function PostDetail() {
         // Also set hasAccepted if user is already a participant
         setHasAccepted(true);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading post:", error);
-      setError(error.response?.data?.message || 'Error loading post');
+      const err = error as { response?: { data?: { message?: string } } };
+      setError(err.response?.data?.message || 'Error loading post');
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, currentUser]);
+
+  useEffect(() => {
+    loadPost();
+  }, [loadPost]);
 
   const handleBack = () => {
     // If owner, go back to my posts, otherwise go back to all posts
@@ -165,9 +166,10 @@ export default function PostDetail() {
 
       await client.deletePost(post._id);
       navigate('/my-posts'); // Navigate back to My Posts page after successful deletion
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting post:', error);
-      setError(error.response?.data?.message || 'Error deleting post');
+      const err = error as { response?: { data?: { message?: string } } };
+      setError(err.response?.data?.message || 'Error deleting post');
     }
   };
 
@@ -187,11 +189,12 @@ export default function PostDetail() {
       await client.participateInPost(post._id);
       setHasAccepted(true);
       await loadPost(); // Reload post to get updated status
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error accepting post:", error);
-      setError(error.response?.data?.message || 'Error accepting post');
+      const err = error as { response?: { status?: number; data?: { message?: string } } };
+      setError(err.response?.data?.message || 'Error accepting post');
       // If the error is that we're already participating, still set hasAccepted
-      if (error.response?.status === 400 && error.response?.data?.message?.includes('Already participating')) {
+      if (err.response?.status === 400 && err.response?.data?.message?.includes('Already participating')) {
         setHasAccepted(true);
       }
     }
@@ -223,7 +226,7 @@ export default function PostDetail() {
 
       setShowReportModal(false);
       alert("Report submitted successfully");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error reporting post:", err);
       setError("Failed to submit report. Please try again later.");
     }
@@ -240,9 +243,10 @@ export default function PostDetail() {
 
       // Refresh the post data to get the latest status
       await loadPost();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error marking post as complete:', err);
-      setError(err.response?.data?.message || 'Failed to mark post as complete');
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Failed to mark post as complete');
     } finally {
       setIsCompleting(false);
     }
@@ -323,9 +327,10 @@ export default function PostDetail() {
 
       await client.removePostFromMyPosts(post._id);
       navigate('/my-posts');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error removing post from My Posts:', err);
-      setError(err.response?.data?.message || 'Failed to remove post from My Posts');
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Failed to remove post from My Posts');
     }
   };
 
@@ -352,9 +357,10 @@ export default function PostDetail() {
         // Navigate back to My Posts if participant is cancelling
         navigate('/my-posts');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error cancelling collaboration:', err);
-      setError(err.response?.data?.message || 'Failed to cancel collaboration');
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Failed to cancel collaboration');
     }
   };
 

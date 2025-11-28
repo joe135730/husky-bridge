@@ -37,7 +37,7 @@ export default function Signup() {
     };
 
     const validatePassword = (password: string) => {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=[\]{};':"\\|,.<>/?]).{8,}$/;
         return passwordRegex.test(password);
     };
 
@@ -130,10 +130,11 @@ export default function Signup() {
             try {
                 await signup(formData);
                 navigate('/Account/login');
-            } catch (err: any) {
+            } catch (err: unknown) {
+                const error = err as { response?: { data?: { message?: string } } };
                 setErrors(prev => ({
                     ...prev,
-                    email: err.response?.data?.message || 'Signup failed. Please try again.'
+                    email: error.response?.data?.message || 'Signup failed. Please try again.'
                 }));
             }
         }

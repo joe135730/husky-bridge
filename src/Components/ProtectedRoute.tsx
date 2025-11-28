@@ -14,7 +14,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const location = useLocation();
   const dispatch = useDispatch();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [refreshedUser, setRefreshedUser] = useState<any>(null);
+  const [refreshedUser, setRefreshedUser] = useState<{ _id: string; role?: string } | null>(null);
 
   // Try to refresh the session if currentUser is null
   useEffect(() => {

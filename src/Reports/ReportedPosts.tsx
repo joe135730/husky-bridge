@@ -71,21 +71,22 @@ const ReportedPosts = () => {
         console.log("API Response:", response);
         setReportedPosts(response.data);
         setError(null);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error fetching reported posts:", err);
+        const error = err as { response?: { status?: number; data?: { message?: string } }; message?: string };
         console.log("Error details:", {
-          status: err.response?.status,
-          data: err.response?.data,
-          headers: err.response?.headers
+          status: error.response?.status,
+          data: error.response?.data,
+          headers: error.response?.headers
         });
         
         // Better error handling based on status code
-        if (err.response && err.response.status === 401) {
-          setError(`Authentication error: Please log in again with admin credentials. Server message: ${err.response.data?.message || 'Unauthorized'}`);
-        } else if (err.response && err.response.status === 403) {
-          setError(`You don't have permission to access this page. Admin privileges required. Server message: ${err.response.data?.message || 'Forbidden'}`);
+        if (error.response && error.response.status === 401) {
+          setError(`Authentication error: Please log in again with admin credentials. Server message: ${error.response.data?.message || 'Unauthorized'}`);
+        } else if (error.response && error.response.status === 403) {
+          setError(`You don't have permission to access this page. Admin privileges required. Server message: ${error.response.data?.message || 'Forbidden'}`);
         } else {
-          setError(`Failed to load reported posts. Please try again. Error: ${err.message}`);
+          setError(`Failed to load reported posts. Please try again. Error: ${error.message || 'Unknown error'}`);
         }
       } finally {
         setLoading(false);
@@ -120,9 +121,10 @@ const ReportedPosts = () => {
         const reportsAuthTest = await axiosWithCredentials.get(`/reports-auth-test`);
         console.log("Reports auth test:", reportsAuthTest.data);
         alert(`Reports auth test: Success!\n\nAuth data: ${JSON.stringify(reportsAuthTest.data)}`);
-      } catch (reportsAuthErr: any) {
+      } catch (reportsAuthErr: unknown) {
         console.error("Reports auth test failed:", reportsAuthErr);
-        alert(`Reports auth test failed: ${reportsAuthErr.response?.data?.message || reportsAuthErr.message}`);
+        const authErr = reportsAuthErr as { response?: { data?: { message?: string } }; message?: string };
+        alert(`Reports auth test failed: ${authErr.response?.data?.message || authErr.message || 'Unknown error'}`);
       }
       
       // Check admin status
@@ -130,13 +132,15 @@ const ReportedPosts = () => {
         const adminResponse = await axiosWithCredentials.get(`/auth/check-admin`);
         console.log("Admin auth check:", adminResponse.data);
         alert(`Admin check: ${adminResponse.data.isAdmin ? 'You are an admin' : 'Not admin'}\n\nAuth data: ${JSON.stringify(adminResponse.data)}`);
-      } catch (adminErr: any) {
+      } catch (adminErr: unknown) {
         console.error("Admin check failed:", adminErr);
-        alert(`Admin check failed: ${adminErr.response?.data?.message || adminErr.message}`);
+        const adminError = adminErr as { response?: { data?: { message?: string } }; message?: string };
+        alert(`Admin check failed: ${adminError.response?.data?.message || adminError.message || 'Unknown error'}`);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Session check failed:", err);
-      alert(`Session check failed: ${err.response?.data?.message || err.message}`);
+      const sessionErr = err as { response?: { data?: { message?: string } }; message?: string };
+      alert(`Session check failed: ${sessionErr.response?.data?.message || sessionErr.message || 'Unknown error'}`);
     }
   };
 

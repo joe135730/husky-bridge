@@ -40,9 +40,10 @@ export default function CreatePost() {
       } else {
         setError('Failed to create post. Please try again.');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating post:", error);
-      setError(error.response?.data?.message || 'Error creating post. Please try again.');
+      const err = error as { response?: { data?: { message?: string } } };
+      setError(err.response?.data?.message || 'Error creating post. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

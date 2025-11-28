@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import './Chat.css';
 import { axiosWithCredentials } from '../api/client';
 import { useSelector } from 'react-redux';
@@ -37,82 +37,7 @@ export default function Chat() {
     });
   }, [currentUser]);
 
-  // Check for focused user from PendingOffers
-  useEffect(() => {
-    const focusUserId = localStorage.getItem('chatFocusUser');
-    if (focusUserId && contacts.length > 0) {
-      const contactToFocus = contacts.find(contact => contact.id === focusUserId);
-      if (contactToFocus) {
-        handleContactSelect(contactToFocus);
-      }
-      // Clear the stored ID after focusing
-      localStorage.removeItem('chatFocusUser');
-    }
-  }, [contacts]);
-
-  useEffect(() => {
-    const loadProfileAndContacts = async () => {
-      try {
-        const profileRes = await axiosWithCredentials.post("/users/profile");
-        const currentUser = profileRes.data;
-        setCurrentUserId(currentUser._id);
-
-        const usersRes = await axiosWithCredentials.get("/users");
-        const users = usersRes.data;
-
-        const formattedContacts = users.map((user: any) => ({
-          id: user._id,
-          name: user.firstName || user.email || "Unknown",
-          lastMessage: '',
-          isOnline: false
-        }));
-
-        setContacts(formattedContacts);
-      } catch (err: any) {
-        console.error("Failed to load user data", err);
-        
-        // Check for auth errors
-        if (err.response?.status === 401) {
-          console.log("Authentication required. User session may have expired.");
-        } else if (err.response?.status === 403) {
-          console.log("Access forbidden. User may not have correct permissions.");
-        }
-      }
-    };
-
-    loadProfileAndContacts();
-  }, []);
-
-  // Load all users from DB (excluding current user)
-  useEffect(() => {
-    const fetchContacts = async () => {
-      try {
-        console.log("Trying to get the contact list...");
-        const res = await axiosWithCredentials.get("/users");
-        console.log("API response status:", res.status);
-        const data = res.data;
-        console.log("Received user information:", data);
-
-        // Make sure the data is in array format
-        const userArray = Array.isArray(data) ? data : [];
-        console.log("Processed user array:", userArray);
-
-        const contactList: Contact[] = userArray.map((user: any) => ({
-          id: user._id,
-          name: user.firstName || user.username || user.email || "Unknown",
-          lastMessage: '',
-          isOnline: false
-        }));
-        setContacts(contactList);
-      } catch (err) {
-        console.error("Failed to load contacts:", err);
-      }
-    };
-
-    fetchContacts();
-  }, []);
-
-  const handleContactSelect = async (contact: Contact) => {
+  const handleContactSelect = useCallback(async (contact: Contact) => {
     setSelectedContact(contact);
     const generatedRoomId = `room-${[currentUserId, contact.id].sort().join("-")}`;
     setRoomId(generatedRoomId);
@@ -121,7 +46,7 @@ export default function Chat() {
       const res = await axiosWithCredentials.get(`/chat/${generatedRoomId}`);
       const data = res.data;
 
-      const formattedMessages = data.map((msg: any) => ({
+      const formattedMessages = data.map((msg: { _id: string; message: string; senderId: string; timestamp: string | Date }) => ({
         id: msg._id,
         text: msg.message,
         sender: msg.senderId,
@@ -149,8 +74,83 @@ export default function Chat() {
     } catch (err) {
       console.error("Error fetching messages:", err);
     }
-  };
+  }, [currentUserId]);
 
+  // Check for focused user from PendingOffers
+  useEffect(() => {
+    const focusUserId = localStorage.getItem('chatFocusUser');
+    if (focusUserId && contacts.length > 0) {
+      const contactToFocus = contacts.find(contact => contact.id === focusUserId);
+      if (contactToFocus) {
+        handleContactSelect(contactToFocus);
+      }
+      // Clear the stored ID after focusing
+      localStorage.removeItem('chatFocusUser');
+    }
+  }, [contacts, handleContactSelect]);
+
+  useEffect(() => {
+    const loadProfileAndContacts = async () => {
+      try {
+        const profileRes = await axiosWithCredentials.post("/users/profile");
+        const currentUser = profileRes.data;
+        setCurrentUserId(currentUser._id);
+
+        const usersRes = await axiosWithCredentials.get("/users");
+        const users = usersRes.data;
+
+        const formattedContacts = users.map((user: { _id: string; firstName?: string; email?: string }) => ({
+          id: user._id,
+          name: user.firstName || user.email || "Unknown",
+          lastMessage: '',
+          isOnline: false
+        }));
+
+        setContacts(formattedContacts);
+      } catch (err: unknown) {
+        console.error("Failed to load user data", err);
+        const error = err as { response?: { status?: number } };
+        
+        // Check for auth errors
+        if (error.response?.status === 401) {
+          console.log("Authentication required. User session may have expired.");
+        } else if (error.response?.status === 403) {
+          console.log("Access forbidden. User may not have correct permissions.");
+        }
+      }
+    };
+
+    loadProfileAndContacts();
+  }, []);
+
+  // Load all users from DB (excluding current user)
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        console.log("Trying to get the contact list...");
+        const res = await axiosWithCredentials.get("/users");
+        console.log("API response status:", res.status);
+        const data = res.data;
+        console.log("Received user information:", data);
+
+        // Make sure the data is in array format
+        const userArray = Array.isArray(data) ? data : [];
+        console.log("Processed user array:", userArray);
+
+        const contactList: Contact[] = userArray.map((user: { _id: string; firstName?: string; username?: string; email?: string }) => ({
+          id: user._id,
+          name: user.firstName || user.username || user.email || "Unknown",
+          lastMessage: '',
+          isOnline: false
+        }));
+        setContacts(contactList);
+      } catch (err) {
+        console.error("Failed to load contacts:", err);
+      }
+    };
+
+    fetchContacts();
+  }, []);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();

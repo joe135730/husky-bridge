@@ -35,9 +35,10 @@ export default function Login() {
             dispatch(setCurrentUser(userWithConsistentRole));
             
             navigate("/");
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error("Login error:", err);
-            setError(err.response?.data?.message || "Login failed. Please try again.");
+            const error = err as { response?: { data?: { message?: string } } };
+            setError(error.response?.data?.message || "Login failed. Please try again.");
         } finally {
             setLoading(false);
         }

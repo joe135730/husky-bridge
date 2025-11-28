@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as client from '../Posts/client';
 import { Participant, Post } from '../Posts/client';
@@ -14,13 +14,7 @@ export default function PendingOffers() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [hasSelectedParticipant, setHasSelectedParticipant] = useState(false);
 
-  useEffect(() => {
-    if (postId) {
-      loadPostAndParticipants();
-    }
-  }, [postId]);
-
-  const loadPostAndParticipants = async () => {
+  const loadPostAndParticipants = useCallback(async () => {
     try {
       setLoading(true);
       const [postData, participantsData] = await Promise.all([
@@ -43,12 +37,19 @@ export default function PendingOffers() {
       } else {
         setHasSelectedParticipant(false); // Reset the state when no selected participant
       }
-    } catch (error: any) {
-      setError(error.response?.data?.message || 'Error loading data');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      setError(err.response?.data?.message || 'Error loading data');
     } finally {
       setLoading(false);
     }
-  };
+  }, [postId]);
+
+  useEffect(() => {
+    if (postId) {
+      loadPostAndParticipants();
+    }
+  }, [postId, loadPostAndParticipants]);
 
   const handleTitleClick = () => {
     navigate(`/post/${postId}`);
@@ -71,8 +72,9 @@ export default function PendingOffers() {
       await client.selectParticipant(postId, participantId);
       await loadPostAndParticipants();
       setHasSelectedParticipant(true);
-    } catch (error: any) {
-      setError(error.response?.data?.message || 'Error selecting participant');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      setError(err.response?.data?.message || 'Error selecting participant');
     } finally {
       setIsProcessing(false);
     }
@@ -93,9 +95,10 @@ export default function PendingOffers() {
       await client.removeParticipant(postId, participantId);
       // Refresh the participants list after successful decline
       await loadPostAndParticipants();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error declining participant:', error);
-      setError(error.response?.data?.message || 'Error declining participant');
+      const err = error as { response?: { data?: { message?: string } } };
+      setError(err.response?.data?.message || 'Error declining participant');
     } finally {
       setIsProcessing(false);
     }
@@ -120,19 +123,21 @@ export default function PendingOffers() {
       try {
         await client.markPostComplete(postId);
         await loadPostAndParticipants();
-      } catch (innerError: any) {
+      } catch (innerError: unknown) {
         console.error('API error when marking post as complete:', innerError);
+        const innerErr = innerError as { response?: { status?: number; data?: { message?: string } } };
         
         // Check if the error is authentication-related
-        if (innerError.response?.status === 401) {
+        if (innerErr.response?.status === 401) {
           setError('Your session has expired. Please refresh the page and try again.');
         } else {
-          setError(innerError.response?.data?.message || 'Error marking post as complete');
+          setError(innerErr.response?.data?.message || 'Error marking post as complete');
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error marking post as complete:', error);
-      setError(error.response?.data?.message || 'Error marking post as complete');
+      const err = error as { response?: { data?: { message?: string } } };
+      setError(err.response?.data?.message || 'Error marking post as complete');
     } finally {
       setIsProcessing(false);
     }

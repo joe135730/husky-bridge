@@ -54,15 +54,16 @@ const ReportedPostDetail = () => {
         const response = await axiosWithCredentials.get(`/reports/${postId}`);
         setPost(response.data);
         setError(null);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error fetching reported post:", err);
+        const error = err as { response?: { status?: number; data?: { message?: string } } };
         
         // Better error handling based on status code
-        if (err.response && err.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           setError("Authentication error: Please log in again with admin credentials");
           // Redirect to login page
           setTimeout(() => navigate("/Account/login"), 3000);
-        } else if (err.response && err.response.status === 403) {
+        } else if (error.response && error.response.status === 403) {
           setError("You don't have permission to access this page. Admin privileges required.");
         } else {
           setError("Failed to load reported post details. Please try again.");
@@ -89,10 +90,11 @@ const ReportedPostDetail = () => {
     try {
       await axiosWithCredentials.post(`/reports/${postId}/keep`, {});
       navigate("/reports");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error keeping post:", err);
+      const error = err as { response?: { status?: number } };
       
-      if (err.response && err.response.status === 401) {
+      if (error.response && error.response.status === 401) {
         setError("Authentication error: Please log in again");
       } else {
         setError("Failed to keep post. Please try again.");
@@ -104,10 +106,11 @@ const ReportedPostDetail = () => {
     try {
       await axiosWithCredentials.delete(`/reports/${postId}`);
       navigate("/reports");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error deleting post:", err);
+      const error = err as { response?: { status?: number } };
       
-      if (err.response && err.response.status === 401) {
+      if (error.response && error.response.status === 401) {
         setError("Authentication error: Please log in again");
       } else {
         setError("Failed to delete post. Please try again.");

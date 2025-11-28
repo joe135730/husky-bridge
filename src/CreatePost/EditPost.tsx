@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StoreType } from '../store';
@@ -20,15 +20,7 @@ export default function EditPost() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (!currentUser) {
-      navigate('/Account/login');
-      return;
-    }
-    loadPost();
-  }, [currentUser, id]);
-
-  const loadPost = async () => {
+  const loadPost = useCallback(async () => {
     try {
       if (!id) return;
       const post = await client.findPostById(id);
@@ -40,11 +32,20 @@ export default function EditPost() {
       setStartDate(start);
       setEndDate(end);
       setDescription(post.description);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading post:", error);
-      setError(error.response?.data?.message || 'Error loading post');
+      const err = error as { response?: { data?: { message?: string } } };
+      setError(err.response?.data?.message || 'Error loading post');
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate('/Account/login');
+      return;
+    }
+    loadPost();
+  }, [currentUser, id, loadPost, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,9 +70,10 @@ export default function EditPost() {
       };
       await client.updatePost(id, updatedPost);
       navigate(`/post/${id}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error updating post:", error);
-      setError(error.response?.data?.message || 'Error updating post');
+      const err = error as { response?: { data?: { message?: string } } };
+      setError(err.response?.data?.message || 'Error updating post');
     } finally {
       setIsSubmitting(false);
     }

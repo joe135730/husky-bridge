@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as client from '../Posts/client';
 import { Post } from '../Posts/client';
@@ -38,11 +38,7 @@ export default function MyPosts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    loadPosts();
-  }, [sort, filterState]);
-
-  const loadPosts = async () => {
+  const loadPosts = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -63,10 +59,10 @@ export default function MyPosts() {
       }
 
       // Apply filters
-      // Filter by post type (can select both requests and offers)
+        // Filter by post type (can select both requests and offers)
       if (filterState.postType) {
         const selectedTypes = Object.entries(filterState.postType)
-          .filter(([_, selected]) => selected)
+          .filter(([, selected]) => selected)
           .map(([type]) => type === 'My Requests' ? 'request' : 'offer');
         
         if (selectedTypes.length > 0) {
@@ -77,7 +73,7 @@ export default function MyPosts() {
       // Filter by category (can select multiple categories)
       if (filterState.category) {
         const selectedCategories = Object.entries(filterState.category)
-          .filter(([_, selected]) => selected)
+          .filter(([, selected]) => selected)
           .map(([category]) => {
             const categoryMap: { [key: string]: string } = {
               'General': 'general',
@@ -96,7 +92,7 @@ export default function MyPosts() {
       // Filter by date range (keep the most restrictive range if multiple selected)
       if (filterState.dateRange) {
         const selectedRanges = Object.entries(filterState.dateRange)
-          .filter(([_, selected]) => selected)
+          .filter(([, selected]) => selected)
           .map(([range]) => {
             switch (range) {
               case 'Last Hour': return 1;
@@ -126,13 +122,18 @@ export default function MyPosts() {
       });
       
       setPosts(allPosts);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error loading posts:", error);
-      setError(error.response?.data?.message || 'Error loading posts');
+      const err = error as { response?: { data?: { message?: string } } };
+      setError(err.response?.data?.message || 'Error loading posts');
     } finally {
       setLoading(false);
     }
-  };
+  }, [sort, filterState]);
+
+  useEffect(() => {
+    loadPosts();
+  }, [loadPosts]);
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSort(e.target.value as 'latest' | 'oldest');
@@ -152,9 +153,10 @@ export default function MyPosts() {
     try {
       await client.markPostAsCompletedByOwner(postId);
       loadPosts(); // Reload posts to get updated data
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error completing post:", error);
-      setError(error.response?.data?.message || 'Error completing post');
+      const err = error as { response?: { data?: { message?: string } } };
+      setError(err.response?.data?.message || 'Error completing post');
     }
   };
 

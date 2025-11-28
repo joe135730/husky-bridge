@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import * as client from "../Posts/client";
@@ -15,7 +15,7 @@ export default function AllPost() {
     const [error, setError] = useState<string | null>(null);
     const currentUser = useSelector((state: StoreType) => state.accountReducer.currentUser);
 
-    const fetchPosts = async () => {
+    const fetchPosts = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
@@ -43,11 +43,11 @@ export default function AllPost() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [category, searchParams]);
 
     useEffect(() => {
         fetchPosts();
-    }, [category, searchParams]);
+    }, [fetchPosts]);
 
     const formatDate = (dateString: string | Date) => {
         const date = new Date(dateString);

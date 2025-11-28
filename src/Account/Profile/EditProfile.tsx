@@ -47,7 +47,7 @@ export default function EditProfile() {
     }, [navigate]);
 
     const validatePassword = (password: string) => {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=[\]{};':"\\|,.<>/?]).{8,}$/;
         return passwordRegex.test(password);
     };
 
@@ -95,7 +95,13 @@ export default function EditProfile() {
                 return;
             }
 
-            const updateData: any = {
+            const updateData: {
+                firstName: string;
+                lastName: string;
+                role: string;
+                password?: string;
+                currentPassword?: string;
+            } = {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
                 role: formData.role
@@ -110,8 +116,9 @@ export default function EditProfile() {
             try {
                 await client.updateUser(currentUser._id, updateData);
                 navigate('/Account/profile');
-            } catch (error: any) {
-                if (error.response?.status === 401) {
+            } catch (error: unknown) {
+                const err = error as { response?: { status?: number; data?: { message?: string } } };
+                if (err.response?.status === 401) {
                     setErrors(prev => ({
                         ...prev,
                         currentPassword: 'Current password is incorrect'
