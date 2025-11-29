@@ -1,4 +1,5 @@
 # Husky Bridge Frontend
+URL: https://husky-bridge.netlify.app/
 
 Husky Bridge Backend:　https://github.com/joe135730/husky-bridge-server
 
