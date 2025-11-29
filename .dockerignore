@@ -1,0 +1,51 @@
+# Node modules (will be installed in container)
+node_modules
+npm-debug.log
+
+# Git files
+.git
+.gitignore
+.github
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Test files
+*.test.ts
+*.test.tsx
+**/__tests__/**
+**/test/**
+coverage
+src/**/*.test.ts
+src/**/*.test.tsx
+
+# Documentation
+*.md
+TESTING_GUIDE.md
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts (will be built in container)
+dist
+build
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+
+# Source maps (not needed in production)
+*.map
+
