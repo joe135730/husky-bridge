@@ -3,9 +3,9 @@ Resources:
   - TargetService:
       Type: AWS::ECS::Service
       Properties:
-        TaskDefinition: "PLACEHOLDER_TASK_DEF_ARN"
+        TaskDefinition: PLACEHOLDER_TASK_DEF_ARN
         LoadBalancerInfo:
-          ContainerName: "husky-bridge-frontend"
+          ContainerName: husky-bridge-frontend
           ContainerPort: 80
-        PlatformVersion: "LATEST"
+        PlatformVersion: LATEST
 
