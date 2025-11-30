@@ -28,6 +28,8 @@ export default defineConfig({
     exclude: [...configDefaults.exclude, 'e2e/**'],
   },
   server: {
+    port: 3000, // Changed from default 3000 to avoid permission issues
+    host: '127.0.0.1', // Explicitly use IPv4 to avoid IPv6 permission issues
     proxy: {
       '/api': {
         target: 'http://localhost:4000',
