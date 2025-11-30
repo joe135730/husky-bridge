@@ -8,6 +8,10 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# Accept build argument for API base URL
+ARG VITE_API_BASE
+ENV VITE_API_BASE=$VITE_API_BASE
+
 # Copy package files first (Docker layer caching)
 COPY package*.json ./
 
