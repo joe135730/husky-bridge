@@ -51,16 +51,26 @@ function AppContent() {
           dispatch(setCurrentUser(null));
         }
       } catch (error) {
-        // Only log unexpected errors
-        console.error("App - Error checking authentication status:", error);
-        // Clear current user on unexpected errors
-        dispatch(setCurrentUser(null));
+        // Handle 401 errors gracefully (user not logged in)
+        const err = error as { response?: { status?: number } };
+        if (err.response?.status === 401) {
+          console.log("App - User not authenticated (401)");
+          dispatch(setCurrentUser(null));
+        } else {
+          // Only log unexpected errors
+          console.error("App - Error checking authentication status:", error);
+          // Don't clear user on network errors - might be temporary
+          // Only clear on actual auth failures
+        }
       }
     };
+    
+    // Check immediately on mount
     checkLoggedIn();
 
     // Add an interval to periodically check and refresh the session
-    const sessionRefreshInterval = setInterval(checkLoggedIn, 5 * 60 * 1000); // Check every 5 minutes
+    // Reduced to 2 minutes to catch session issues faster
+    const sessionRefreshInterval = setInterval(checkLoggedIn, 2 * 60 * 1000); // Check every 2 minutes
 
     // Cleanup interval on component unmount
     return () => clearInterval(sessionRefreshInterval);
