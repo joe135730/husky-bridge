@@ -69,7 +69,9 @@ export default function EditPost() {
         description
       };
       await client.updatePost(id, updatedPost);
-      navigate(`/post/${id}`);
+      // Navigate to post detail and force reload by adding timestamp
+      // This ensures the post data is refreshed after edit
+      navigate(`/post/${id}?refresh=${Date.now()}`);
     } catch (error: unknown) {
       console.error("Error updating post:", error);
       const err = error as { response?: { data?: { message?: string } } };

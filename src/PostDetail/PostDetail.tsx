@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StoreType } from '../store';
 import * as client from '../Posts/client';
@@ -104,6 +104,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose, onSubmit }) 
 export default function PostDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const currentUser = useSelector((state: StoreType) => state.accountReducer.currentUser);
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
@@ -116,6 +117,8 @@ export default function PostDetail() {
     try {
       if (!id) return;
       setLoading(true);
+      setError(null); // Clear previous errors
+      // Force fresh fetch by not using cache
       const data = await client.findPostById(id);
       setPost(data);
 
@@ -136,8 +139,9 @@ export default function PostDetail() {
   }, [id, currentUser]);
 
   useEffect(() => {
+    // Reload post when id changes or when refresh param is present (after edit)
     loadPost();
-  }, [loadPost]);
+  }, [loadPost, id, searchParams.get('refresh')]);
 
   const handleBack = () => {
     // If owner, go back to my posts, otherwise go back to all posts

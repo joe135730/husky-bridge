@@ -41,11 +41,26 @@ export default function MyPosts() {
   const loadPosts = useCallback(async () => {
     try {
       setLoading(true);
+      setError(''); // Clear previous errors
       
       // Load both created and participating posts
       const [myPosts, participatingPosts] = await Promise.all([
-        client.findMyPosts(),
-        client.findParticipatingPosts()
+        client.findMyPosts().catch(err => {
+          // Handle 401 errors gracefully
+          if (err.response?.status === 401) {
+            console.error("Authentication required for My Posts");
+            throw new Error("Please log in to view your posts");
+          }
+          throw err;
+        }),
+        client.findParticipatingPosts().catch(err => {
+          // Handle 401 errors gracefully
+          if (err.response?.status === 401) {
+            console.error("Authentication required for Participating Posts");
+            return []; // Return empty array if not authenticated
+          }
+          throw err;
+        })
       ]);
       
       // Combine posts
@@ -124,12 +139,22 @@ export default function MyPosts() {
       setPosts(allPosts);
     } catch (error: unknown) {
       console.error("Error loading posts:", error);
-      const err = error as { response?: { data?: { message?: string } } };
-      setError(err.response?.data?.message || 'Error loading posts');
+      const err = error as { response?: { data?: { message?: string }; status?: number } };
+      
+      // Handle authentication errors
+      if (err.response?.status === 401 || (error as Error).message?.includes('log in')) {
+        setError('Please log in to view your posts');
+        // Optionally redirect to login after a delay
+        setTimeout(() => {
+          navigate('/Account/login');
+        }, 2000);
+      } else {
+        setError(err.response?.data?.message || (error as Error).message || 'Error loading posts');
+      }
     } finally {
       setLoading(false);
     }
-  }, [sort, filterState]);
+  }, [sort, filterState, navigate]);
 
   useEffect(() => {
     loadPosts();
