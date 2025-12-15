@@ -28,7 +28,7 @@ export default function EditPost() {
       setTitle(post.title);
       setCategory(post.category.toLowerCase() as Post['category']);
       setLocation(post.location);
-      const [start, end] = post.availability.split(',').map(date => date.split('T')[0]);
+      const [start, end] = post.availability.split(',').map((date: string) => date.split('T')[0]);
       setStartDate(start);
       setEndDate(end);
       setDescription(post.description);
