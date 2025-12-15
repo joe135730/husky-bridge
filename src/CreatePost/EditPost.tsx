@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StoreType } from '../store';
-import * as client from './client';
+import * as client from '../Posts/client';
 import { Post } from '../Posts/client';
 import './CreatePost.css';
 

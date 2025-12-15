@@ -16,12 +16,23 @@ const LeftSideBar = ({ onClose }: { onClose: () => void }) => {
 
   const handleSignout = async () => {
     try {
-      await accountClient.signout();
+      // Clear user state first (optimistic update)
       dispatch(clearCurrentUser());
+      
+      // Call signout API to destroy session and clear cookie
+      await accountClient.signout();
+      
+      // Navigate to home page
       navigate("/");
       onClose();
+      
+      // Force a page reload to ensure all state is cleared
+      // This helps clear any cached session data
+      window.location.reload();
     } catch (error) {
       console.error("Signout error:", error);
+      // Even if API call fails, we've cleared local state
+      // User will be logged out on next page load if session is invalid
     }
   };
 
