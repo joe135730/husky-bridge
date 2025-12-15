@@ -1,7 +1,8 @@
 # Husky Bridge Frontend
-URL: https://husky-bridge.netlify.app/
 
-Husky Bridge Backend:　https://github.com/joe135730/husky-bridge-server
+Husky Bridge Backend: https://github.com/joe135730/husky-bridge-server
+
+**Deployment**: Both frontend and backend are deployed to AWS ECS Fargate via ECR.
 
 A modern React-based frontend application built with TypeScript, Vite, and React Router.
 
