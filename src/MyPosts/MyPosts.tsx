@@ -144,10 +144,10 @@ export default function MyPosts() {
       // Handle authentication errors
       if (err.response?.status === 401 || (error as Error).message?.includes('log in')) {
         setError('Please log in to view your posts');
-        // Clear any stale user data
-        localStorage.removeItem('currentUser');
-        // Redirect to login immediately
-        navigate('/Account/login');
+        // Optionally redirect to login after a delay
+        setTimeout(() => {
+          navigate('/Account/login');
+        }, 2000);
       } else {
         setError(err.response?.data?.message || (error as Error).message || 'Error loading posts');
       }
