@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { StoreType } from '../store';
-import * as client from './client';
+import * as client from '../Posts/client';
 import { Post } from '../Posts/client';
 import './CreatePost.css';
 
@@ -28,7 +28,7 @@ export default function EditPost() {
       setTitle(post.title);
       setCategory(post.category.toLowerCase() as Post['category']);
       setLocation(post.location);
-      const [start, end] = post.availability.split(',').map(date => date.split('T')[0]);
+      const [start, end] = post.availability.split(',').map((date: string) => date.split('T')[0]);
       setStartDate(start);
       setEndDate(end);
       setDescription(post.description);
