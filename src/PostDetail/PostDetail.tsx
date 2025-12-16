@@ -138,10 +138,13 @@ export default function PostDetail() {
     }
   }, [id, currentUser]);
 
+  // Extract refresh param to a variable for dependency array
+  const refreshParam = searchParams.get('refresh');
+
   useEffect(() => {
     // Reload post when id changes or when refresh param is present (after edit)
     loadPost();
-  }, [loadPost, id, searchParams.get('refresh')]);
+  }, [loadPost, id, refreshParam]);
 
   const handleBack = () => {
     // If owner, go back to my posts, otherwise go back to all posts
