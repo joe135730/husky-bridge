@@ -250,10 +250,10 @@ jobs:
           
           while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
             DEPLOY_OUTPUT=$(aws deploy create-deployment \
-              --application-name AppECS-husky-bridge-cluster-husky-bridge-frontend-service \
-              --deployment-group-name AppECS-husky-bridge-cluster-husky-bridge-frontend-service-dg \
-              --revision file:///tmp/revision.json \
-              --description "Deployment from GitHub Actions - ${{ github.sha }}" \
+            --application-name AppECS-husky-bridge-cluster-husky-bridge-frontend-service \
+            --deployment-group-name AppECS-husky-bridge-cluster-husky-bridge-frontend-service-dg \
+            --revision file:///tmp/revision.json \
+            --description "Deployment from GitHub Actions - ${{ github.sha }}" \
               --region ${{ secrets.AWS_REGION }} 2>&1)
             EXIT_CODE=$?
             

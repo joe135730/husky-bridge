@@ -2,7 +2,7 @@
   "serviceName": "husky-bridge-frontend-service",
   "cluster": "husky-bridge-cluster",
   "taskDefinition": "husky-bridge-frontend",
-  "desiredCount": 2,
+  "desiredCount": 1,
   "launchType": "FARGATE",
   "networkConfiguration": {
     "awsvpcConfiguration": {
