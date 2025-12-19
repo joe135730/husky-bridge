@@ -192,13 +192,16 @@ export default function EditPost() {
 
           <div className="form-group">
             <label htmlFor="description">Description</label>
-            <textarea id="description"
+            <textarea 
+              id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter your post description"
               rows={5}
+              maxLength={10000}
               required
             />
+            <small className="char-count">{description.length}/10,000 characters</small>
           </div>
         </section>
 
